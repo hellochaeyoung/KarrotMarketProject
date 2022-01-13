@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+
+<div class = "container">
+
+  <form action="mains/register" method="post">
+    <div class = "form-group">
+      <label for="productName">제목</label>
+      <input type="text" id="productName" name="productName" placeholder="제목"><br>
+
+      <label for="category">카테고리</label>
+      <input type="text" id="category" name="category" placeholder="카테고리"><br>
+
+      <label for="price">가격</label>
+      <input type="text" id="price" name="price" placeholder="가격"><br>
+
+      <label for="contents">내용</label>
+      <input type="text" id="contents" name="contents" placeholder="내용"><br>
+
+    </div>
+    <br>
+    <button type="submit">등록</button>
+  </form>
+</div>
+
+</body>
+</html>

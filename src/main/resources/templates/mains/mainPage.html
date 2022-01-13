@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div class="container">
+    <div>
+        <p th:text="${nickName}"></p> <p th:text="${location}"></p>
+        <a href="/mains/register">게시물 등록</a> <br>
+        <a href="/mains/categoryForm">카테고리 선택</a> <br>
+        <table>
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>상품이름</th>
+                <th>가격</th>
+                <th>지역</th>
+                <th>좋아요수</th>
+                <th>댓글수</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="product : ${products}">
+                <td th:text="${product.id}"></td>
+                <td th:text="${product.productName}"></td>
+                <td th:text="${product.price}"></td>
+                <td th:text="${product.locationId}"></td>
+                <td th:text="${product.like}"></td>
+                <td th:text="${product.comment}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
