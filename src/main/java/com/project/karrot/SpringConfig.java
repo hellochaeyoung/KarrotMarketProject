@@ -1,10 +1,8 @@
 package com.project.karrot;
 
 import com.project.karrot.domain.Member;
-import com.project.karrot.repository.JPAMemberRepository;
-import com.project.karrot.repository.JPAProductRepository;
-import com.project.karrot.repository.MemberRepository;
-import com.project.karrot.repository.ProductRepository;
+import com.project.karrot.repository.*;
+import com.project.karrot.service.InterestedService;
 import com.project.karrot.service.MemberService;
 import com.project.karrot.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +16,11 @@ import javax.persistence.EntityManager;
 public class SpringConfig {
 
     private EntityManager em;
+    private InterestedRepository interestedRepository;
 
-    public SpringConfig(EntityManager em) {
+    public SpringConfig(EntityManager em, InterestedRepository interestedRepository) {
         this.em = em;
+        this.interestedRepository = interestedRepository;
     }
 
     @Bean
@@ -44,6 +44,10 @@ public class SpringConfig {
     public ProductRepository productRepository() {
         return new JPAProductRepository(em);
     }
+
+    @Bean
+    public InterestedService interestedService() { return new InterestedService(interestedRepository); }
+
 
 }
 

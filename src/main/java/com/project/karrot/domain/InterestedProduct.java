@@ -37,7 +37,11 @@ public class InterestedProduct {
     }
 
     public void setProduct(Product product) {
-        this.product = product;
-        this.member.getInterestedProducts().add(this); /// 추후 수정 필요
+        if(product == null) {
+            this.member.getInterestedProducts().remove(this); /// 추후 수정 필요
+        }else {
+            this.product = product;
+            this.member.getInterestedProducts().add(this); /// 추후 수정 필요
+        }
     }
 }
