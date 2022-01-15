@@ -16,10 +16,14 @@ import javax.persistence.EntityManager;
 public class SpringConfig {
 
     private EntityManager em;
+    private MemberRepository memberRepository;
+    private ProductRepository productRepository;
     private InterestedRepository interestedRepository;
 
-    public SpringConfig(EntityManager em, InterestedRepository interestedRepository) {
+    public SpringConfig(EntityManager em, MemberRepository memberRepository, ProductRepository productRepository, InterestedRepository interestedRepository) {
         this.em = em;
+        this.memberRepository = memberRepository;
+        this.productRepository = productRepository;
         this.interestedRepository = interestedRepository;
     }
 
@@ -28,25 +32,25 @@ public class SpringConfig {
 
     @Bean
     public MemberService memberService() {
-        return new MemberService(memberRepository());
+        return new MemberService(memberRepository);
     }
-
+/*
     @Bean
     public MemberRepository memberRepository() {
         //return new MemoryMemberRepository();
         return new JPAMemberRepository(em);
     }
-
+*/
     @Bean
-    public ProductService productService() {return new ProductService(productRepository()); }
-
+    public ProductService productService() {return new ProductService(productRepository); }
+/*
     @Bean
     public ProductRepository productRepository() {
         return new JPAProductRepository(em);
     }
-
+*/
     @Bean
-    public InterestedService interestedService() { return new InterestedService(interestedRepository); }
+    public InterestedService interestedService() { return new InterestedService(member(), interestedRepository); }
 
 
 }
