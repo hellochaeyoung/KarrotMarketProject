@@ -66,7 +66,7 @@ public class MemberController {
 
     @PostMapping("/members/login")
     public String login(MemberForm memberForm, Model model) {
-        Member member = memberService.findOneByEmail(memberForm.getEmail()).get(); // 로그인 계정 세팅, memberForm에 지역 값 입력하는 거 추가해줘야함
+        Member member = memberService.findByEmail(memberForm.getEmail()).get(); // 로그인 계정 세팅, memberForm에 지역 값 입력하는 거 추가해줘야함
         setMember(member);
 
         String nickName = member.getNickName(); // 상품 메인 페이지에서 필요

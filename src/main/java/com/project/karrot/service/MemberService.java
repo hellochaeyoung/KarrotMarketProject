@@ -44,14 +44,27 @@ public class MemberService {
                 });
     }
 
-    public Optional<Member> findOneByEmail(String email) { return memberRepository.findByEmail(email); }
+    public Optional<Member> find(Long memberId) {
+        return memberRepository.findById(memberId);
+    }
 
-    // 회원 전체 조회
+    public Optional<Member> findByName(String name) {
+        return memberRepository.findByName(name);
+    }
+
+    public Optional<Member> findByNickName(String nickName) {
+        return memberRepository.findByNickName(nickName);
+    }
+
+    public Optional<Member> findByEmail(String email) { return memberRepository.findByEmail(email); }
+
     public List<Member> findMembers() {
         return memberRepository.findAll();
     }
 
-    public Optional<Member> findOne(Long memberId) {
-        return memberRepository.findById(memberId);
+    public void remove(Member member) {
+        memberRepository.delete(member);
     }
+
+
 }
