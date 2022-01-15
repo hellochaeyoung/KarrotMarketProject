@@ -8,7 +8,7 @@ public class InterestedProduct {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long interestedId;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 

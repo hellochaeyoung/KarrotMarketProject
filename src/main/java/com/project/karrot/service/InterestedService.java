@@ -10,18 +10,25 @@ import java.util.Optional;
 
 public class InterestedService {
 
+    private final Member member;
     private final InterestedRepository interestedRepository;
 
-    public InterestedService(InterestedRepository interestedRepository) {
+    public InterestedService(Member member, InterestedRepository interestedRepository) {
+        this.member = member;
         this.interestedRepository = interestedRepository;
     }
 
-    public InterestedProduct add(InterestedProduct interestedProduct) {
+    public InterestedProduct add(Product product) {
+
+        InterestedProduct interestedProduct = new InterestedProduct();
+        interestedProduct.setMember(member);
+        interestedProduct.setProduct(product);
+
         return interestedRepository.save(interestedProduct);
     }
 
-    public Optional<InterestedProduct> find(InterestedProduct interestedProduct) {
-        return interestedRepository.findById(interestedProduct.getInterestedId());
+    public Optional<InterestedProduct> find(Long interestedId) {
+        return interestedRepository.findById(interestedId);
     }
 
     public List<InterestedProduct> findInterestedByMember(Member member) {
@@ -33,6 +40,7 @@ public class InterestedService {
     }
 
     public void remove(InterestedProduct interestedProduct) {
+        //interestedProduct.getMember().getInterestedProducts().remove(interestedProduct);
         interestedRepository.delete(interestedProduct);
     }
 }
