@@ -23,7 +23,7 @@ public class Member {
     @OneToMany(mappedBy = "member")
     List<Deal> deals = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     List<InterestedProduct> interestedProducts = new ArrayList<>();
 
     @ManyToOne
