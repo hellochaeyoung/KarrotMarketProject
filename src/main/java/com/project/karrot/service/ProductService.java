@@ -1,7 +1,6 @@
 package com.project.karrot.service;
 
-import com.project.karrot.domain.Product;
-import com.project.karrot.domain.ProductStatus;
+import com.project.karrot.domain.*;
 import com.project.karrot.repository.ProductRepository;
 
 import java.text.SimpleDateFormat;
@@ -17,14 +16,14 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public Long register(Product product) {
+    public Product register(Product product) {
 
+        // 추후 이 set 함수들은 앞단에서 처리
         product.setProductStatus(ProductStatus.SALE); // 진행단계 설정, 저장
         product.setTime(fomatDate()); // 게시시간 저장
 
-        productRepository.save(product);
+        return productRepository.save(product);
 
-        return product.getProductId();
     }
 
     private String fomatDate() {
@@ -33,35 +32,29 @@ public class ProductService {
         return format.format(now);
     }
 
-    // 상품 상세조회 - 공통
-    public Optional<Product> findByProductId(Long productId) {
-        return productRepository.findByProductId(productId);
+    public Optional<Product> find(Long productId) {
+        return productRepository.findById(productId);
     }
 
-    /* 상품 메인 페이지 */
-
-    // 맨 처음 로그인 후 바로 나오는 화면, 지역별 상품들 목록 조회
-    public List<Product> findByLocationId(Long locationId) {
-        return productRepository.findByLocationId(locationId);
+    public List<Product> findByLocation(Location location) {
+        return productRepository.findByLocation(location);
     }
 
-    // 카테고리 설정 추가 시 조회
-    public List<Product> findByCategoryId(Long locationId, Long categoryId) {
-        return productRepository.findByLocationAndCategory(locationId, categoryId);
+    public List<Product> findByLocationAndCategory(Location location, Category category) {
+        return productRepository.findByLocationAndCategory(location, category);
     }
 
-    /* 마이페이지 */
-
-    // 전체 목록 조회
-    public List<Product> findByMemberId(Long memberId) {
-        return productRepository.findByMemberId(memberId);
+    public List<Product> findByMember(Member member) {
+        return productRepository.findByMember(member);
     }
 
-    // 진행단계별(판매중 or 거래완료) 목록 조회
-    public List<Product> findByMemberAndStep(Long memberId, String status) {
-        return productRepository.findByMemberAndStatus(memberId, status);
+    public List<Product> findByMemberAndStatus(Member member, ProductStatus status) {
+        return productRepository.findByMemberAndStatus(member, status);
     }
 
+    public void remove(Product product) {
+        productRepository.delete(product);
+    }
 
 }
 

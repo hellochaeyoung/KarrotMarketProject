@@ -18,11 +18,14 @@ import java.util.List;
 @Transactional
 class ProductServiceIntegrationTest {
 
+    @Autowired Member member;
     @Autowired MemberService memberService;
     @Autowired MemberRepository memberRepository;
 
     @Autowired ProductService productService;
     @Autowired ProductRepository productRepository;
+
+    @Autowired InterestedService interestedService;
 
     @Test
     public void 상품등록() {
@@ -37,18 +40,17 @@ class ProductServiceIntegrationTest {
         product.setMember(member);
 
         //when
-        memberService.join(member);
-        productService.register(product);
-        product.setMember(member);
+        Long saveId = memberService.join(member);
+        Product p = productService.register(product);
 
         //then
-        Long memberId = memberRepository.findById(member.getId()).get().getId();
-        List<Product> result = productRepository.findByMemberId(memberId);
+        Member findMember = memberService.find(saveId).get();
+        List<Product> result = productService.findByMember(findMember);
 
-        System.out.println("findMemberId : " + memberId);
+        System.out.println("findMemberId : " + findMember.getId());
         System.out.println("productMemberId : " + result.get(0).getMember().getId());
 
-        assertEquals(result.get(0).getMember().getId(), memberId);
+        assertEquals(result.get(0).getMember().getId(), findMember.getId());
     }
 
     @Test
@@ -66,10 +68,63 @@ class ProductServiceIntegrationTest {
         //when
         memberService.join(member);
         productService.register(product);
-        product.setMember(member);
 
         //then
-        List<Product> result = productRepository.findByMemberAndStatus(member.getId(), ProductStatus.SALE.name());
+        List<Product> result = productService.findByMemberAndStatus(member, ProductStatus.SALE);
         assertThat(result.get(0).getProductStatus().name()).isEqualTo(ProductStatus.SALE.name());
+    }
+
+    @Test
+    public void 회원_관심상품_조회() {
+        //given
+        //Member member = new Member();
+        member.setName("hellochaeyoung");
+
+        Product product = new Product();
+        product.setProductName("휴대폰충전기");
+        product.setContents("새 휴대폰 충전기입니다.");
+        product.setMember(member);
+
+        //when
+        memberService.join(member);
+        productService.register(product);
+        interestedService.add(product);
+
+        //then
+        Member m1 = memberService.find(member.getId()).get();
+        List<InterestedProduct> result = interestedService.findInterestedByMember(m1);
+
+        assertThat(result.get(0).getMember().getName()).isEqualTo("hellochaeyoung");
+
+    }
+
+    @Test
+    public void 상품_삭제() {
+        //given
+        Member member = new Member();
+        member.setName("hellochaeyoung");
+
+        Product product = new Product();
+        product.setProductName("휴대폰충전기");
+        product.setContents("새 휴대폰 충전기입니다.");
+        product.setMember(member);
+
+        //when
+        memberService.join(member);
+        productService.register(product);
+
+        //Long addProductId = productService.addInterestedProduct(product, member);
+
+        //then
+        //Product p1 = productRepository.findByProductId(product.getProductId()).get();
+        //Long deleteId = productService.delete(p1);
+
+        /*
+        List<Product> result = productRepository.findInterestedProduct(member.getId());
+        for(Product p : result) {
+            System.out.println(p.getProductId() + " " + p.getMember().getId());
+        }*/ // 외래키 다 null 처리 필요..!! -> 그냥 오류 리턴..?
+
+        //assertThat(p1.getProductId()).isEqualTo(deleteId);
     }
 }
