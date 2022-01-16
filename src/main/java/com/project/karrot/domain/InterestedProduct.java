@@ -37,10 +37,11 @@ public class InterestedProduct {
     }
 
     public void setProduct(Product product) {
+        this.product = product;
         if(product == null) {
             this.member.getInterestedProducts().remove(this); /// 추후 수정 필요
         }else {
-            this.product = product;
+            // 상품을 변경할 일은 없기 때문에 this.product != null 처리 안해줘도 될듯?
             this.member.getInterestedProducts().add(this); /// 추후 수정 필요
         }
     }
