@@ -57,10 +57,14 @@ public class Comment {
     }
 
     public void setProduct(Product product) {
-        if(this.product != null) {
+        if(product == null) { // 연관관계 삭제
             this.product.getComments().remove(this);
+        }else {
+            if(this.product != null) {
+                this.product.getComments().remove(this);
+            }
+            this.product = product;
+            product.getComments().add(this);
         }
-        this.product = product;
-        product.getComments().add(this);
     }
 }
