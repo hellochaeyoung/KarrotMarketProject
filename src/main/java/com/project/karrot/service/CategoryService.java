@@ -5,6 +5,7 @@ import com.project.karrot.repository.CategoryRepository;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
+import java.util.Optional;
 
 public class CategoryService {
 
@@ -18,11 +19,17 @@ public class CategoryService {
         return categoryRepository.save(category);
     }
 
+    public Optional<Category> findByName(String name) {
+        return categoryRepository.findByName(name);
+    }
+
     public List<Category> findAll() {
         return categoryRepository.findAll();
     }
 
-    public void remove(Category category) {
+    public Long remove(Category category) {
         categoryRepository.delete(category);
+
+        return category.getCategoryId();
     }
 }
