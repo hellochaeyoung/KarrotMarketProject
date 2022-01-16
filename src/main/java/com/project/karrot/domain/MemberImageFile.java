@@ -3,16 +3,11 @@ package com.project.karrot.domain;
 import javax.persistence.*;
 
 @Entity
-public class MemberImageFile {
+@DiscriminatorValue("memberImageFile")
+public class MemberImageFile extends ImageFiles {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long fileId;
-
-    private String fileName;
-    private String fileOriName;
-    private String fileURL;
-
-    @OneToOne(mappedBy = "file")
+    @OneToOne
+    @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
     public Member getMember() {
@@ -23,36 +18,5 @@ public class MemberImageFile {
         this.member = member;
     }
 
-    public long getFileId() {
-        return fileId;
-    }
-
-    public void setFileId(long fileId) {
-        this.fileId = fileId;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public String getFileOriName() {
-        return fileOriName;
-    }
-
-    public void setFileOriName(String fileOriName) {
-        this.fileOriName = fileOriName;
-    }
-
-    public String getFileURL() {
-        return fileURL;
-    }
-
-    public void setFileURL(String fileURL) {
-        this.fileURL = fileURL;
-    }
 }
 
