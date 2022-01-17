@@ -1,5 +1,7 @@
 package com.project.karrot.controller;
 
+import com.project.karrot.domain.Location;
+
 public class MemberForm {
 
     private String name;
@@ -7,13 +9,13 @@ public class MemberForm {
     private String password;
     private String phoneNumber;
     private String nickName;
-    private String location;
+    private Location location;
 
-    public String getLocation() {
+    public Location getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(Location location) {
         this.location = location;
     }
 
