@@ -19,7 +19,7 @@ public class CommentService {
         return commentRepository.findById(commentId);
     }
 
-    public List<Comment> findByProduct(Product product) {
+    public Optional<List<Comment>> findByProduct(Product product) {
         return commentRepository.findByProduct(product);
     }
 
