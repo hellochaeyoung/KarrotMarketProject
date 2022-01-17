@@ -46,7 +46,7 @@ public class Product {
     }
 
     public void setProductStatus(ProductStatus productStatus) {
-        if(this.productStatus.equals(ProductStatus.COMPLETE)) { // 거래완료에서
+        if(this.productStatus != null && this.productStatus.equals(ProductStatus.COMPLETE)) { // 거래완료에서
             if(productStatus.equals(ProductStatus.SALE) || productStatus.equals(ProductStatus.RESERVATION)) { // 예약중 or 판매중으로 변경 시
                 this.deal.setProduct(null); // 해당 상품 거래 연관관계 삭제
             }
