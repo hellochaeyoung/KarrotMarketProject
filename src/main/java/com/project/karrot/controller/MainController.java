@@ -1,35 +1,25 @@
 package com.project.karrot.controller;
 
+import com.project.karrot.constants.SessionConstants;
 import com.project.karrot.domain.Member;
 import com.project.karrot.domain.Product;
+import com.project.karrot.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @Controller
 public class MainController {
 
-    private final Member member;
+    private final ProductService productService;
 
     @Autowired
-    public MainController(Member member) {
-        this.member = member;
+    public MainController(ProductService productService) {
+        this.productService = productService;
     }
-
-    /*
-    @GetMapping("/mains/mainPage")
-    public String show(Model model) {
-
-
-
-        return "mains/mainPage";
-    }
-
-     */
 
     @GetMapping("/mains/register")
     public String productRegisterForm() {
@@ -38,18 +28,20 @@ public class MainController {
 
 
     @PostMapping("/mains/register")
-    public String register(ProductForm productForm) {
+    public String register(@SessionAttribute(name = SessionConstants.LOGIN_MEMBER, required = false) Member loginMember, ProductForm productForm,
+                           @RequestParam(defaultValue = "/mains/mainPage") String redirectURL ) {
         Product product = new Product();
 
         product.setProductName(productForm.getProductName());
         product.setPrice(productForm.getPrice());
         //product.setCategoryId(1); // 수정 필요
         product.setContents(productForm.getContents());
-        //product.setMemberId(member.getId());
+        product.setMember(loginMember); //////////////////////
+        System.out.println("############" + loginMember.getNickName());
 
-        //productService.register(product); //////////////////
+        productService.register(product); //////////////////
 
-        return "mains/mainPage";
+        return "redirect:" + redirectURL;
     }
 
 
