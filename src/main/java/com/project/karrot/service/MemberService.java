@@ -25,6 +25,8 @@ public class MemberService {
 
         memberRepository.save(member);
 
+        memberRepository.flush();
+
         return member.getId();
     }
 
@@ -56,7 +58,10 @@ public class MemberService {
         return memberRepository.findByNickName(nickName);
     }
 
-    public Optional<Member> findByEmail(String email) { return memberRepository.findByEmail(email); }
+    public Member login(String email, String password) {
+        return memberRepository.findByEmail(email)
+                .filter(member -> member.getPassword().equals(password))
+                .orElse(null); }
 
     public List<Member> findMembers() {
         return memberRepository.findAll();
