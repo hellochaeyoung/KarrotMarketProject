@@ -30,12 +30,15 @@ public class Member {
     @JoinColumn(name = "LOCATION_ID")
     private Location location;
 
-    @OneToOne
-    @JoinColumn(name = "FILE_ID")
+    @OneToOne(mappedBy = "member")
     private MemberImageFile file;
 
     public List<Product> getProducts() {
         return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
     }
 
     public List<InterestedProduct> getInterestedProducts() {
@@ -44,10 +47,6 @@ public class Member {
 
     public void setInterestedProducts(List<InterestedProduct> interestedProducts) {
         this.interestedProducts = interestedProducts;
-    }
-
-    public void setProducts(List<Product> products) {
-        this.products = products;
     }
 
     public List<Deal> getDeals() {
