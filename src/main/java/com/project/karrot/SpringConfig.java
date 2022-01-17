@@ -14,18 +14,16 @@ import javax.persistence.EntityManager;
 @Configuration
 public class SpringConfig {
 
-    private EntityManager em;
-    private MemberRepository memberRepository;
-    private ProductRepository productRepository;
-    private InterestedRepository interestedRepository;
-    private CategoryRepository categoryRepository;
-    private CommentRepository commentRepository;
-    private DealRepository dealRepository;
-    private ImageFileRepository imageFileRepository;
-    private LocationRepository locationRepository;
+    private final MemberRepository memberRepository;
+    private final ProductRepository productRepository;
+    private final InterestedRepository interestedRepository;
+    private final CategoryRepository categoryRepository;
+    private final CommentRepository commentRepository;
+    private final DealRepository dealRepository;
+    private final ImageFileRepository imageFileRepository;
+    private final LocationRepository locationRepository;
 
-    public SpringConfig(EntityManager em, MemberRepository memberRepository, ProductRepository productRepository, InterestedRepository interestedRepository, CategoryRepository categoryRepository, CommentRepository commentRepository, DealRepository dealRepository, ImageFileRepository imageFileRepository, LocationRepository locationRepository) {
-        this.em = em;
+    public SpringConfig(MemberRepository memberRepository, ProductRepository productRepository, InterestedRepository interestedRepository, CategoryRepository categoryRepository, CommentRepository commentRepository, DealRepository dealRepository, ImageFileRepository imageFileRepository, LocationRepository locationRepository) {
         this.memberRepository = memberRepository;
         this.productRepository = productRepository;
         this.interestedRepository = interestedRepository;
@@ -37,7 +35,8 @@ public class SpringConfig {
     }
 
     @Bean
-    public Member member() { return new Member(); } /////////////////////////
+    public Member member() { return new Member(); }
+
 
     @Bean
     public MemberService memberService() {
@@ -51,7 +50,7 @@ public class SpringConfig {
     }
 */
     @Bean
-    public ProductService productService() {return new ProductService(productRepository); }
+    public ProductService productService() {return new ProductService(member(), productRepository); }
 /*
     @Bean
     public ProductRepository productRepository() {
