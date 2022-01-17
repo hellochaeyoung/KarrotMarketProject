@@ -1,36 +1,46 @@
 package com.project.karrot.controller;
 
+import com.project.karrot.constants.SessionConstants;
+import com.project.karrot.domain.Deal;
+import com.project.karrot.domain.InterestedProduct;
 import com.project.karrot.domain.Member;
-import com.project.karrot.service.MemberService;
+import com.project.karrot.domain.Product;
+import com.project.karrot.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 public class MemberController {
 
-    private Member member;
     private final MemberService memberService;
-    //private final ProductService productService;
+    private final ProductService productService;
+    private final LocationService locationService;
+    private final DealService dealService;
+    private final InterestedService interestedService;
+
+    public MemberController(MemberService memberService, ProductService productService, LocationService locationService, DealService dealService, InterestedService interestedService) {
+        this.memberService = memberService;
+        this.productService = productService;
+        this.locationService = locationService;
+        this.dealService = dealService;
+        this.interestedService = interestedService;
+    }
 
     // 생성자 주입
     @Autowired
-    public MemberController(Member member, MemberService memberService) {
-        this.member = member;
-        this.memberService = memberService;
-    }
 
-    public Member getMember() {
-        return member;
-    }
-
-    public void setMember(Member member) {
-        this.member = member;
-    }
 
     @GetMapping("/members/new")
     public String createForm() {
@@ -46,6 +56,7 @@ public class MemberController {
         member.setPassword(memberForm.getPassword());
         member.setPhoneNumber(memberForm.getPhoneNumber());
         member.setNickName(memberForm.getNickName());
+        //member.setLocation(memberForm.getLocation()); /////////////
         /////////////////
 
         System.out.println(member.getName());
@@ -65,20 +76,47 @@ public class MemberController {
     }
 
     @PostMapping("/members/login")
-    public String login(MemberForm memberForm, Model model) {
-        Member member = memberService.findByEmail(memberForm.getEmail()).get(); // 로그인 계정 세팅, memberForm에 지역 값 입력하는 거 추가해줘야함
-        setMember(member);
+    public String login(@ModelAttribute @Validated MemberForm memberForm,
+                        BindingResult bindingResult, @RequestParam(defaultValue = "/") String redirectURL,
+                        HttpServletRequest request) {
 
-        String nickName = member.getNickName(); // 상품 메인 페이지에서 필요
-        //long location = member.getLocationId(); // 추후 수정 필요
+        //System.out.println(member.hashCode());
 
-        model.addAttribute("nickName", nickName);
-        //model.addAttribute("location", location);
+        if(bindingResult.hasErrors()) {
+            return "members/loginForm";
+        }
 
-        //List<Product> products = productService.findByLocationId(member.getLocationId()); // locationId 설정안되서 에러남
-        //model.addAttribute("products", products);
+        Member loginMember = memberService.login(memberForm.getEmail(), memberForm.getPassword()); // 로그인 계정 세팅, memberForm에 지역 값 입력하는 거 추가해줘야함
 
-        return "mains/mainPage";
+        if(loginMember == null) {
+            bindingResult.reject("loginFail", "아이디 또는 비밀번호가 일치하지 않습니다.");
+            return "members/loginForm";
+        }
+
+        List<Product> products = productService.findByMember(loginMember).orElseGet(ArrayList::new);
+        List<Deal> deals = dealService.findByMember(loginMember).orElseGet(ArrayList::new);
+        List<InterestedProduct> interestedProducts = interestedService.findInterestedByMember(loginMember).orElseGet(ArrayList::new);
+
+        loginMember.setProducts(products);
+        loginMember.setDeals(deals);
+        loginMember.setInterestedProducts(interestedProducts);
+
+        HttpSession session = request.getSession(); // 세션 있으면 반환, 없으면 신규 세션 생성
+        session.setAttribute(SessionConstants.LOGIN_MEMBER, loginMember); // 세션에 로그인 회원 정보 보관
+
+        return "redirect:" + redirectURL;
+    }
+
+    @PostMapping("/members/logout")
+    public String logout(HttpServletRequest request) {
+
+        HttpSession session = request.getSession(false);
+        if(session != null) {
+            session.invalidate(); // 세션 날리기
+        }
+
+        return "redirect:/";
+
     }
 
     @GetMapping("/members")
