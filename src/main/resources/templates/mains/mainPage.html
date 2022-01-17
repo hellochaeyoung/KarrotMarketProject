@@ -8,7 +8,7 @@
 
 <div class="container">
     <div>
-        <p th:text="${nickName}"></p> <p th:text="${location}"></p>
+        <p th:text="${member.nickName}">님의 동네</p> <p th:text="${member.location}"></p>
         <a href="/mains/register">게시물 등록</a> <br>
         <a href="/mains/categoryForm">카테고리 선택</a> <br>
         <table>
@@ -19,17 +19,17 @@
                 <th>가격</th>
                 <th>지역</th>
                 <th>좋아요수</th>
-                <th>댓글수</th>
+                <th>내용</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="product : ${products}">
-                <td th:text="${product.id}"></td>
+            <tr th:each="product : ${member.products}">
+                <td th:text="${product.productId}"></td>
                 <td th:text="${product.productName}"></td>
                 <td th:text="${product.price}"></td>
-                <td th:text="${product.locationId}"></td>
-                <td th:text="${product.like}"></td>
-                <td th:text="${product.comment}"></td>
+                <td th:text="${product.location}"></td>
+                <td th:text="${product.likeCount}"></td>
+                <td th:text="${product.contents}"></td>
             </tr>
             </tbody>
         </table>
