@@ -31,11 +31,11 @@ public class InterestedService {
         return interestedRepository.findById(interestedId);
     }
 
-    public List<InterestedProduct> findInterestedByMember(Member member) {
+    public Optional<List<InterestedProduct>> findInterestedByMember(Member member) {
         return interestedRepository.findByMember(member);
     }
 
-    public List<InterestedProduct> findInterestedByProduct(Product product) {
+    public Optional<List<InterestedProduct>> findInterestedByProduct(Product product) {
         return interestedRepository.findByProduct(product);
     }
 

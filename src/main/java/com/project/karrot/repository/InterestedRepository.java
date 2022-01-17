@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface InterestedRepository extends JpaRepository<InterestedProduct, Long> {
 
@@ -15,10 +16,10 @@ public interface InterestedRepository extends JpaRepository<InterestedProduct, L
 
     // findByMember
     @Query( "select i from InterestedProduct i where i.member = :member" )
-    List<InterestedProduct> findByMember(@Param("member") Member member);
+    Optional<List<InterestedProduct>> findByMember(@Param("member") Member member);
 
     // findByProduct
     @Query( "select i from InterestedProduct i where i.product = :product")
-    List<InterestedProduct> findByProduct(@Param("product") Product product);
+    Optional<List<InterestedProduct>> findByProduct(@Param("product") Product product);
 
 }

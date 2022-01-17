@@ -4,6 +4,7 @@ import com.project.karrot.domain.Location;
 import com.project.karrot.repository.LocationRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public class LocationService {
 
@@ -13,7 +14,7 @@ public class LocationService {
         this.locationRepository = locationRepository;
     }
 
-    public List<Location> findByName(String name) {
+    public Optional<List<Location>> findByName(String name) {
         return locationRepository.findByName(name);
     }
 }

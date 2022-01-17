@@ -10,9 +10,11 @@ import java.util.Optional;
 
 public class ProductService {
 
+    private final Member member;
     private final ProductRepository productRepository;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(Member member, ProductRepository productRepository) {
+        this.member = member;
         this.productRepository = productRepository;
     }
 
@@ -22,7 +24,10 @@ public class ProductService {
         product.setProductStatus(ProductStatus.SALE); // 진행단계 설정, 저장
         product.setTime(fomatDate()); // 게시시간 저장
 
-        return productRepository.save(product);
+        Product result = productRepository.save(product);
+        //result.setMember(member);
+
+        return result;
 
     }
 
@@ -36,19 +41,19 @@ public class ProductService {
         return productRepository.findById(productId);
     }
 
-    public List<Product> findByLocation(Location location) {
+    public Optional<List<Product>> findByLocation(Location location) {
         return productRepository.findByLocation(location);
     }
 
-    public List<Product> findByLocationAndCategory(Location location, Category category) {
+    public Optional<List<Product>> findByLocationAndCategory(Location location, Category category) {
         return productRepository.findByLocationAndCategory(location, category);
     }
 
-    public List<Product> findByMember(Member member) {
+    public Optional<List<Product>> findByMember(Member member) {
         return productRepository.findByMember(member);
     }
 
-    public List<Product> findByMemberAndStatus(Member member, ProductStatus status) {
+    public Optional<List<Product>> findByMemberAndStatus(Member member, ProductStatus status) {
         return productRepository.findByMemberAndStatus(member, status);
     }
 

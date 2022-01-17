@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,8 +48,8 @@ class InterestedServiceTest {
         InterestedProduct ip = interestedService.add(product);
 
         Member member1 = memberService.find(saveId).get();
-        List<InterestedProduct> result = interestedService.findInterestedByMember(member1);
-        List<InterestedProduct> results = interestedService.findInterestedByProduct(p);
+        List<InterestedProduct> result = interestedService.findInterestedByMember(member1).orElseGet(() -> new ArrayList<InterestedProduct>());
+        List<InterestedProduct> results = interestedService.findInterestedByProduct(p).orElseGet(() -> new ArrayList<InterestedProduct>());
         assertThat(result.get(0).getMember().getId()).isEqualTo(saveId);
         assertThat(results.get(0).getMember().getProducts().get(0).getProductId()).isEqualTo(p.getProductId());
 

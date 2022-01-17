@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
@@ -45,7 +46,7 @@ class ProductServiceIntegrationTest {
 
         //then
         Member findMember = memberService.find(saveId).get();
-        List<Product> result = productService.findByMember(findMember);
+        List<Product> result = productService.findByMember(findMember).orElseGet(ArrayList::new);
 
         System.out.println("findMemberId : " + findMember.getId());
         System.out.println("productMemberId : " + result.get(0).getMember().getId());
@@ -70,7 +71,7 @@ class ProductServiceIntegrationTest {
         productService.register(product);
 
         //then
-        List<Product> result = productService.findByMemberAndStatus(member, ProductStatus.SALE);
+        List<Product> result = productService.findByMemberAndStatus(member, ProductStatus.SALE).orElseGet(ArrayList::new);
         assertThat(result.get(0).getProductStatus().name()).isEqualTo(ProductStatus.SALE.name());
     }
 
@@ -92,7 +93,7 @@ class ProductServiceIntegrationTest {
 
         //then
         Member m1 = memberService.find(member.getId()).get();
-        List<InterestedProduct> result = interestedService.findInterestedByMember(m1);
+        List<InterestedProduct> result = interestedService.findInterestedByMember(m1).orElseGet(ArrayList::new);
 
         assertThat(result.get(0).getMember().getName()).isEqualTo("hellochaeyoung");
 

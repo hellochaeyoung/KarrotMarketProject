@@ -19,7 +19,7 @@ public class DealService {
         return dealRepository.findById(dealId);
     }
 
-    public List<Deal> findByMember(Member member) {
+    public Optional<List<Deal>> findByMember(Member member) {
         return dealRepository.findByMember(member);
     }
 
