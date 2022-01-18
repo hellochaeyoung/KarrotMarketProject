@@ -4,6 +4,8 @@ import com.project.karrot.domain.Comment;
 import com.project.karrot.domain.Product;
 import com.project.karrot.repository.CommentRepository;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,10 +26,19 @@ public class CommentService {
     }
 
     public Comment register(Comment comment) {
+
+        comment.setTime(fomatDate());
+
         return commentRepository.save(comment);
     }
 
     public void remove(Comment comment) {
         commentRepository.delete(comment);
+    }
+
+    private String fomatDate() {
+        Date now = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd, HH:mm");
+        return format.format(now);
     }
 }
