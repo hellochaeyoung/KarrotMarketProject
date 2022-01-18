@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div class="container">
+    <p>[[${nickName}]]님</p>
+    <p>[[${address}]]</p>
+    <p>제목 : [[${product.productName}]]</p>
+    <p>가격 : [[${product.price}]]</p>
+    <p>카테고리 : [[${product.category}]]</p>
+    <p>게시시간 : [[${product.time}]]</p>
+    <p>내용 : [[${product.contents}]]</p>
+    <br><br>
+    <p>[[${nickName}]]님의 판매상품</p> <a href="/members/all">모두보기</a>
+    <table>
+        <tr th:each="product : ${otherProducts}">
+            <td>
+                <a th:href="@{/products/view(productId=${product.productId})}">
+                    [[${product.productName}]]
+                </a>
+            </td>
+            <td th:text="${product.price}"></td>
+            <td th:text="${product.location}"></td>
+            <td th:text="${product.likeCount}"></td>
+            <td th:text="${product.contents}"></td>
+        </tr>
+    </table>
+
+    <br><br>
+
+    <a th:href="@{/products/comment(productId=${product.productId})}">댓글보기</a>
+
+</div>
+</body>
+</html>
