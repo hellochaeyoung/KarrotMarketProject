@@ -30,6 +30,8 @@ public class MemberController {
     private final DealService dealService;
     private final InterestedService interestedService;
 
+    // 생성자 주입
+    @Autowired
     public MemberController(MemberService memberService, ProductService productService, LocationService locationService, DealService dealService, InterestedService interestedService) {
         this.memberService = memberService;
         this.productService = productService;
@@ -38,8 +40,6 @@ public class MemberController {
         this.interestedService = interestedService;
     }
 
-    // 생성자 주입
-    @Autowired
 
 
     @GetMapping("/members/new")
