@@ -8,7 +8,7 @@
 
 <div class="container">
     <div>
-        <p th:text="${member.nickName}">님의 동네</p> <p th:text="${member.location}"></p>
+        <p th:text="${member.nickName}"></p> <p th:text="${member.location}"></p>
         <a href="/mains/register">게시물 등록</a> <br>
         <a href="/mains/categoryForm">카테고리 선택</a> <br>
         <table>
@@ -23,9 +23,12 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="product : ${member.products}">
-                <td th:text="${product.productId}"></td>
-                <td th:text="${product.productName}"></td>
+            <tr th:each="product : ${member.products}" >
+                <td>
+                    <a th:href="@{/products/view(productId=${product.productId})}">
+                        [[${product.productName}]]
+                    </a>
+                </td>
                 <td th:text="${product.price}"></td>
                 <td th:text="${product.location}"></td>
                 <td th:text="${product.likeCount}"></td>
