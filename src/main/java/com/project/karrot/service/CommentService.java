@@ -1,6 +1,7 @@
 package com.project.karrot.service;
 
 import com.project.karrot.domain.Comment;
+import com.project.karrot.domain.Member;
 import com.project.karrot.domain.Product;
 import com.project.karrot.repository.CommentRepository;
 
@@ -23,6 +24,10 @@ public class CommentService {
 
     public Optional<List<Comment>> findByProduct(Product product) {
         return commentRepository.findByProduct(product);
+    }
+
+    public Optional<Long> exist(Member member, Product product) {
+        return commentRepository.findByMemberAndProduct(member, product);
     }
 
     public Comment register(Comment comment) {
