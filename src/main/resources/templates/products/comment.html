@@ -7,24 +7,30 @@
 <body>
 
 <div class="container">
+    <form action="/products/view" method="get">
+        <input type="hidden" th:field="*{product.productId}">
+        <button type="submit">돌아가기</button>
+    </form>
+    <br>
     <form action="/products/comment" method="post">
         <div class = "form-comment">
             <label type="text">[[${product.member.nickName}]]</label>
             <input type="text" id="contents" name="contents" placeholder="댓글 내용을 입력하세요"><br>
             <input type="hidden" th:field="*{product.productId}">
+            <button type="submit">등록</button>
         </div>
         <br>
-        <button type="submit">등록</button>
     </form>
     <br><br>
     <table>
         <tr th:each="comment : ${comments}">
-            <td th:text="${comment.member}"></td>
+            <td th:text="${comment.member.nickName}"></td>
             <td th:text="${comment.contents}"></td>
             <td th:text="${comment.time}"></td>
         </tr>
         <br>
     </table>
+
 
 </div>
 </body>
