@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script src="/js/getProductList.js"></script>
+<div class="container">
+    <form action="/products/view" method="get">
+        <input type="hidden" th:field="*{product.productId}">
+        <button type="submit">돌아가기</button>
+    </form>
+    <p>전체 상품 조회</p>
+    <br>
+
+    <form action="/products/all" method="post">
+        <input type="hidden" name="memberId" th:value="${member.id}">
+        <button type="submit" name="status" value="ALL" onclick="getProductList()">전체상품</button>
+        <button type="submit" name="status" value="SALE" onclick="getProductList('SALE')">거래중</button>
+        <button type="submit" name="status" value="COMPLETE" onclick="getProductList('COMPLETE')">거래완료</button>
+    </form>
+
+    <table id="resultTable">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>상품이름</th>
+            <th>가격</th>
+            <th>지역</th>
+            <th>좋아요수</th>
+            <th>내용</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="product : ${products}" >
+            <td>
+                <a th:href="@{/products/view(productId=${product.productId})}">
+                    [[${product.productName}]]
+                </a>
+            </td>
+            <td th:text="${product.price}"></td>
+            <td th:text="${product.location}"></td>
+            <td th:text="${product.likeCount}"></td>
+            <td th:text="${product.contents}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+
+</div>
+</body>
+</html>
