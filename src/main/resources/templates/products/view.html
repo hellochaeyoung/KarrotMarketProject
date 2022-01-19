@@ -7,7 +7,14 @@
 <body>
 
 <div class="container">
-    <p>[[${nickName}]]님</p>
+    <br>
+    <form action="/" method="get">
+        <button type="submit">돌아가기</button>
+    </form>
+
+    <br>
+
+    <p>[[${productOwner.nickName}]]님</p>
     <p>[[${address}]]</p>
     <p>제목 : [[${product.productName}]]</p>
     <p>가격 : [[${product.price}]]</p>
@@ -15,7 +22,17 @@
     <p>게시시간 : [[${product.time}]]</p>
     <p>내용 : [[${product.contents}]]</p>
     <br><br>
-    <p>[[${nickName}]]님의 판매상품</p> <a href="/members/all">모두보기</a>
+    <p>[[${productOwner.nickName}]]님의 판매상품</p>
+
+    <form action="/products/all" method="get">
+        <div class = "form-comment">
+            <input type="hidden" th:field="*{productOwner.nickName}">
+            <input type="hidden" th:field="*{product}">
+            <button type="submit">모두보기</button>
+        </div>
+        <br>
+    </form>
+
     <table>
         <tr th:each="product : ${otherProducts}">
             <td>
