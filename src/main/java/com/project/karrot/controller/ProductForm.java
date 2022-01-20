@@ -4,10 +4,19 @@ public class ProductForm {
 
     // 이미지 변수 추가
 
+    private Long productId;
     private String productName;
     private String category;
     private int price;
     private String contents;
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
 
     public String getProductName() {
         return productName;
