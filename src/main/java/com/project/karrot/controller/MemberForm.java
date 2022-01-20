@@ -9,13 +9,13 @@ public class MemberForm {
     private String password;
     private String phoneNumber;
     private String nickName;
-    private Location location;
+    private String location;
 
-    public Location getLocation() {
+    public String getLocation() {
         return location;
     }
 
-    public void setLocation(Location location) {
+    public void setLocation(String location) {
         this.location = location;
     }
 
