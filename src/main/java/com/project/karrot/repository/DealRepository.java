@@ -2,6 +2,7 @@ package com.project.karrot.repository;
 
 import com.project.karrot.domain.Deal;
 import com.project.karrot.domain.Member;
+import com.project.karrot.domain.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,4 +15,6 @@ public interface DealRepository extends JpaRepository<Deal, Long> {
     @Query(" select d from Deal d where d.member = :member ")
     Optional<List<Deal>> findByMember(@Param("member") Member member);
 
+    @Query(" select d from Deal d where d.product = :product")
+    Optional<Deal> findByProduct(@Param("product") Product product);
 }

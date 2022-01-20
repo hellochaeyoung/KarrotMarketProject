@@ -2,6 +2,7 @@ package com.project.karrot.service;
 
 import com.project.karrot.domain.Deal;
 import com.project.karrot.domain.Member;
+import com.project.karrot.domain.Product;
 import com.project.karrot.repository.DealRepository;
 
 import java.util.List;
@@ -19,6 +20,9 @@ public class DealService {
         return dealRepository.findById(dealId);
     }
 
+    public Optional<Deal> findByProduct(Product product) {
+        return dealRepository.findByProduct(product);
+    }
     public Optional<List<Deal>> findByMember(Member member) {
         return dealRepository.findByMember(member);
     }
