@@ -5,7 +5,8 @@
     <title>Title</title>
 </head>
 <body>
-
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script type="text/javascript" src="/js/getAllLocations.js"></script>
 <div class = "container">
 
     <form action="/members/new" method="post">
@@ -25,8 +26,13 @@
             <label for="nickName">닉네임</label>
             <input type="text" id="nickName" name="nickName" placeholder="닉네임을 입력하세요"><br>
 
-            <label for="location">지역(OO시OO구)</label>
-            <input type="text" id="location" name="location" placeholder="지역을 입력하세요"><br>
+            <label for="location">지역</label>
+            <input type="text" id="location" name="location" onkeyup="filter()" placeholder="지역을 입력하세요"><br>
+            <select id="resultLocationList" name="locations" onchange="setting()">
+                <option th:each="location : ${locationList}" th:value="${location.address}" th:text="${location.address}">
+                </option>
+
+            </select>
 
         </div>
         <br>
