@@ -26,8 +26,8 @@
 
     <form action="/products/all" method="get">
         <div class = "form-comment">
-            <input type="hidden" th:field="*{productOwner.nickName}">
             <input type="hidden" th:field="*{product}">
+            <input type="hidden" th:field="*{productOwner.nickName}">
             <button type="submit">모두보기</button>
         </div>
         <br>
@@ -51,6 +51,10 @@
 
     <a th:href="@{/products/comment(productId=${product.productId})}">댓글보기</a>
 
+    <br><br>
+    <form action="/members/myPage">
+        <input type="submit" value="마이페이지">
+    </form>
 </div>
 </body>
 </html>
