@@ -2,6 +2,7 @@ package com.project.karrot.controller;
 
 import com.project.karrot.constants.SessionConstants;
 import com.project.karrot.domain.*;
+import com.project.karrot.service.CategoryService;
 import com.project.karrot.service.CommentService;
 import com.project.karrot.service.MemberService;
 import com.project.karrot.service.ProductService;
@@ -18,11 +19,14 @@ public class ProductController {
     private final MemberService memberService;
     private final ProductService productService;
     private final CommentService commentService;
+    private final CategoryService categoryService;
 
-    public ProductController(MemberService memberService, ProductService productService, CommentService commentService) {
+    public ProductController(MemberService memberService, ProductService productService, CommentService commentService,
+                             CategoryService categoryService) {
         this.memberService = memberService;
         this.productService = productService;
         this.commentService = commentService;
+        this.categoryService = categoryService;
     }
 
     @GetMapping("/products/view")
@@ -40,6 +44,33 @@ public class ProductController {
         //model.addAttribute("address", productOwner.getLocation().getAddress());
 
         return "/products/view";
+    }
+
+    @GetMapping("/products/update")
+    public String findUpdateProduct(Model model, Long productId) {
+
+        model.addAttribute("allCategory", categoryService.findAll());
+        model.addAttribute("product", productService.find(productId).get());
+
+        return "/products/update";
+    }
+
+    @PostMapping("/products/update")
+    public String update(Model model, ProductForm productForm) {
+
+        Product product = productService.find(productForm.getProductId()).get();
+        Category category = categoryService.findByName(productForm.getCategory()).get();
+
+        product.setProductName(productForm.getProductName());
+        product.setCategory(category);
+        product.setPrice(productForm.getPrice());
+        product.setContents(productForm.getContents());
+
+        productService.register(product);
+
+        //model.addAttribute("status", "SALE");
+
+        return "mine/myProductList";
     }
 
     @GetMapping("/products/comment")
