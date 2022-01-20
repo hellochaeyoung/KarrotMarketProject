@@ -6,6 +6,7 @@ public class StatusProductForm {
 
     private String status;
     private String memberId;
+    private String nickName;
 
     public String getStatus() {
         return status;
@@ -21,5 +22,13 @@ public class StatusProductForm {
 
     public void setMemberId(String memberId) {
         this.memberId = memberId;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 }
