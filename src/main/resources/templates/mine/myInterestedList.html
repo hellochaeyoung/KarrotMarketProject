@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="container">
+    <form action="/products/view" method="get">
+        <!--<input type="hidden" th:field="*{product.productId}"> -->
+        <button type="submit">돌아가기</button>
+    </form>
+    <p>관심 상품 조회</p>
+    <br>
+    <form action="/mine/myProductList" method="post">
+        <button type="submit" name="status" th:value="SALE">거래중</button>
+        <button type="submit" name="status" th:value="COMPLETE">거래완료</button>
+    </form>
+
+    <form action="/updateStatus" method="post">
+        <table id="resultTable">
+            <thead>
+            <tr>
+                <th>상품이름</th>
+                <th>가격</th>
+                <th>지역</th>
+                <th>좋아요수</th>
+                <th>내용</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="product : ${interestedProducts}" >
+                <td>
+                    <a th:href="@{/products/view(productId=${product.productId})}">
+                        [[${product.productName}]]
+                    </a>
+                </td>
+                <td th:text="${product.price}"></td>
+                <td th:text="${product.likeCount}"></td>
+                <td th:text="${product.contents}"></td>
+                <input type="hidden" name="productId" th:value="*{product.productId}">
+
+            </tr>
+            </tbody>
+        </table>
+
+    </form>
+
+
+    <br><br>
+    <form action="/members/myPage">
+        <input type="submit" value="마이페이지">
+    </form>
+</div>
+</body>
+</html>
