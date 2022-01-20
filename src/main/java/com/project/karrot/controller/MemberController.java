@@ -1,20 +1,14 @@
 package com.project.karrot.controller;
 
 import com.project.karrot.constants.SessionConstants;
-import com.project.karrot.domain.Deal;
-import com.project.karrot.domain.InterestedProduct;
-import com.project.karrot.domain.Member;
-import com.project.karrot.domain.Product;
+import com.project.karrot.domain.*;
 import com.project.karrot.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -44,7 +38,23 @@ public class MemberController {
 
     @GetMapping("/members/new")
     public String createForm() {
+
+        //model.addAttribute("locationList", locationService.findByName("강남구").orElseGet(ArrayList::new));
         return "/members/createMemberForm";
+    }
+
+    @RequestMapping(value = "/test", method = RequestMethod.POST)
+    public String getAll(Model model, @RequestParam("address") String address) {
+
+        System.out.println("$$$$$$$$$$$4" + address + address.length());
+
+        if(address.length() == 0) {
+            model.addAttribute("locationList", null);
+        }else {
+            model.addAttribute("locationList", locationService.findByName(address).orElseGet(ArrayList::new));
+        }
+
+        return "/members/createMemberForm :: #resultLocationList";
     }
 
     @PostMapping("/members/new")
@@ -56,7 +66,10 @@ public class MemberController {
         member.setPassword(memberForm.getPassword());
         member.setPhoneNumber(memberForm.getPhoneNumber());
         member.setNickName(memberForm.getNickName());
-        //member.setLocation(memberForm.getLocation()); /////////////
+
+        System.out.println("***********" + memberForm.getLocation());
+        Location location = locationService.findByName(memberForm.getLocation()).get().get(0);
+        member.setLocation(location); /////////////
         /////////////////
 
         System.out.println(member.getName());
@@ -64,6 +77,7 @@ public class MemberController {
         System.out.println(member.getPassword());
         System.out.println(member.getPhoneNumber());
         System.out.println(member.getNickName());
+        System.out.println(member.getLocation().getAddress());
 
         memberService.join(member);
 
@@ -101,13 +115,18 @@ public class MemberController {
         loginMember.setDeals(deals);
         loginMember.setInterestedProducts(interestedProducts);
 
+        /// 테스트용
+        Location location = locationService.find(10L).get();
+        loginMember.setLocation(location);
+
         HttpSession session = request.getSession(); // 세션 있으면 반환, 없으면 신규 세션 생성
         session.setAttribute(SessionConstants.LOGIN_MEMBER, loginMember); // 세션에 로그인 회원 정보 보관
+        session.setAttribute(SessionConstants.LOGIN_MEMBER_LOCATION, location);
 
-        return "redirect:" + redirectURL;
+        return "redirect:/";
     }
 
-    @PostMapping("/members/logout")
+    @GetMapping("/members/logout")
     public String logout(HttpServletRequest request) {
 
         HttpSession session = request.getSession(false);
