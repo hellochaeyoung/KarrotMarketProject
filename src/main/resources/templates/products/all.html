@@ -8,7 +8,7 @@
 <script src="/js/getProductList.js"></script>
 <div class="container">
     <form action="/products/view" method="get">
-        <input type="hidden" th:field="*{product.productId}">
+        <!--<input type="hidden" th:field="*{product.productId}"> -->
         <button type="submit">돌아가기</button>
     </form>
     <p>전체 상품 조회</p>
@@ -16,9 +16,11 @@
 
     <form action="/products/all" method="post">
         <input type="hidden" name="memberId" th:value="${member.id}">
-        <button type="submit" name="status" value="ALL" onclick="getProductList()">전체상품</button>
-        <button type="submit" name="status" value="SALE" onclick="getProductList('SALE')">거래중</button>
-        <button type="submit" name="status" value="COMPLETE" onclick="getProductList('COMPLETE')">거래완료</button>
+        <input type="hidden" name="nickName" th:value="${member.nickName}">
+
+        <button type="submit" name="status" th:value="ALL">전체상품</button>
+        <button type="submit" name="status" th:value="SALE">거래중</button>
+        <button type="submit" name="status" th:value="COMPLETE">거래완료</button>
     </form>
 
     <table id="resultTable">
@@ -47,7 +49,10 @@
         </tbody>
     </table>
 
-
+    <br><br>
+    <form action="/members/myPage">
+        <input type="submit" value="마이페이지">
+    </form>
 </div>
 </body>
 </html>
