@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div class="container">
+    <br>
+    <form action="/" method="get">
+        <button type="submit">돌아가기</button>
+    </form>
+    <br>
+    <form action="/mine/profile" method="post">
+        <div class = "form-comment">
+            <input type="text" id="nickName">
+            <button type="submit">수정</button>
+        </div>
+        <br>
+    </form>
+    <br>
+    <form action="/members/myPage">
+        <input type="submit" value="마이페이지">
+    </form>
+</div>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#nickName').val([[${nickName}]])
+    });
+</script>
+</body>
+</html>
