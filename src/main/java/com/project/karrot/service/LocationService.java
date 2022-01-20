@@ -14,6 +14,13 @@ public class LocationService {
         this.locationRepository = locationRepository;
     }
 
+    public Optional<Location> find(Long id) {
+        return locationRepository.findById(id);
+    }
+    public List<Location> findAll() {
+        return locationRepository.findAll();
+    }
+
     public Optional<List<Location>> findByName(String name) {
         return locationRepository.findByName(name);
     }
