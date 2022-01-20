@@ -103,9 +103,11 @@ public class ProductController {
         //Member member = map.get("member");
         System.out.println("%%%%%%%%%%%" + statusProductForm.getStatus());
         System.out.println("%%%%%%%%%%%" + statusProductForm.getMemberId());
+        System.out.println("%%%%%%%%%%%" + statusProductForm.getNickName());
 
         String status = statusProductForm.getStatus();
         Long memberId = Long.parseLong(statusProductForm.getMemberId());
+        String nickName = statusProductForm.getNickName();
 
         Member member = memberService.find(memberId).orElseGet(Member::new);
 
@@ -122,7 +124,9 @@ public class ProductController {
         }
 
         model.addAttribute("products", list);
+        model.addAttribute("member", member);
 
-        return "/products/all :: #resultTable";
+        return "/products/all";
+        //return "/products/all :: #resultTable";
     }
 }
