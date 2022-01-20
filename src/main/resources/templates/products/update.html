@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<div class="container">
+    <br>
+    <form action="/" method="get">
+        <button type="submit">홈</button>
+    </form>
+    <br>
+    <form action="/products/update" method="post">
+        <div class = "form-group">
+            <label for="productName">제목</label>
+            <input type="text" id="productName" name="productName" placeholder="제목"><br>
+
+            <label>카테고리</label>
+            <select th:name="category">
+                <option th:each="category : ${allCategory}" th:value="${category.categoryName}" th:text="${category.categoryName}"></option>
+            </select><br>
+
+            <label for="price">가격</label>
+            <input type="text" id="price" name="price" placeholder="가격"><br>
+
+            <label for="contents">내용</label>
+            <input type="text" id="contents" name="contents" placeholder="내용"><br>
+
+            <input type="hidden" name="productId" th:value="*{product.productId}">
+        </div>
+        <br>
+        <button type="submit">수정</button>
+    </form>
+    <br>
+    <form action="/members/myPage">
+        <input type="submit" value="마이페이지">
+    </form>
+</div>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#productName').val('[[${product.productName}]]')
+        $('#price').val('[[${product.price}]]')
+        $('#contents').val('[[${product.contents}]]')
+    });
+</script>
+</body>
+</html>
