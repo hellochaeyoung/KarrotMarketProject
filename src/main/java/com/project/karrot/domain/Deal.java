@@ -40,7 +40,7 @@ public class Deal {
             this.product.setDeal(null); // 상품 - 거래 연관관계 삭제
             this.member.getDeals().remove(this); // 회원 - 거래 연관관계 삭제
         }else {
-            product.setDeal(this);
+            this.product.setDeal(this);
             this.member.getDeals().add(this); // 만약 거래완료에서 예약중으로 바꾸면 deal 목록에서 빼야하는디 이건 더 생각해서 해결하기
         }
         this.product = product;
