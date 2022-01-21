@@ -37,8 +37,7 @@ public class Product {
     @Enumerated(EnumType.STRING)
     private ProductStatus productStatus;
 
-    @OneToOne
-    @JoinColumn(name = "DEAL_ID")
+    @OneToOne(mappedBy = "product")
     private Deal deal;
 
     public ProductStatus getProductStatus() {
@@ -51,6 +50,7 @@ public class Product {
                 this.deal.setProduct(null); // 해당 상품 거래 연관관계 삭제
             }
         }
+
         this.productStatus = productStatus;
     }
 
