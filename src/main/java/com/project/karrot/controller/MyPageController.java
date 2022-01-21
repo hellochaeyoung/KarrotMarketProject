@@ -68,7 +68,7 @@ public class MyPageController {
 
         if(status.equals("SALE")) { // 판매중
             list = productService.findByMemberAndStatus(loginMember, ProductStatus.SALE).orElseGet(ArrayList::new);
-        }else { // 거래완료
+        }else if(status.equals("COMPLETE")){ // 거래완료
             for(Deal deal : loginMember.getDeals()) {
                 list.add(deal.getProduct());
                 System.out.println(deal.getProduct());
@@ -85,21 +85,31 @@ public class MyPageController {
     public String updateStatus(@SessionAttribute(name = SessionConstants.LOGIN_MEMBER, required = false) Member loginMember,
                                String updateStatus, Long productId, Model model) {
 
+        System.out.println("#############" + updateStatus);
         System.out.println("#############" + productId);
         List<Product> list = new ArrayList<>();
 
         Product product = productService.find(productId).get();
 
         if(updateStatus.equals("RESERVATION")) {
-            product.setProductStatus(ProductStatus.RESERVATION);/////////////
-            dealService.findByProduct(product).ifPresent(dealService::remove);
+
+            // 거래완료에서 예약중으로 수정하는 경우
+            if(product.getProductStatus().equals(ProductStatus.COMPLETE)) {
+                Deal deal = dealService.findByProduct(product).get();
+                dealService.remove(deal);
+            }
+
+            product.setProductStatus(ProductStatus.RESERVATION);/////////////업데이트안됨
+            Product result = productService.register(product); // 업데이트
 
             list = productService.findByMemberAndStatus(loginMember, ProductStatus.SALE).orElseGet(ArrayList::new);
         }else {
             product.setProductStatus(ProductStatus.COMPLETE);
+            Product result = productService.register(product);
+
             Deal deal = new Deal();
             deal.setMember(loginMember);
-            deal.setProduct(product);
+            deal.setProduct(result);
 
             dealService.register(deal);
 
