@@ -20,9 +20,6 @@ public class ProductService {
 
     public Product register(Product product) {
 
-        product.setProductStatus(ProductStatus.SALE); // 진행단계 설정, 저장
-        product.setTime(fomatDate()); // 게시시간 저장
-
         Product result = productRepository.save(product);
 
         return result;
