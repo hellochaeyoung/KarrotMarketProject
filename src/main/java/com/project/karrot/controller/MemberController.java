@@ -116,7 +116,7 @@ public class MemberController {
         loginMember.setInterestedProducts(interestedProducts);
 
         /// 테스트용
-        Location location = locationService.find(10L).get();
+        Location location = locationService.find(loginMember.getLocation().getLocationId()).get();
         loginMember.setLocation(location);
 
         HttpSession session = request.getSession(); // 세션 있으면 반환, 없으면 신규 세션 생성
