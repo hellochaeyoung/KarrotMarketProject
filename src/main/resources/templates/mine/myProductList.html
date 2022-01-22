@@ -31,6 +31,7 @@
             </thead>
             <tbody>
             <tr th:each="product : ${products}" >
+                <input type="hidden" name="productId" th:value="${product.productId}">
                 <td>
                     <a th:href="@{/products/update(productId=${product.productId})}">
                         [[${product.productName}]]
@@ -39,9 +40,9 @@
                 <td th:text="${product.price}"></td>
                 <td th:text="${product.likeCount}"></td>
                 <td th:text="${product.contents}"></td>
-                <input type="hidden" name="productId" th:value="*{product.productId}">
                 <td><button type="submit" name="updateStatus" value="RESERVATION">예약중</button> </td>
                 <td><button type="submit" name="updateStatus" value="COMPLETE">거래완료</button> </td>
+                <td><button type="submit" name="updateStatus" value="DELETE">삭제</button> </td>
             </tr>
             </tbody>
         </table>
