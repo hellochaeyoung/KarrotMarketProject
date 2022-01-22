@@ -68,6 +68,9 @@ public class MainController {
         System.out.println("&&&&&&&&" + productForm.getCategory());
         Category category = categoryService.findByName(productForm.getCategory()).get();
 
+        List<Product> locationProducts = productService.findByLocation(loginMember.getLocation()).orElseGet(ArrayList::new);
+
+        Location location = locationService.find(loginMember.getLocation().getLocationId()).get();
 
         product.setProductName(productForm.getProductName());
         product.setPrice(productForm.getPrice());
@@ -75,7 +78,7 @@ public class MainController {
         product.setContents(productForm.getContents());
         product.setMember(loginMember); //////////////////////
         product.setProductStatus(ProductStatus.SALE);
-        product.setLocation(loginMember.getLocation());
+        product.setLocation(location);
         product.setTime(fomatDate());
         System.out.println("############" + loginMember.getNickName());
 
