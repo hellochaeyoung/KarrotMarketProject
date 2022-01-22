@@ -3,11 +3,13 @@ package com.project.karrot.service;
 import com.project.karrot.domain.*;
 import com.project.karrot.repository.ProductRepository;
 
+import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 public class ProductService {
 
     private final Member member;
@@ -21,6 +23,8 @@ public class ProductService {
     public Product register(Product product) {
 
         Product result = productRepository.save(product);
+
+        productRepository.flush();
 
         return result;
 
