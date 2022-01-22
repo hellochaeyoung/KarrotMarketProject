@@ -22,6 +22,12 @@
                 <option th:each="category : ${allCategory}" th:value="${category.categoryName}" th:text="${category.categoryName}"></option>
             </select><br>
 
+            <select name="status">
+                <option name="st" value="RESERVATION" text="RESERVATION">예약중</option>
+                <option name="st" value="SALE" text="SALE">판매중</option>
+                <option name="st" value="COMPLETE" text="COMPLETE">거래완료</option>
+            </select>
+
             <label for="price">가격</label>
             <input type="text" id="price" name="price" placeholder="가격"><br>
 
