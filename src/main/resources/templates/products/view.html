@@ -18,7 +18,6 @@
     <p>[[${address}]]</p>
     <p>제목 : [[${product.productName}]]</p>
     <p>가격 : [[${product.price}]]</p>
-    <p>카테고리 : [[${product.category}]]</p>
     <p>게시시간 : [[${product.time}]]</p>
     <p>내용 : [[${product.contents}]]</p>
     <br><br>
@@ -41,7 +40,6 @@
                 </a>
             </td>
             <td th:text="${product.price}"></td>
-            <td th:text="${product.location}"></td>
             <td th:text="${product.likeCount}"></td>
             <td th:text="${product.contents}"></td>
         </tr>
