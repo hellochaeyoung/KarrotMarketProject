@@ -30,7 +30,7 @@ public class Product {
     @OneToMany(mappedBy = "product")
     List<ProductImageFile> productImages = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "LOCATION_ID")
     private Location location;
 
@@ -157,8 +157,8 @@ public class Product {
         if(this.location != null) {
             this.location.getProducts().remove(this);
         }
-        this.location = member.getLocation(); // 등록자의 지역으로 상품 지역 설정
-        location.getProducts().add(this);
+        this.location = location; // 등록자의 지역으로 상품 지역 설정
+        this.location.getProducts().add(this);
     }
 }
 
