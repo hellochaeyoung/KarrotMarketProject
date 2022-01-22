@@ -4,9 +4,11 @@ import com.project.karrot.domain.Category;
 import com.project.karrot.repository.CategoryRepository;
 import org.springframework.data.domain.Sort;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;

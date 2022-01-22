@@ -5,9 +5,11 @@ import com.project.karrot.domain.Member;
 import com.project.karrot.domain.Product;
 import com.project.karrot.repository.DealRepository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 public class DealService {
 
     private final DealRepository dealRepository;
