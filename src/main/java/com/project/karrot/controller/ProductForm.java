@@ -9,6 +9,7 @@ public class ProductForm {
     private String category;
     private int price;
     private String contents;
+    private String status;
 
     public Long getProductId() {
         return productId;
@@ -48,5 +49,13 @@ public class ProductForm {
 
     public void setContents(String contents) {
         this.contents = contents;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
