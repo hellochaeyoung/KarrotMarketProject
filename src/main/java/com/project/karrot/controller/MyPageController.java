@@ -1,10 +1,8 @@
 package com.project.karrot.controller;
 
 import com.project.karrot.constants.SessionConstants;
-import com.project.karrot.domain.Deal;
-import com.project.karrot.domain.Member;
-import com.project.karrot.domain.Product;
-import com.project.karrot.domain.ProductStatus;
+import com.project.karrot.domain.*;
+import com.project.karrot.service.CategoryService;
 import com.project.karrot.service.DealService;
 import com.project.karrot.service.MemberService;
 import com.project.karrot.service.ProductService;
@@ -23,11 +21,14 @@ public class MyPageController {
     private final MemberService memberService;
     private final ProductService productService;
     private final DealService dealService;
+    private final CategoryService categoryService;
 
-    public MyPageController(MemberService memberService, ProductService productService, DealService dealService) {
+    public MyPageController(MemberService memberService, ProductService productService, DealService dealService,
+                            CategoryService categoryService) {
         this.memberService = memberService;
         this.productService = productService;
         this.dealService = dealService;
+        this.categoryService = categoryService;
     }
 
     @GetMapping("/members/myPage")
@@ -91,28 +92,11 @@ public class MyPageController {
 
         Product product = productService.find(productId).get();
 
+        setNewStatus(loginMember, product, updateStatus);
+
         if(updateStatus.equals("RESERVATION")) {
-
-            // 거래완료에서 예약중으로 수정하는 경우
-            if(product.getProductStatus().equals(ProductStatus.COMPLETE)) {
-                Deal deal = dealService.findByProduct(product).get();
-                dealService.remove(deal);
-            }
-
-            product.setProductStatus(ProductStatus.RESERVATION);/////////////업데이트안됨
-            Product result = productService.register(product); // 업데이트
-
             list = productService.findByMemberAndStatus(loginMember, ProductStatus.SALE).orElseGet(ArrayList::new);
         }else {
-            product.setProductStatus(ProductStatus.COMPLETE);
-            Product result = productService.register(product);
-
-            Deal deal = new Deal();
-            deal.setMember(loginMember);
-            deal.setProduct(result);
-
-            dealService.register(deal);
-
             for(Deal d : loginMember.getDeals()) {
                 list.add(d.getProduct());
             }
@@ -134,4 +118,69 @@ public class MyPageController {
 
     }
 
+    @GetMapping("/products/update")
+    public String findUpdateProduct(Model model, Long productId) {
+
+        model.addAttribute("allCategory", categoryService.findAll());
+        model.addAttribute("product", productService.find(productId).get());
+
+        return "/products/update";
+    }
+
+    @PostMapping("/products/update")
+    public String update(@SessionAttribute(name = SessionConstants.LOGIN_MEMBER, required = false) Member loginMember, Model model, ProductForm productForm) {
+
+        Product product = productService.find(productForm.getProductId()).get();
+        Category category = categoryService.findByName(productForm.getCategory()).get();
+
+        product.setProductName(productForm.getProductName());
+        product.setCategory(category);
+        product.setPrice(productForm.getPrice());
+        product.setContents(productForm.getContents());
+
+        setNewStatus(loginMember,product, productForm.getStatus());
+
+        model.addAttribute("status", "SALE");
+
+        return "mine/myProductList";
+    }
+
+    public void setNewStatus(@SessionAttribute(name = SessionConstants.LOGIN_MEMBER, required = false) Member loginMember,
+                             Product product, String status) {
+
+        if(status.equals("DELETE")) {
+            dealService.findByProduct(product).ifPresent(deal -> {
+                deal.setProduct(null);
+                dealService.remove(deal);
+            });
+            productService.remove(product);
+            return;
+        }
+
+        // 거래완료 -> 예약중, 판매중으로 변경 시 거래 내역 삭제
+        if(product.getProductStatus().equals(ProductStatus.COMPLETE)) {
+            Deal deal = dealService.findByProduct(product).get();
+            dealService.remove(deal);
+        }
+
+        if(status.equals("RESERVATION")) {
+            product.setProductStatus(ProductStatus.RESERVATION);
+            productService.register(product); // 업데이트
+
+        }else if(status.equals("SALE")) {
+            product.setProductStatus(ProductStatus.SALE);
+            productService.register(product); // 업데이트
+
+        }else {
+            product.setProductStatus(ProductStatus.COMPLETE);
+            Product result = productService.register(product);
+
+            Deal deal = new Deal();
+            deal.setMember(loginMember);
+            deal.setProduct(result);
+
+            dealService.register(deal);
+
+        }
+    }
 }
