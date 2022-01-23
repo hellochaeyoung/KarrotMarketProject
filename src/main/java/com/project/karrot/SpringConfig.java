@@ -42,23 +42,12 @@ public class SpringConfig {
     public MemberService memberService() {
         return new MemberService(memberRepository);
     }
-/*
-    @Bean
-    public MemberRepository memberRepository() {
-        //return new MemoryMemberRepository();
-        return new JPAMemberRepository(em);
-    }
-*/
+
     @Bean
     public ProductService productService() {return new ProductService(member(), productRepository); }
-/*
+
     @Bean
-    public ProductRepository productRepository() {
-        return new JPAProductRepository(em);
-    }
-*/
-    @Bean
-    public InterestedService interestedService() { return new InterestedService(member(), interestedRepository); }
+    public InterestedService interestedService() { return new InterestedService(interestedRepository); }
 
     @Bean
     public CategoryService categoryService() { return new CategoryService(categoryRepository); }
