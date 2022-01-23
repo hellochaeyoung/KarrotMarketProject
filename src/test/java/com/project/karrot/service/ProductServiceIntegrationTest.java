@@ -19,7 +19,6 @@ import java.util.List;
 @Transactional
 class ProductServiceIntegrationTest {
 
-    @Autowired Member member;
     @Autowired MemberService memberService;
     @Autowired MemberRepository memberRepository;
 
@@ -65,6 +64,7 @@ class ProductServiceIntegrationTest {
         product.setProductName("휴대폰충전기");
         product.setContents("새 휴대폰 충전기입니다.");
         product.setMember(member);
+        product.setProductStatus(ProductStatus.SALE);
 
         //when
         memberService.join(member);
@@ -78,7 +78,7 @@ class ProductServiceIntegrationTest {
     @Test
     public void 회원_관심상품_조회() {
         //given
-        //Member member = new Member();
+        Member member = new Member();
         member.setName("hellochaeyoung");
 
         Product product = new Product();
@@ -89,7 +89,11 @@ class ProductServiceIntegrationTest {
         //when
         memberService.join(member);
         productService.register(product);
-        interestedService.add(product);
+
+        InterestedProduct interestedProduct = new InterestedProduct();
+        interestedProduct.setMember(member);
+        interestedProduct.setProduct(product);
+        interestedService.add(interestedProduct);
 
         //then
         Member m1 = memberService.find(member.getId()).get();

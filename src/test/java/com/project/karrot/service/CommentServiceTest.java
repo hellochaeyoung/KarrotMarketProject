@@ -17,12 +17,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Transactional
 public class CommentServiceTest {
 
-    @Autowired Member member;
+    @Autowired MemberService memberService;
     @Autowired ProductService productService;
     @Autowired CommentService commentService;
 
     @Test
     public void 댓글_등록() {
+        Member member = new Member();
+        memberService.join(member);
+
         Product product = new Product();
         product.setProductName("아이패드");
         product.setContents("중고 아이패드 팝니다.");
@@ -45,6 +48,9 @@ public class CommentServiceTest {
 
     @Test
     public void 댓글_삭제() {
+
+        Member member = new Member();
+        memberService.join(member);
 
         Product product = new Product();
         product.setProductName("아이패드");

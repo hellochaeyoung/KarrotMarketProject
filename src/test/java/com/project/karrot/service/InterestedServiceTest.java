@@ -23,8 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Transactional
 class InterestedServiceTest {
 
-    @Autowired Member member;
-
     @Autowired MemberService memberService;
     @Autowired MemberRepository memberRepository;
 
@@ -36,20 +34,25 @@ class InterestedServiceTest {
 
     @Test
     public void 관심상품등록() {
-        //Member member = new Member();
+        Member member = new Member();
         member.setNickName("hi");
+        Long saveId = memberService.join(member);
 
         Product product = new Product();
         product.setProductName("p1");
         product.setMember(member);
 
-        Long saveId = memberService.join(member);
         Product p = productService.register(product);
-        InterestedProduct ip = interestedService.add(product);
 
         Member member1 = memberService.find(saveId).get();
-        List<InterestedProduct> result = interestedService.findInterestedByMember(member1).orElseGet(() -> new ArrayList<InterestedProduct>());
-        List<InterestedProduct> results = interestedService.findInterestedByProduct(p).orElseGet(() -> new ArrayList<InterestedProduct>());
+
+        InterestedProduct interestedProduct = new InterestedProduct();
+        interestedProduct.setMember(member1);
+        interestedProduct.setProduct(p);
+        InterestedProduct ip = interestedService.add(interestedProduct);
+
+        List<InterestedProduct> result = interestedService.findInterestedByMember(member1).orElseGet(ArrayList::new);
+        List<InterestedProduct> results = interestedService.findInterestedByProduct(p).orElseGet(ArrayList::new);
         assertThat(result.get(0).getMember().getId()).isEqualTo(saveId);
         assertThat(results.get(0).getMember().getProducts().get(0).getProductId()).isEqualTo(p.getProductId());
 

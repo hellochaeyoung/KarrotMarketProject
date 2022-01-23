@@ -12,20 +12,13 @@ import java.util.Optional;
 @Transactional
 public class InterestedService {
 
-    private final Member member;
     private final InterestedRepository interestedRepository;
 
-    public InterestedService(Member member, InterestedRepository interestedRepository) {
-        this.member = member;
+    public InterestedService(InterestedRepository interestedRepository) {
         this.interestedRepository = interestedRepository;
     }
 
-    public InterestedProduct add(Product product) {
-
-        InterestedProduct interestedProduct = new InterestedProduct();
-        interestedProduct.setMember(member);
-        interestedProduct.setProduct(product);
-
+    public InterestedProduct add(InterestedProduct interestedProduct) {
         return interestedRepository.save(interestedProduct);
     }
 
