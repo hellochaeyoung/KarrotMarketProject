@@ -34,7 +34,7 @@ public class HomeController {
             return "home";
         }
 
-        // Test용
+        // Test용 ///////////////////
         List<Product> products = productService.findByMember(loginMember).orElseGet(ArrayList::new);
         //List<Product> products = productService.findByLocation(loginMember.getLocation()).orElseGet(ArrayList::new);
         model.addAttribute("products", products);
@@ -44,7 +44,7 @@ public class HomeController {
 
         model.addAttribute("member", loginMember);
 
-        return "/mains/mainPage";
+        return "mains/mainPage";
     }
 }
 

@@ -34,19 +34,13 @@ public class MemberController {
         this.interestedService = interestedService;
     }
 
-
-
     @GetMapping("/members/new")
     public String createForm() {
-
-        //model.addAttribute("locationList", locationService.findByName("강남구").orElseGet(ArrayList::new));
-        return "/members/createMemberForm";
+        return "members/createMemberForm";
     }
 
     @RequestMapping(value = "/test", method = RequestMethod.POST)
     public String getAll(Model model, @RequestParam("address") String address) {
-
-        System.out.println("$$$$$$$$$$$4" + address + address.length());
 
         if(address.length() == 0) {
             model.addAttribute("locationList", null);
@@ -54,7 +48,7 @@ public class MemberController {
             model.addAttribute("locationList", locationService.findByName(address).orElseGet(ArrayList::new));
         }
 
-        return "/members/createMemberForm :: #resultLocationList";
+        return "members/createMemberForm :: #resultLocationList";
     }
 
     @PostMapping("/members/new")
@@ -67,17 +61,8 @@ public class MemberController {
         member.setPhoneNumber(memberForm.getPhoneNumber());
         member.setNickName(memberForm.getNickName());
 
-        System.out.println("***********" + memberForm.getLocation());
         Location location = locationService.findByName(memberForm.getLocation()).get().get(0);
-        member.setLocation(location); /////////////
-        /////////////////
-
-        System.out.println(member.getName());
-        System.out.println(member.getEmail());
-        System.out.println(member.getPassword());
-        System.out.println(member.getPhoneNumber());
-        System.out.println(member.getNickName());
-        System.out.println(member.getLocation().getAddress());
+        member.setLocation(location);
 
         memberService.join(member);
 
@@ -94,8 +79,6 @@ public class MemberController {
                         BindingResult bindingResult, @RequestParam(defaultValue = "/") String redirectURL,
                         HttpServletRequest request) {
 
-        //System.out.println(member.hashCode());
-
         if(bindingResult.hasErrors()) {
             return "members/loginForm";
         }
@@ -107,15 +90,10 @@ public class MemberController {
             return "members/loginForm";
         }
 
-        List<Product> products = productService.findByMember(loginMember).orElseGet(ArrayList::new);
-        List<Deal> deals = dealService.findByMember(loginMember).orElseGet(ArrayList::new);
-        List<InterestedProduct> interestedProducts = interestedService.findInterestedByMember(loginMember).orElseGet(ArrayList::new);
+        productService.findByMember(loginMember).ifPresent(loginMember::setProducts);
+        dealService.findByMember(loginMember).ifPresent(loginMember::setDeals);
+        interestedService.findInterestedByMember(loginMember).ifPresent(loginMember::setInterestedProducts);
 
-        loginMember.setProducts(products);
-        loginMember.setDeals(deals);
-        loginMember.setInterestedProducts(interestedProducts);
-
-        /// 테스트용
         Location location = locationService.find(loginMember.getLocation().getLocationId()).get();
         loginMember.setLocation(location);
 
@@ -136,13 +114,6 @@ public class MemberController {
 
         return "redirect:/";
 
-    }
-
-    @GetMapping("/members")
-    public String list(Model model) {
-        List<Member> members = memberService.findMembers();
-        model.addAttribute("members", members);
-        return "members/memberList";
     }
 }
 

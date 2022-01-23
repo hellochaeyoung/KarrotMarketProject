@@ -34,7 +34,7 @@ public class MyPageController {
     @GetMapping("/members/myPage")
     public String myPage() {
 
-        return "/members/myPage";
+        return "members/myPage";
     }
 
     @GetMapping("/mine/profile")
@@ -43,7 +43,7 @@ public class MyPageController {
 
         model.addAttribute("nickName", loginMember.getNickName());
 
-        return "/mine/profile";
+        return "mine/profile";
 
     }
 
@@ -56,7 +56,7 @@ public class MyPageController {
 
         model.addAttribute("nickName", loginMember.getNickName());
 
-        return "/mine/profile";
+        return "mine/profile";
 
     }
 
@@ -64,7 +64,6 @@ public class MyPageController {
     public String getProductList(@SessionAttribute(name = SessionConstants.LOGIN_MEMBER, required = false) Member loginMember,
                                  String status, Model model) {
 
-        System.out.println("@@@@@@@@@@" + status);
         List<Product> list = new ArrayList<>();
 
         if(status.equals("SALE")) { // 판매중
@@ -86,8 +85,6 @@ public class MyPageController {
     public String updateStatus(@SessionAttribute(name = SessionConstants.LOGIN_MEMBER, required = false) Member loginMember,
                                String updateStatus, Long productId, Model model) {
 
-        System.out.println("#############" + updateStatus);
-        System.out.println("#############" + productId);
         List<Product> list = new ArrayList<>();
 
         Product product = productService.find(productId).get();
@@ -104,15 +101,30 @@ public class MyPageController {
 
         model.addAttribute("products", list);
 
-        return "/mine/myProductList";
+        return "mine/myProductList";
 
     }
 
-    @GetMapping("/mine/myInterestedList")
+    @PostMapping("/mine/myInterestedList")
     public String getInterestedList(@SessionAttribute(name = SessionConstants.LOGIN_MEMBER, required = false) Member loginMember,
-                                    Model model) {
+                                    Model model, String status) {
 
-        model.addAttribute("interestedProducts",loginMember.getInterestedProducts());
+        ArrayList<InterestedProduct> list = new ArrayList<>();
+        if(status.equals("SALE")) {
+            for(InterestedProduct p : loginMember.getInterestedProducts()) {
+                if(p.getProduct().getProductStatus().equals(ProductStatus.SALE)) {
+                    list.add(p);
+                }
+            }
+        }else {
+            for(InterestedProduct p : loginMember.getInterestedProducts()) {
+                if(p.getProduct().getProductStatus().equals(ProductStatus.COMPLETE)) {
+                    list.add(p);
+                }
+            }
+        }
+
+        model.addAttribute("interestedProducts", list);
 
         return "mine/myInterestedList";
 
@@ -124,7 +136,7 @@ public class MyPageController {
         model.addAttribute("allCategory", categoryService.findAll());
         model.addAttribute("product", productService.find(productId).get());
 
-        return "/products/update";
+        return "products/update";
     }
 
     @PostMapping("/products/update")
@@ -159,8 +171,11 @@ public class MyPageController {
 
         // 거래완료 -> 예약중, 판매중으로 변경 시 거래 내역 삭제
         if(product.getProductStatus().equals(ProductStatus.COMPLETE)) {
-            Deal deal = dealService.findByProduct(product).get();
-            dealService.remove(deal);
+            dealService.findByProduct(product).ifPresent(deal -> {
+                deal.setProduct(null);
+                dealService.remove(deal);
+            });
+
         }
 
         if(status.equals("RESERVATION")) {

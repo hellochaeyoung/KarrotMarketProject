@@ -39,9 +39,8 @@ public class ProductController {
         model.addAttribute("otherProducts", productList);
 
         model.addAttribute("productOwner", productOwner);
-        //model.addAttribute("address", productOwner.getLocation().getAddress());
 
-        return "/products/view";
+        return "products/view";
     }
 
 
@@ -54,7 +53,7 @@ public class ProductController {
         model.addAttribute("comments", comments);
         model.addAttribute("product", product);
 
-        return "/products/comment";
+        return "products/comment";
 
     }
 
@@ -84,16 +83,13 @@ public class ProductController {
 
         Member member = memberService.findByNickName(nickName).orElseGet(Member::new);
 
-        //List<Product> products = productService.findByMember(member).orElseGet(ArrayList::new);
-
-        System.out.println("$$$$$$$$$$$$$$" + nickName);
         List<Product> products = productService.findByMember(member).orElseGet(ArrayList::new);
         model.addAttribute("products", products);
 
         model.addAttribute("member", member);
         model.addAttribute("product", product);
 
-        return "/products/all";
+        return "products/all";
     }
 
     @PostMapping("/products/all")
@@ -101,21 +97,11 @@ public class ProductController {
 
         List<Product> list = new ArrayList<>();
 
-        //System.out.println(map.get("member"));
-        //String status = map.get("status").toString();
-        //Member member = map.get("member");
-        System.out.println("%%%%%%%%%%%" + statusProductForm.getStatus());
-        System.out.println("%%%%%%%%%%%" + statusProductForm.getMemberId());
-        System.out.println("%%%%%%%%%%%" + statusProductForm.getNickName());
-
         String status = statusProductForm.getStatus();
         Long memberId = Long.parseLong(statusProductForm.getMemberId());
-        String nickName = statusProductForm.getNickName();
 
         Member member = memberService.find(memberId).orElseGet(Member::new);
 
-        System.out.println("%%%%%%%%%" + status);
-        System.out.println("%%%%%%%%%" + member.getId());
         if(status.equals("ALL")) {
             list = productService.findByMember(member).orElseGet(ArrayList::new);
         }else if(status.equals("SALE")) {
@@ -129,7 +115,6 @@ public class ProductController {
         model.addAttribute("products", list);
         model.addAttribute("member", member);
 
-        return "/products/all";
-        //return "/products/all :: #resultTable";
+        return "products/all";
     }
 }

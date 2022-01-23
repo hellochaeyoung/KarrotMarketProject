@@ -33,22 +33,13 @@ public class MainController {
     @PostMapping("/")
     public String setCategory(@SessionAttribute(name = SessionConstants.LOGIN_MEMBER_LOCATION, required = false) Location loginLocation, Model model, @RequestBody Map<String, String> map) {
 
-        //String location = map.get("location");
         String category = map.get("category");
-
-        System.out.println("%%%%%%%%%%" + category);
-
         Category category1 = categoryService.findByName(category).get();
-        //Location location1 = locationService.find(locationId).get();
-
-        //System.out.println("@@@@@@@@@ " + location1.getAddress());
-        System.out.println("@@@@@@@@@ " + category1.getCategoryName());
 
         List<Product> products = productService.findByLocationAndCategory(loginLocation, category1).orElseGet(ArrayList::new);
         model.addAttribute("products", products);
 
-
-        return "/mains/mainPage :: #resultTable";
+        return "mains/mainPage :: #resultTable";
     }
 
     @GetMapping("/mains/register")
@@ -65,7 +56,6 @@ public class MainController {
                            @RequestParam(defaultValue = "/mains/mainPage") String redirectURL ) {
         Product product = new Product();
 
-        System.out.println("&&&&&&&&" + productForm.getCategory());
         Category category = categoryService.findByName(productForm.getCategory()).get();
 
         List<Product> locationProducts = productService.findByLocation(loginMember.getLocation()).orElseGet(ArrayList::new);
@@ -76,13 +66,12 @@ public class MainController {
         product.setPrice(productForm.getPrice());
         product.setCategory(category);
         product.setContents(productForm.getContents());
-        product.setMember(loginMember); //////////////////////
+        product.setMember(loginMember);
         product.setProductStatus(ProductStatus.SALE);
         product.setLocation(location);
         product.setTime(fomatDate());
-        System.out.println("############" + loginMember.getNickName());
 
-        productService.register(product); //////////////////
+        productService.register(product);
 
         return "redirect:/";
     }
@@ -92,15 +81,5 @@ public class MainController {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd, HH:mm");
         return format.format(now);
     }
-
-    /*
-    @GetMapping("/mains/categoryForm")
-    public String choose(Model model) {
-
-
-    }*/
-
-
-
 }
 
