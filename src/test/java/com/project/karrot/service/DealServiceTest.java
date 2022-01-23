@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Transactional
 public class DealServiceTest {
 
-    @Autowired Member member;
     @Autowired MemberService memberService;
     @Autowired ProductService productService;
     @Autowired DealService dealService;
@@ -29,6 +28,7 @@ public class DealServiceTest {
     @Test
     public void 거래완료_수정_테스트() {
 
+        Member member = new Member();
         member.setName("cyahn");
 
         Product product = new Product();
@@ -61,6 +61,7 @@ public class DealServiceTest {
     @Test
     public void 회원_거래완료_목록_조회() {
 
+        Member member = new Member();
         member.setName("cyahn");
 
         Product product = new Product();
