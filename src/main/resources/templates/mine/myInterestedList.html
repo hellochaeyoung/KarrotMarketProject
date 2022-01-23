@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
 <div class="container">
-    <form action="/products/view" method="get">
-        <!--<input type="hidden" th:field="*{product.productId}"> -->
+    <form action="/">
         <button type="submit">돌아가기</button>
     </form>
     <p>관심 상품 조회</p>
     <br>
-    <form action="/mine/myProductList" method="post">
+    <form action="/mine/myInterestedList" method="post">
         <button type="submit" name="status" th:value="SALE">거래중</button>
         <button type="submit" name="status" th:value="COMPLETE">거래완료</button>
     </form>
@@ -23,7 +23,6 @@
             <tr>
                 <th>상품이름</th>
                 <th>가격</th>
-                <th>지역</th>
                 <th>좋아요수</th>
                 <th>내용</th>
             </tr>

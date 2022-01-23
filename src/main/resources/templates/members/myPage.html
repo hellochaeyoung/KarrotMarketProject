@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -17,7 +18,8 @@
             <input type="submit" value="판매내역">
         </form>
 
-        <form action="/mine/myInterestedList">
+        <form action="/mine/myInterestedList" method="post">
+            <input type="hidden" name="status" th:value="SALE">
             <input type="submit" value="관심목록">
         </form>
 
