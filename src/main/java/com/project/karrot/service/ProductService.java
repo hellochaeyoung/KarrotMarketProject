@@ -12,11 +12,9 @@ import java.util.Optional;
 @Transactional
 public class ProductService {
 
-    private final Member member;
     private final ProductRepository productRepository;
 
-    public ProductService(Member member, ProductRepository productRepository) {
-        this.member = member;
+    public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
