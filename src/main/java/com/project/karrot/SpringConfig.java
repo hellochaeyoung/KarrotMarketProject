@@ -35,16 +35,12 @@ public class SpringConfig {
     }
 
     @Bean
-    public Member member() { return new Member(); }
-
-
-    @Bean
     public MemberService memberService() {
-        return new MemberService(memberRepository);
+        return new MemberService(memberRepository, locationRepository);
     }
 
     @Bean
-    public ProductService productService() {return new ProductService(member(), productRepository); }
+    public ProductService productService() {return new ProductService(productRepository); }
 
     @Bean
     public InterestedService interestedService() { return new InterestedService(interestedRepository); }
