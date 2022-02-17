@@ -2,6 +2,8 @@ package com.project.karrot.controller;
 
 import com.project.karrot.constants.SessionConstants;
 import com.project.karrot.domain.*;
+import com.project.karrot.dto.MemberRequestDto;
+import com.project.karrot.dto.MemberResponseDto;
 import com.project.karrot.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -52,9 +54,10 @@ public class MemberController {
     }
 
     @PostMapping("/members/new")
-    public String create(MemberForm memberForm) {
-        Member member = new Member();
+    public String create(MemberRequestDto memberRequestDto) {
+        //Member member = new Member();
 
+        /*
         member.setName(memberForm.getName());
         member.setEmail(memberForm.getEmail());
         member.setPassword(memberForm.getPassword());
@@ -63,8 +66,9 @@ public class MemberController {
 
         Location location = locationService.findByName(memberForm.getLocation()).get().get(0);
         member.setLocation(location);
+         */
 
-        memberService.join(member);
+        memberService.join(memberRequestDto);
 
         return "redirect:/";
     }
@@ -75,7 +79,7 @@ public class MemberController {
     }
 
     @PostMapping("/members/login")
-    public String login(@ModelAttribute @Validated MemberForm memberForm,
+    public String login(@ModelAttribute @Validated MemberRequestDto memberRequestDto,
                         BindingResult bindingResult, @RequestParam(defaultValue = "/") String redirectURL,
                         HttpServletRequest request) {
 
@@ -83,23 +87,23 @@ public class MemberController {
             return "members/loginForm";
         }
 
-        Member loginMember = memberService.login(memberForm.getEmail(), memberForm.getPassword()); // 로그인 계정 세팅, memberForm에 지역 값 입력하는 거 추가해줘야함
+        MemberResponseDto loginMember = memberService.login(memberRequestDto); // 로그인 계정 세팅, memberForm에 지역 값 입력하는 거 추가해줘야함
 
         if(loginMember == null) {
             bindingResult.reject("loginFail", "아이디 또는 비밀번호가 일치하지 않습니다.");
             return "members/loginForm";
         }
 
-        productService.findByMember(loginMember).ifPresent(loginMember::setProducts);
-        dealService.findByMember(loginMember).ifPresent(loginMember::setDeals);
-        interestedService.findInterestedByMember(loginMember).ifPresent(loginMember::setInterestedProducts);
+        //productService.findByMember(loginMember).ifPresent(loginMember::setProducts);
+        //dealService.findByMember(loginMember).ifPresent(loginMember::setDeals);
+        //interestedService.findInterestedByMember(loginMember).ifPresent(loginMember::setInterestedProducts);
 
-        Location location = locationService.find(loginMember.getLocation().getLocationId()).get();
-        loginMember.setLocation(location);
+        //Location location = locationService.find(loginMember.getLocation().getLocationId()).get();
+        //loginMember.setLocation(location);
 
         HttpSession session = request.getSession(); // 세션 있으면 반환, 없으면 신규 세션 생성
         session.setAttribute(SessionConstants.LOGIN_MEMBER, loginMember); // 세션에 로그인 회원 정보 보관
-        session.setAttribute(SessionConstants.LOGIN_MEMBER_LOCATION, location);
+        session.setAttribute(SessionConstants.LOGIN_MEMBER_LOCATION, loginMember.getLocation());
 
         return "redirect:/";
     }
