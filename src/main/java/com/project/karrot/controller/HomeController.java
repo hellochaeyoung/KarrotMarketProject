@@ -20,8 +20,6 @@ public class HomeController {
     private final ProductService productService;
     private final CategoryService categoryService;
 
-    public Member member;
-
     public HomeController(ProductService productService, CategoryService categoryService) {
         this.productService = productService;
         this.categoryService = categoryService;
@@ -34,9 +32,7 @@ public class HomeController {
             return "home";
         }
 
-        // Test용 ///////////////////
-        List<Product> products = productService.findByMember(loginMember).orElseGet(ArrayList::new);
-        //List<Product> products = productService.findByLocation(loginMember.getLocation()).orElseGet(ArrayList::new);
+        List<Product> products = productService.findByLocation(loginMember.getLocation()).orElseGet(ArrayList::new);
         model.addAttribute("products", products);
 
         List<Category> allCategory = categoryService.findAll();
