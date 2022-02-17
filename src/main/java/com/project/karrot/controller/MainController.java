@@ -58,8 +58,6 @@ public class MainController {
 
         Category category = categoryService.findByName(productForm.getCategory()).get();
 
-        List<Product> locationProducts = productService.findByLocation(loginMember.getLocation()).orElseGet(ArrayList::new);
-
         Location location = locationService.find(loginMember.getLocation().getLocationId()).get();
 
         product.setProductName(productForm.getProductName());
