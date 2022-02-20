@@ -21,19 +21,13 @@ import java.util.List;
 public class MemberController {
 
     private final MemberService memberService;
-    private final ProductService productService;
     private final LocationService locationService;
-    private final DealService dealService;
-    private final InterestedService interestedService;
 
     // 생성자 주입
     @Autowired
-    public MemberController(MemberService memberService, ProductService productService, LocationService locationService, DealService dealService, InterestedService interestedService) {
+    public MemberController(MemberService memberService, LocationService locationService) {
         this.memberService = memberService;
-        this.productService = productService;
         this.locationService = locationService;
-        this.dealService = dealService;
-        this.interestedService = interestedService;
     }
 
     @GetMapping("/members/new")
@@ -47,7 +41,7 @@ public class MemberController {
         if(address.length() == 0) {
             model.addAttribute("locationList", null);
         }else {
-            model.addAttribute("locationList", locationService.findByName(address).orElseGet(ArrayList::new));
+            model.addAttribute("locationList", locationService.findByAddressAll(address).orElseGet(ArrayList::new));
         }
 
         return "members/createMemberForm :: #resultLocationList";
@@ -87,7 +81,7 @@ public class MemberController {
             return "members/loginForm";
         }
 
-        MemberResponseDto loginMember = memberService.login(memberRequestDto); // 로그인 계정 세팅, memberForm에 지역 값 입력하는 거 추가해줘야함
+        MemberResponseDto loginMember = memberService.login(memberRequestDto);
 
         if(loginMember == null) {
             bindingResult.reject("loginFail", "아이디 또는 비밀번호가 일치하지 않습니다.");
