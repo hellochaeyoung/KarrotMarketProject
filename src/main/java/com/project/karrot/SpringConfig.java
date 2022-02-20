@@ -40,7 +40,7 @@ public class SpringConfig {
     }
 
     @Bean
-    public ProductService productService() {return new ProductService(productRepository); }
+    public ProductService productService() {return new ProductService(productRepository, categoryRepository, memberRepository); }
 
     @Bean
     public InterestedService interestedService() { return new InterestedService(interestedRepository); }
