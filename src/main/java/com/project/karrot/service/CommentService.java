@@ -25,11 +25,11 @@ public class CommentService {
     }
 
     public Optional<List<Comment>> findByProduct(Product product) {
-        return commentRepository.findByProduct(product);
+        return commentRepository.findByProductId(product.getProductId());
     }
 
     public Optional<Long> exist(Member member, Product product) {
-        return commentRepository.findByMemberAndProduct(member, product);
+        return commentRepository.findByMemberIdAndProductId(member.getId(), product.getProductId());
     }
 
     public Comment register(Comment comment) {
