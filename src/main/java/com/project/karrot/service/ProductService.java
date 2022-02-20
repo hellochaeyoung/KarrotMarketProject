@@ -1,10 +1,14 @@
 package com.project.karrot.service;
 
 import com.project.karrot.domain.*;
+import com.project.karrot.dto.MemberRequestDto;
+import com.project.karrot.dto.ProductListResponseDto;
+import com.project.karrot.dto.ProductResponseDto;
 import com.project.karrot.repository.ProductRepository;
 
 import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -34,24 +38,34 @@ public class ProductService {
         return format.format(now);
     }
 
-    public Optional<Product> find(Long productId) {
-        return productRepository.findById(productId);
+    public ProductResponseDto find(Long productId) {
+        Product product = productRepository.findById(productId).orElseThrow(NullPointerException::new);
+
+        return new ProductResponseDto(product);
     }
 
-    public Optional<List<Product>> findByLocation(Location location) {
-        return productRepository.findByLocation(location);
+    public List<ProductResponseDto> findByLocation(Location location) {
+        List<Product> productList = productRepository.findByLocationId(location.getLocationId()).orElseGet(ArrayList::new);
+
+        return new ProductListResponseDto().EntityListToDtoList(productList);
     }
 
-    public Optional<List<Product>> findByLocationAndCategory(Location location, Category category) {
-        return productRepository.findByLocationAndCategory(location, category);
+    public List<ProductResponseDto> findByLocationAndCategory(Location location, Category category) {
+        List<Product> productList = productRepository.findByLocationIdAndCategoryId(location.getLocationId(), category.getCategoryId()).orElseGet(ArrayList::new);
+
+        return new ProductListResponseDto().EntityListToDtoList(productList);
     }
 
-    public Optional<List<Product>> findByMember(Member member) {
-        return productRepository.findByMember(member);
+    public List<ProductResponseDto> findByMember(Long memberId) {
+        List<Product> productList = productRepository.findByMemberId(memberId).orElseGet(ArrayList::new);
+
+        return new ProductListResponseDto().EntityListToDtoList(productList);
     }
 
-    public Optional<List<Product>> findByMemberAndStatus(Member member, ProductStatus status) {
-        return productRepository.findByMemberAndStatus(member, status);
+    public List<ProductResponseDto> findByMemberAndStatus(Long memberId, ProductStatus status) {
+        List<Product> productList = productRepository.findByMemberIdAndProductStatus(memberId, status.name()).orElseGet(ArrayList::new);
+
+        return new ProductListResponseDto().EntityListToDtoList(productList);
     }
 
     public void remove(Product product) {
