@@ -12,9 +12,7 @@ import java.util.Optional;
 
 public interface DealRepository extends JpaRepository<Deal, Long> {
 
-    @Query(" select d from Deal d where d.member = :member ")
-    Optional<List<Deal>> findByMember(@Param("member") Member member);
+    Optional<List<Deal>> findByMemberId(Long memberId);
 
-    @Query(" select d from Deal d where d.product = :product")
-    Optional<Deal> findByProduct(@Param("product") Product product);
+    Optional<Deal> findByProductId(Long productId);
 }

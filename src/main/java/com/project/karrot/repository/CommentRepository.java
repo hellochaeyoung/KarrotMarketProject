@@ -12,10 +12,8 @@ import java.util.Optional;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    @Query( "select c from Comment c where c.product = :product")
-    Optional<List<Comment>> findByProduct(@Param("product") Product product);
+    Optional<List<Comment>> findByProductId(Long productId);
 
-    @Query( "select c.commentId from Comment c where c.member = :member and c.product = :product")
-    Optional<Long> findByMemberAndProduct(@Param("member") Member member, @Param("product") Product product);
+    Optional<Long> findByMemberIdAndProductId(Long memberId, Long productId);
 
 }

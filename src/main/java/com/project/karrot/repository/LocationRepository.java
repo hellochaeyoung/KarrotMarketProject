@@ -10,7 +10,8 @@ import java.util.Optional;
 
 public interface LocationRepository extends JpaRepository<Location, Long> {
 
-    @Query( "select l from Location l where l.address like %:name%")
-    Optional<List<Location>> findByName(@Param("name") String name); // 그래야 메인화면에서 회원 지역의 상품들 지역 아이디로 갖고오기 가능
+    Optional<List<Location>> findByAddressLike(String address); // 그래야 메인화면에서 회원 지역의 상품들 지역 아이디로 갖고오기 가능
+
+    Optional<Location> findByAddress(String address);
 
 }

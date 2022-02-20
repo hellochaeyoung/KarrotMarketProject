@@ -10,11 +10,9 @@ import java.util.Optional;
 
 public interface ImageFileRepository extends JpaRepository<ImageFiles, Long> {
 
-    @Query( "select f from ImageFiles f where f.member = :member")
-    Optional<MemberImageFile> findOneByMember(@Param("member") Member member);
+    Optional<MemberImageFile> findOneByMemberId(Long memberId);
 
-    @Query( "select f from ImageFiles f where f.product = :product")
-    List<ProductImageFile> findAllByProducts(@Param("product") Product product);
+    List<ProductImageFile> findAllByProductId(Long productId);
 
 
 }

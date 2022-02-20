@@ -14,12 +14,8 @@ public interface InterestedRepository extends JpaRepository<InterestedProduct, L
 
     // findAll(), findById(id), save(object), saveAll(List), delete(object), deleteAll(List), count(), exists(id), flush()
 
-    // findByMember
-    @Query( "select i from InterestedProduct i where i.member = :member" )
-    Optional<List<InterestedProduct>> findByMember(@Param("member") Member member);
+    Optional<List<InterestedProduct>> findByMemberId(Long memberId);
 
-    // findByProduct
-    @Query( "select i from InterestedProduct i where i.product = :product")
-    Optional<List<InterestedProduct>> findByProduct(@Param("product") Product product);
+    Optional<List<InterestedProduct>> findByProductId(Long productId);
 
 }
