@@ -1,5 +1,6 @@
 package com.project.karrot.dto;
 
+import com.project.karrot.domain.Location;
 import com.project.karrot.domain.Member;
 import lombok.*;
 
@@ -15,7 +16,9 @@ public class MemberRequestDto {
     private String password;
     private String phoneNumber;
     private String nickName;
-    private String location;
+    private String locationName;
+
+    private Location location;
 
     public Member toEntity() {
         return Member.builder()
@@ -24,8 +27,12 @@ public class MemberRequestDto {
                 .password(password)
                 .phoneNumber(phoneNumber)
                 .nickName(nickName)
+                .location(location)
                 .build();
     }
 
+    public void setMemberRequestDto(Location location) {
+        this.location = location;
+    }
 
 }
