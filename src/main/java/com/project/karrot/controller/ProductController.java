@@ -2,6 +2,9 @@ package com.project.karrot.controller;
 
 import com.project.karrot.constants.SessionConstants;
 import com.project.karrot.domain.*;
+import com.project.karrot.dto.MemberRequestDto;
+import com.project.karrot.dto.MemberResponseDto;
+import com.project.karrot.dto.ProductResponseDto;
 import com.project.karrot.service.CategoryService;
 import com.project.karrot.service.CommentService;
 import com.project.karrot.service.MemberService;
@@ -30,13 +33,13 @@ public class ProductController {
     @GetMapping("/products/view")
     public String viewProduct(Model model, Long productId) {
 
-        Product product = productService.find(productId).orElseGet(Product::new);
-        model.addAttribute("product", product);
+        ProductResponseDto productResponseDto = productService.findById(productId);
+        model.addAttribute("product", productResponseDto);
 
-        Member productOwner = product.getMember();
-        List<Product> productList = productService.findByMember(productOwner).orElseGet(ArrayList::new);
-        productList.remove(product);
-        model.addAttribute("otherProducts", productList);
+        MemberResponseDto productOwner = new MemberResponseDto(productResponseDto.getMember());
+        List<ProductResponseDto> productAllList = productService.findByMember(productOwner.getId());
+        productAllList.remove(productResponseDto);
+        model.addAttribute("otherProducts", productAllList);
 
         model.addAttribute("productOwner", productOwner);
 
@@ -47,8 +50,8 @@ public class ProductController {
     @GetMapping("/products/comment")
     public String viewComment(Model model, Long productId) {
 
-        Product product = productService.find(productId).orElseGet(Product::new);
-        List<Comment> comments = commentService.findByProduct(product).orElseGet(ArrayList::new);
+        ProductResponseDto product = productService.findById(productId);
+        List<Comment> comments = commentService.findByProductId(product.getProductId()).orElseGet(ArrayList::new);
 
         model.addAttribute("comments", comments);
         model.addAttribute("product", product);
@@ -58,19 +61,21 @@ public class ProductController {
     }
 
     @PostMapping("/products/comment")
-    public String registerComment(@SessionAttribute(name = SessionConstants.LOGIN_MEMBER, required = false) Member loginMember, CommentForm commentForm,
+    public String registerComment(@SessionAttribute(name = SessionConstants.LOGIN_MEMBER, required = false) MemberRequestDto loginMember, CommentForm commentForm,
                                   Long productId, Model model) {
 
-        Product product = productService.find(productId).orElseGet(Product::new);
+        ProductResponseDto productResponseDto = productService.findById(productId);
 
         Comment comment = new Comment();
 
-        Optional<Long> existId = commentService.exist(loginMember, product);
+        MemberResponseDto memberResponseDto = memberService.findByNickName(loginMember.getNickName());
+        Optional<Long> existId = commentService.exist(memberResponseDto.getId(), productResponseDto.getProductId());
         existId.ifPresent(comment::setCommentId);
 
-        comment.setContents(commentForm.getContents());
-        comment.setMember(loginMember);
-        comment.setProduct(product);
+        //수정 필요
+        //comment.setContents(commentForm.getContents());
+        //comment.setMember(loginMember);
+        //comment.setProduct(product);
 
         commentService.register(comment);
 
@@ -81,12 +86,12 @@ public class ProductController {
     @GetMapping("/products/all")
     public String all(Model model, String nickName, Product product) {
 
-        Member member = memberService.findByNickName(nickName).orElseGet(Member::new);
+        MemberResponseDto memberResponseDto = memberService.findByNickName(nickName);
 
-        List<Product> products = productService.findByMember(member).orElseGet(ArrayList::new);
+        List<ProductResponseDto> products = productService.findByMember(memberResponseDto.getId());
         model.addAttribute("products", products);
 
-        model.addAttribute("member", member);
+        model.addAttribute("member", memberResponseDto);
         model.addAttribute("product", product);
 
         return "products/all";
@@ -95,25 +100,28 @@ public class ProductController {
     @PostMapping("/products/all")
     public String allByStatus(Model model, StatusProductForm statusProductForm) {
 
-        List<Product> list = new ArrayList<>();
+        List<ProductResponseDto> list = new ArrayList<>();
 
         String status = statusProductForm.getStatus();
         Long memberId = Long.parseLong(statusProductForm.getMemberId());
 
-        Member member = memberService.find(memberId).orElseGet(Member::new);
+        MemberResponseDto memberResponseDto = memberService.find(memberId);
 
         if(status.equals("ALL")) {
-            list = productService.findByMember(member).orElseGet(ArrayList::new);
+            list = productService.findByMember(memberResponseDto.getId());
         }else if(status.equals("SALE")) {
-            list = productService.findByMemberAndStatus(member, ProductStatus.SALE).orElseGet(ArrayList::new);
+            list = productService.findByMemberAndStatus(memberResponseDto.getId(), ProductStatus.SALE);
         }else {
-            for(Deal deal : member.getDeals()) {
+            /* 수정 필요
+            for(Deal deal : memberResponseDto.getDeals()) {
                 list.add(deal.getProduct());
             }
+
+             */
         }
 
         model.addAttribute("products", list);
-        model.addAttribute("member", member);
+        model.addAttribute("member", memberResponseDto);
 
         return "products/all";
     }
