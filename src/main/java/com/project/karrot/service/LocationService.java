@@ -17,11 +17,16 @@ public class LocationService {
     public Optional<Location> find(Long id) {
         return locationRepository.findById(id);
     }
+
     public List<Location> findAll() {
         return locationRepository.findAll();
     }
 
-    public Optional<List<Location>> findByName(String name) {
-        return locationRepository.findByName(name);
+    public Optional<List<Location>> findByAddressAll(String address) {
+        return locationRepository.findByAddressLike(address);
+    }
+
+    public Optional<Location> findByAddress(String address) {
+        return locationRepository.findByAddress(address);
     }
 }
