@@ -2,6 +2,7 @@ package com.project.karrot.service;
 
 import com.project.karrot.domain.Location;
 import com.project.karrot.domain.Member;
+import com.project.karrot.dto.LocationResponseDto;
 import com.project.karrot.dto.MemberRequestDto;
 import com.project.karrot.dto.MemberResponseDto;
 import com.project.karrot.repository.LocationRepository;
@@ -28,13 +29,13 @@ public class MemberService {
 
         validateDuplicateMember(memberRequestDto); // 닉네임 중복 회원 검증
 
+        // 지역 설정
+        Location findLocation = locationRepository.findByAddress(memberRequestDto.getLocationName()).orElseThrow();
+        memberRequestDto.setMemberRequestDto(findLocation);
+
         Member member = memberRequestDto.toEntity();
 
         memberRepository.save(member);
-
-        // 지역 설정
-        Location findLocation = locationRepository.findByAddressLike(memberRequestDto.getLocation()).orElseThrow(NullPointerException::new).get(0);
-        member.setLocation(findLocation);
 
         //memberRepository.flush();
 
@@ -51,19 +52,19 @@ public class MemberService {
     }
 
     public MemberResponseDto find(Long memberId) {
-        Member findMember = memberRepository.findById(memberId).orElseThrow(NullPointerException::new);
+        Member findMember = memberRepository.findById(memberId).orElseThrow();
 
         return new MemberResponseDto(findMember);
     }
 
     public MemberResponseDto findByName(String name) {
-        Member findMember = memberRepository.findByName(name).orElseThrow(NullPointerException::new);
+        Member findMember = memberRepository.findByName(name).orElseThrow();
 
         return new MemberResponseDto(findMember);
     }
 
     public MemberResponseDto findByNickName(String nickName) {
-        Member findMember = memberRepository.findByNickName(nickName).orElseThrow(NullPointerException::new);
+        Member findMember = memberRepository.findByNickName(nickName).orElseThrow();
 
         return new MemberResponseDto(findMember);
     }
