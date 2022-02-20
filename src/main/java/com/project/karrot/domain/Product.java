@@ -1,9 +1,12 @@
 package com.project.karrot.domain;
 
+import lombok.Builder;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Builder
 @Entity
 public class Product {
 
