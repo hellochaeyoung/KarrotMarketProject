@@ -2,6 +2,9 @@ package com.project.karrot.controller;
 
 import com.project.karrot.constants.SessionConstants;
 import com.project.karrot.domain.*;
+import com.project.karrot.dto.MemberRequestDto;
+import com.project.karrot.dto.ProductRequestDto;
+import com.project.karrot.dto.ProductResponseDto;
 import com.project.karrot.service.CategoryService;
 import com.project.karrot.service.LocationService;
 import com.project.karrot.service.ProductService;
@@ -21,13 +24,11 @@ public class MainController {
 
     private final ProductService productService;
     private final CategoryService categoryService;
-    private final LocationService locationService;
 
     @Autowired
-    public MainController(ProductService productService, CategoryService categoryService, LocationService locationService) {
+    public MainController(ProductService productService, CategoryService categoryService) {
         this.productService = productService;
         this.categoryService = categoryService;
-        this.locationService = locationService;
     }
 
     @PostMapping("/")
@@ -36,7 +37,7 @@ public class MainController {
         String category = map.get("category");
         Category category1 = categoryService.findByName(category).get();
 
-        List<Product> products = productService.findByLocationAndCategory(loginLocation, category1).orElseGet(ArrayList::new);
+        List<ProductResponseDto> products = productService.findByLocationAndCategory(loginLocation, category1);
         model.addAttribute("products", products);
 
         return "mains/mainPage :: #resultTable";
@@ -52,8 +53,9 @@ public class MainController {
 
 
     @PostMapping("/mains/register")
-    public String register(@SessionAttribute(name = SessionConstants.LOGIN_MEMBER, required = false) Member loginMember, ProductForm productForm,
+    public String register(@SessionAttribute(name = SessionConstants.LOGIN_MEMBER, required = false) MemberRequestDto memberRequestDto, ProductRequestDto productRequestDto,
                            @RequestParam(defaultValue = "/mains/mainPage") String redirectURL ) {
+        /*
         Product product = new Product();
 
         Category category = categoryService.findByName(productForm.getCategory()).get();
@@ -68,16 +70,12 @@ public class MainController {
         product.setProductStatus(ProductStatus.SALE);
         product.setLocation(location);
         product.setTime(fomatDate());
+         */
 
-        productService.register(product);
+        productService.register(productRequestDto, memberRequestDto);
 
         return "redirect:/";
     }
 
-    public String fomatDate() {
-        Date now = new Date();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd, HH:mm");
-        return format.format(now);
-    }
 }
 
