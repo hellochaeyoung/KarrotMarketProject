@@ -1,5 +1,6 @@
 package com.project.karrot.dto;
 
+import com.project.karrot.domain.Member;
 import com.project.karrot.domain.Product;
 import lombok.Getter;
 
@@ -11,6 +12,7 @@ public class ProductResponseDto {
     private final int price;
     private final int likeCount;
     private final String contents;
+    private final Member member;
 
     public ProductResponseDto(Product product) {
         this.productId = product.getProductId();
@@ -18,5 +20,6 @@ public class ProductResponseDto {
         this.price = product.getPrice();
         this.likeCount = product.getLikeCount();
         this.contents = product.getContents();
+        this.member = product.getMember();
     }
 }
