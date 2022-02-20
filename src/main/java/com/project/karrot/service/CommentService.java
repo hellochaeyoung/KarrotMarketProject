@@ -3,6 +3,7 @@ package com.project.karrot.service;
 import com.project.karrot.domain.Comment;
 import com.project.karrot.domain.Member;
 import com.project.karrot.domain.Product;
+import com.project.karrot.dto.ProductRequestDto;
 import com.project.karrot.repository.CommentRepository;
 
 import javax.transaction.Transactional;
@@ -24,12 +25,12 @@ public class CommentService {
         return commentRepository.findById(commentId);
     }
 
-    public Optional<List<Comment>> findByProduct(Product product) {
-        return commentRepository.findByProductId(product.getProductId());
+    public Optional<List<Comment>> findByProductId(Long productId) {
+        return commentRepository.findByProductId(productId);
     }
 
-    public Optional<Long> exist(Member member, Product product) {
-        return commentRepository.findByMemberIdAndProductId(member.getId(), product.getProductId());
+    public Optional<Long> exist(Long memberId, Long productId) {
+        return commentRepository.findByMemberIdAndProductId(memberId, productId);
     }
 
     public Comment register(Comment comment) {
