@@ -19,7 +19,6 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final LocationRepository locationRepository;
 
-    // 직접 new 해서 생성하는 게 아닌 외부에서 집어넣을 수 있게
     public MemberService(MemberRepository memberRepository, LocationRepository locationRepository) {
         this.memberRepository = memberRepository;
         this.locationRepository = locationRepository;
@@ -30,12 +29,14 @@ public class MemberService {
         validateDuplicateMember(memberRequestDto); // 닉네임 중복 회원 검증
 
         Member member = memberRequestDto.toEntity();
-        Location findLocation = locationRepository.findByName(memberRequestDto.getLocation()).orElseThrow(NullPointerException::new).get(0);
-        member.setLocation(findLocation);
 
         memberRepository.save(member);
 
-        memberRepository.flush();
+        // 지역 설정
+        Location findLocation = locationRepository.findByAddressLike(memberRequestDto.getLocation()).orElseThrow(NullPointerException::new).get(0);
+        member.setLocation(findLocation);
+
+        //memberRepository.flush();
 
         return member.getId();
     }
@@ -49,22 +50,29 @@ public class MemberService {
                 });
     }
 
-    public Optional<Member> find(Long memberId) {
-        return memberRepository.findById(memberId);
+    public MemberResponseDto find(Long memberId) {
+        Member findMember = memberRepository.findById(memberId).orElseThrow(NullPointerException::new);
+
+        return new MemberResponseDto(findMember);
     }
 
-    public Optional<Member> findByName(String name) {
-        return memberRepository.findByName(name);
+    public MemberResponseDto findByName(String name) {
+        Member findMember = memberRepository.findByName(name).orElseThrow(NullPointerException::new);
+
+        return new MemberResponseDto(findMember);
     }
 
-    public Optional<Member> findByNickName(String nickName) {
-        return memberRepository.findByNickName(nickName);
+    public MemberResponseDto findByNickName(String nickName) {
+        Member findMember = memberRepository.findByNickName(nickName).orElseThrow(NullPointerException::new);
+
+        return new MemberResponseDto(findMember);
     }
 
     public MemberResponseDto login(MemberRequestDto memberRequestDto) {
         Member findMember = memberRepository.findByEmail(memberRequestDto.getEmail())
                 .filter(member -> member.getPassword().equals(memberRequestDto.getPassword()))
-                .orElse(null);
+                .orElse(null); // 추후 수정 필요, 이렇게 null 리턴하면 옵셔널 쓰는 의미가 없음
+
         if(findMember == null) {
             return null;
         }else {
@@ -73,9 +81,8 @@ public class MemberService {
 
     }
 
-    public void remove(Member member) {
-        memberRepository.delete(member);
+    public void remove(Long memberId) {
+        memberRepository.deleteById(memberId);
     }
-
 
 }
