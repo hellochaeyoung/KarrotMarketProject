@@ -1,9 +1,12 @@
 package com.project.karrot.domain;
 
+import lombok.Builder;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@Builder
 public class Comment {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
