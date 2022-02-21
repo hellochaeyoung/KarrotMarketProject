@@ -49,7 +49,7 @@ public class SpringConfig {
     public CategoryService categoryService() { return new CategoryService(categoryRepository); }
 
     @Bean
-    public CommentService commentService() { return new CommentService(commentRepository); }
+    public CommentService commentService() { return new CommentService(commentRepository, memberRepository, productRepository); }
 
     @Bean
     public DealService dealService() { return new DealService(dealRepository); }
