@@ -2,6 +2,7 @@ package com.project.karrot.controller;
 
 import com.project.karrot.constants.SessionConstants;
 import com.project.karrot.domain.*;
+import com.project.karrot.dto.CommentRequestDto;
 import com.project.karrot.dto.MemberRequestDto;
 import com.project.karrot.dto.MemberResponseDto;
 import com.project.karrot.dto.ProductResponseDto;
@@ -61,23 +62,23 @@ public class ProductController {
     }
 
     @PostMapping("/products/comment")
-    public String registerComment(@SessionAttribute(name = SessionConstants.LOGIN_MEMBER, required = false) MemberRequestDto loginMember, CommentForm commentForm,
-                                  Long productId, Model model) {
+    public String registerComment(@SessionAttribute(name = SessionConstants.LOGIN_MEMBER, required = false) MemberResponseDto loginMember, CommentRequestDto commentRequestDto,
+                                  Long productId) {
 
         ProductResponseDto productResponseDto = productService.findById(productId);
 
-        Comment comment = new Comment();
+        //Comment comment = new Comment();
 
-        MemberResponseDto memberResponseDto = memberService.findByNickName(loginMember.getNickName());
-        Optional<Long> existId = commentService.exist(memberResponseDto.getId(), productResponseDto.getProductId());
-        existId.ifPresent(comment::setCommentId);
+        //MemberResponseDto memberResponseDto = memberService.findByNickName(loginMember.getNickName());
+
+        //existId.ifPresent(comment::setCommentId);
 
         //수정 필요
         //comment.setContents(commentForm.getContents());
         //comment.setMember(loginMember);
         //comment.setProduct(product);
 
-        commentService.register(comment);
+        commentService.register(commentRequestDto, loginMember);
 
         return "redirect:/products/comment?productId=" + productId;
 
