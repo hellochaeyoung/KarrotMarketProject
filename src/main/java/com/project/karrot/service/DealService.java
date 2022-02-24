@@ -3,6 +3,8 @@ package com.project.karrot.service;
 import com.project.karrot.domain.Deal;
 import com.project.karrot.domain.Member;
 import com.project.karrot.domain.Product;
+import com.project.karrot.dto.MemberRequestDto;
+import com.project.karrot.dto.ProductRequestDto;
 import com.project.karrot.repository.DealRepository;
 
 import javax.transaction.Transactional;
@@ -22,11 +24,13 @@ public class DealService {
         return dealRepository.findById(dealId);
     }
 
-    public Optional<Deal> findByProduct(Product product) {
-        return dealRepository.findByProduct(product);
+    public Optional<Deal> findByProduct(ProductRequestDto product) {
+
+        return dealRepository.findByProductId(product.getProductId());
     }
-    public Optional<List<Deal>> findByMember(Member member) {
-        return dealRepository.findByMember(member);
+    public Optional<List<Deal>> findByMember(Long memberId) {
+
+        return dealRepository.findByMemberId(memberId);
     }
 
     public Deal register(Deal deal) {

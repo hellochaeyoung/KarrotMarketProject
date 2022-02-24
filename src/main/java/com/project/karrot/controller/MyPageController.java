@@ -2,6 +2,10 @@ package com.project.karrot.controller;
 
 import com.project.karrot.constants.SessionConstants;
 import com.project.karrot.domain.*;
+import com.project.karrot.dto.MemberRequestDto;
+import com.project.karrot.dto.MemberResponseDto;
+import com.project.karrot.dto.ProductRequestDto;
+import com.project.karrot.dto.ProductResponseDto;
 import com.project.karrot.service.CategoryService;
 import com.project.karrot.service.DealService;
 import com.project.karrot.service.MemberService;
@@ -38,7 +42,7 @@ public class MyPageController {
     }
 
     @GetMapping("/mine/profile")
-    public String profile(@SessionAttribute(name = SessionConstants.LOGIN_MEMBER, required = false) Member loginMember,
+    public String profile(@SessionAttribute(name = SessionConstants.LOGIN_MEMBER, required = false) MemberRequestDto loginMember,
                           Model model) {
 
         model.addAttribute("nickName", loginMember.getNickName());
@@ -48,10 +52,10 @@ public class MyPageController {
     }
 
     @PostMapping("/mine/profile")
-    public String change(@SessionAttribute(name = SessionConstants.LOGIN_MEMBER, required = false) Member loginMember,
+    public String change(@SessionAttribute(name = SessionConstants.LOGIN_MEMBER, required = false) MemberRequestDto loginMember,
                           Model model, String nickName) {
 
-        loginMember.setNickName(nickName);
+        loginMember.setNickName(nickName); //////// 수정 필요
         memberService.join(loginMember);
 
         model.addAttribute("nickName", loginMember.getNickName());
@@ -61,17 +65,20 @@ public class MyPageController {
     }
 
     @PostMapping("/mine/myProductList")
-    public String getProductList(@SessionAttribute(name = SessionConstants.LOGIN_MEMBER, required = false) Member loginMember,
+    public String getProductList(@SessionAttribute(name = SessionConstants.LOGIN_MEMBER, required = false) MemberRequestDto loginMember,
                                  String status, Model model) {
 
-        List<Product> list = new ArrayList<>();
+        List<ProductResponseDto> list = new ArrayList<>();
+
+        MemberResponseDto member = memberService.findByNickName(loginMember.getNickName()); ////// 수정 필요
 
         if(status.equals("SALE")) { // 판매중
-            list = productService.findByMemberAndStatus(loginMember, ProductStatus.SALE).orElseGet(ArrayList::new);
+            list = productService.findByMemberAndStatus(member.getId(), ProductStatus.SALE);
         }else if(status.equals("COMPLETE")){ // 거래완료
-            for(Deal deal : loginMember.getDeals()) {
-                list.add(deal.getProduct());
-                System.out.println(deal.getProduct());
+            for(Deal deal : member.getDeals()) {
+                ProductResponseDto productResponseDto = new ProductResponseDto(deal.getProduct());
+                list.add(productResponseDto);
+                System.out.println(productResponseDto.getProductName());
             }
         }
 
@@ -82,20 +89,24 @@ public class MyPageController {
     }
 
     @PostMapping("/updateStatus")
-    public String updateStatus(@SessionAttribute(name = SessionConstants.LOGIN_MEMBER, required = false) Member loginMember,
+    public String updateStatus(@SessionAttribute(name = SessionConstants.LOGIN_MEMBER, required = false) MemberRequestDto loginMember,
                                String updateStatus, Long productId, Model model) {
 
-        List<Product> list = new ArrayList<>();
+        List<ProductResponseDto> list = new ArrayList<>();
 
-        Product product = productService.find(productId).get();
+        ProductResponseDto product = productService.findById(productId);
 
-        setNewStatus(loginMember, product, updateStatus);
+        MemberResponseDto member = memberService.findByNickName(loginMember.getNickName());
+
+        // 수정 필요
+        //setNewStatus(loginMember, product, updateStatus);
 
         if(updateStatus.equals("RESERVATION")) {
-            list = productService.findByMemberAndStatus(loginMember, ProductStatus.SALE).orElseGet(ArrayList::new);
+            list = productService.findByMemberAndStatus(member.getId(), ProductStatus.SALE);
         }else {
-            for(Deal d : loginMember.getDeals()) {
-                list.add(d.getProduct());
+            for(Deal d : member.getDeals()) {
+                ProductResponseDto productResponseDto = new ProductResponseDto(d.getProduct());
+                list.add(productResponseDto);
             }
         }
 
@@ -106,19 +117,21 @@ public class MyPageController {
     }
 
     @PostMapping("/mine/myInterestedList")
-    public String getInterestedList(@SessionAttribute(name = SessionConstants.LOGIN_MEMBER, required = false) Member loginMember,
+    public String getInterestedList(@SessionAttribute(name = SessionConstants.LOGIN_MEMBER, required = false) MemberRequestDto loginMember,
                                     Model model, String status) {
+
+        MemberResponseDto member = memberService.findByNickName(loginMember.getNickName());
 
         ArrayList<InterestedProduct> list = new ArrayList<>();
         if(status.equals("SALE")) {
-            for(InterestedProduct p : loginMember.getInterestedProducts()) {
-                if(p.getProduct().getProductStatus().equals(ProductStatus.SALE)) {
+            for(InterestedProduct p : member.getInterestedProducts()) {
+                if(p.getProduct().getProductStatus().equals(ProductStatus.SALE)) { //////////////
                     list.add(p);
                 }
             }
         }else {
-            for(InterestedProduct p : loginMember.getInterestedProducts()) {
-                if(p.getProduct().getProductStatus().equals(ProductStatus.COMPLETE)) {
+            for(InterestedProduct p : member.getInterestedProducts()) {
+                if(p.getProduct().getProductStatus().equals(ProductStatus.COMPLETE)) { ///////////
                     list.add(p);
                 }
             }
@@ -134,31 +147,34 @@ public class MyPageController {
     public String findUpdateProduct(Model model, Long productId) {
 
         model.addAttribute("allCategory", categoryService.findAll());
-        model.addAttribute("product", productService.find(productId).get());
+        model.addAttribute("product", productService.findById(productId));
 
         return "products/update";
     }
 
     @PostMapping("/products/update")
-    public String update(@SessionAttribute(name = SessionConstants.LOGIN_MEMBER, required = false) Member loginMember, Model model, ProductForm productForm) {
+    public String update(@SessionAttribute(name = SessionConstants.LOGIN_MEMBER, required = false) MemberRequestDto loginMember, Model model, ProductRequestDto productRequestDto) {
 
-        Product product = productService.find(productForm.getProductId()).get();
-        Category category = categoryService.findByName(productForm.getCategory()).get();
+        ProductResponseDto product = productService.findById(productRequestDto.getProductId());
+        Category category = categoryService.findByName(productRequestDto.getCategoryName()).get();
 
+        /* update 로직 서비스단에서 처리할 것
         product.setProductName(productForm.getProductName());
         product.setCategory(category);
         product.setPrice(productForm.getPrice());
         product.setContents(productForm.getContents());
+         */
 
-        setNewStatus(loginMember,product, productForm.getStatus());
+        // 수정 필요
+        // setNewStatus(loginMember,product, productRequestDto.getStatus());
 
         model.addAttribute("status", "SALE");
 
         return "mine/myProductList";
     }
 
-    public void setNewStatus(@SessionAttribute(name = SessionConstants.LOGIN_MEMBER, required = false) Member loginMember,
-                             Product product, String status) {
+    public void setNewStatus(@SessionAttribute(name = SessionConstants.LOGIN_MEMBER, required = false) MemberRequestDto loginMember,
+                             ProductRequestDto product, String status) {
 
         if(status.equals("DELETE")) {
             dealService.findByProduct(product).ifPresent(deal -> {
@@ -180,21 +196,24 @@ public class MyPageController {
 
         if(status.equals("RESERVATION")) {
             product.setProductStatus(ProductStatus.RESERVATION);
-            productService.register(product); // 업데이트
+            productService.register(product, loginMember); // 업데이트
 
         }else if(status.equals("SALE")) {
             product.setProductStatus(ProductStatus.SALE);
-            productService.register(product); // 업데이트
+            productService.register(product, loginMember); // 업데이트
 
         }else {
             product.setProductStatus(ProductStatus.COMPLETE);
-            Product result = productService.register(product);
+            //Product result = productService.register(product, loginMember);
+
+            /* -- 수정 필요!
 
             Deal deal = new Deal();
             deal.setMember(loginMember);
             deal.setProduct(result);
+             */
 
-            dealService.register(deal);
+            //dealService.register(deal);
 
         }
     }

@@ -30,7 +30,7 @@ public class ProductService {
         this.memberRepository = memberRepository;
     }
 
-    public Product register(ProductRequestDto productRequestDto, MemberRequestDto memberRequestDto) {
+    public ProductResponseDto register(ProductRequestDto productRequestDto, MemberRequestDto memberRequestDto) {
 
         Member member = memberRepository.findByNickName(memberRequestDto.getNickName()).orElseThrow();
         Category findCategory = categoryRepository.findByCategoryName(productRequestDto.getCategoryName()).orElseThrow();
@@ -41,9 +41,11 @@ public class ProductService {
 
         Product result = productRepository.save(newProduct);
 
+        ProductResponseDto productResponseDto = new ProductResponseDto(result);
+
         productRepository.flush();
 
-        return result;
+        return productResponseDto;
 
     }
 
@@ -91,8 +93,8 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    public void remove(Product product) {
-        productRepository.delete(product);
+    public void remove(ProductRequestDto productRequestDto) {
+        productRepository.deleteById(productRequestDto.getProductId());
     }
 
 }
