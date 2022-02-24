@@ -30,9 +30,9 @@ public class ProductService {
         this.memberRepository = memberRepository;
     }
 
-    public ProductResponseDto register(ProductRequestDto productRequestDto, MemberRequestDto memberRequestDto) {
+    public ProductResponseDto register(ProductRequestDto productRequestDto) {
 
-        Member member = memberRepository.findByNickName(memberRequestDto.getNickName()).orElseThrow();
+        Member member = memberRepository.findById(productRequestDto.getMemberId()).orElseThrow();
         Category findCategory = categoryRepository.findByCategoryName(productRequestDto.getCategoryName()).orElseThrow();
         String time = fomatDate();
 
@@ -61,16 +61,16 @@ public class ProductService {
         return new ProductResponseDto(product);
     }
 
-    public List<ProductResponseDto> findByLocation(Location location) {
-        List<Product> productList = productRepository.findByLocationId(location.getLocationId()).orElseGet(ArrayList::new);
+    public List<ProductResponseDto> findByLocation(Long locationId) {
+        List<Product> productList = productRepository.findByLocationId(locationId).orElseGet(ArrayList::new);
 
         return productList.stream()
                 .map(ProductResponseDto::new)
                 .collect(Collectors.toList());
     }
 
-    public List<ProductResponseDto> findByLocationAndCategory(Location location, Category category) {
-        List<Product> productList = productRepository.findByLocationIdAndCategoryId(location.getLocationId(), category.getCategoryId()).orElseGet(ArrayList::new);
+    public List<ProductResponseDto> findByLocationAndCategory(Long locationId, Long categoryId) {
+        List<Product> productList = productRepository.findByLocationIdAndCategoryId(locationId, categoryId).orElseGet(ArrayList::new);
 
         return productList.stream()
                 .map(ProductResponseDto::new)
