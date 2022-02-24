@@ -25,7 +25,7 @@ public class MemberService {
         this.locationRepository = locationRepository;
     }
 
-    public Long join(MemberRequestDto memberRequestDto) {
+    public MemberResponseDto join(MemberRequestDto memberRequestDto) {
 
         validateDuplicateMember(memberRequestDto); // 닉네임 중복 회원 검증
 
@@ -39,7 +39,7 @@ public class MemberService {
 
         //memberRepository.flush();
 
-        return member.getId();
+        return new MemberResponseDto(member);
     }
 
     private void validateDuplicateMember(MemberRequestDto memberRequestDto) {
