@@ -12,6 +12,7 @@ public class ProductRequestDto {
 
     // 이미지 변수 추가
 
+    private Long memberId;
     private Long productId;
     private String productName;
     private String categoryName;
