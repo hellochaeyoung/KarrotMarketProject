@@ -1,10 +1,13 @@
 package com.project.karrot.service;
 
 import com.project.karrot.domain.Location;
+import com.project.karrot.dto.LocationResponseDto;
 import com.project.karrot.repository.LocationRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class LocationService {
 
@@ -14,19 +17,23 @@ public class LocationService {
         this.locationRepository = locationRepository;
     }
 
-    public Optional<Location> find(Long id) {
-        return locationRepository.findById(id);
+    public LocationResponseDto find(Long id) {
+        Location location = locationRepository.findById(id).orElseThrow();
+
+        return new LocationResponseDto(location);
     }
 
-    public List<Location> findAll() {
-        return locationRepository.findAll();
+    public List<LocationResponseDto> findByAddressAll(String address) {
+        List<Location> list = locationRepository.findByAddressLike(address).orElseGet(ArrayList::new);
+
+        return list.stream()
+                .map(LocationResponseDto::new)
+                .collect(Collectors.toList());
     }
 
-    public Optional<List<Location>> findByAddressAll(String address) {
-        return locationRepository.findByAddressLike(address);
-    }
+    public LocationResponseDto findByAddress(String address) {
+        Location location = locationRepository.findByAddress(address).orElseThrow();
 
-    public Optional<Location> findByAddress(String address) {
-        return locationRepository.findByAddress(address);
+        return new LocationResponseDto(location);
     }
 }
