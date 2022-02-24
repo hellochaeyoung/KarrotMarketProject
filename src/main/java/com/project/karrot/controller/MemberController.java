@@ -2,9 +2,12 @@ package com.project.karrot.controller;
 
 import com.project.karrot.constants.SessionConstants;
 import com.project.karrot.domain.*;
+import com.project.karrot.dto.LocationResponseDto;
 import com.project.karrot.dto.MemberRequestDto;
 import com.project.karrot.dto.MemberResponseDto;
 import com.project.karrot.service.*;
+import io.swagger.annotations.ApiParam;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,65 +20,29 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
-@Controller
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/members")
 public class MemberController {
 
     private final MemberService memberService;
     private final LocationService locationService;
 
-    // 생성자 주입
-    @Autowired
-    public MemberController(MemberService memberService, LocationService locationService) {
-        this.memberService = memberService;
-        this.locationService = locationService;
+    @GetMapping("/new/{address}")
+    public List<LocationResponseDto> getAll(@ApiParam(value = "거주 지역 검색", required = false) @PathVariable String address) {
+
+        return locationService.findByAddressAll(address);
     }
 
-    @GetMapping("/members/new")
-    public String createForm() {
-        return "members/createMemberForm";
+    @PostMapping("/new")
+    public MemberResponseDto create(@ApiParam(value = "회원가입 입력 정보", required = true) @RequestBody MemberRequestDto memberRequestDto) {
+
+        return memberService.join(memberRequestDto);
     }
 
-    @RequestMapping(value = "/test", method = RequestMethod.POST)
-    public String getAll(Model model, @RequestParam("address") String address) {
-
-        if(address.length() == 0) {
-            model.addAttribute("locationList", null);
-        }else {
-            model.addAttribute("locationList", locationService.findByAddressAll(address).orElseGet(ArrayList::new));
-        }
-
-        return "members/createMemberForm :: #resultLocationList";
-    }
-
-    @PostMapping("/members/new")
-    public String create(MemberRequestDto memberRequestDto) {
-        //Member member = new Member();
-
-        /*
-        member.setName(memberForm.getName());
-        member.setEmail(memberForm.getEmail());
-        member.setPassword(memberForm.getPassword());
-        member.setPhoneNumber(memberForm.getPhoneNumber());
-        member.setNickName(memberForm.getNickName());
-
-        Location location = locationService.findByName(memberForm.getLocation()).get().get(0);
-        member.setLocation(location);
-         */
-
-        memberService.join(memberRequestDto);
-
-        return "redirect:/";
-    }
-
-    @GetMapping("/members/login")
-    public String loginForm() {
-        return "members/loginForm";
-    }
-
-    @PostMapping("/members/login")
-    public String login(@ModelAttribute @Validated MemberRequestDto memberRequestDto,
-                        BindingResult bindingResult, @RequestParam(defaultValue = "/") String redirectURL,
-                        HttpServletRequest request) {
+    @PostMapping("/login")
+    public String login(@RequestBody MemberRequestDto memberRequestDto,
+                        BindingResult bindingResult, HttpServletRequest request) {
 
         if(bindingResult.hasErrors()) {
             return "members/loginForm";
@@ -102,7 +69,7 @@ public class MemberController {
         return "redirect:/";
     }
 
-    @GetMapping("/members/logout")
+    @GetMapping("/logout")
     public String logout(HttpServletRequest request) {
 
         HttpSession session = request.getSession(false);
