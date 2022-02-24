@@ -1,4 +1,4 @@
-package com.project.karrot;
+package com.project.karrot.common.config;
 
 import com.project.karrot.domain.ImageFiles;
 import com.project.karrot.domain.Member;
