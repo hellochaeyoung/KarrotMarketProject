@@ -51,6 +51,13 @@ public class MemberService {
                 });
     }
 
+    public MemberResponseDto update(Long memberId, String nickName) {
+        Member member = memberRepository.findById(memberId).orElseThrow();
+        member.setNickName(nickName);
+
+        return new MemberResponseDto(memberRepository.save(member));
+    }
+
     public MemberResponseDto find(Long memberId) {
         Member findMember = memberRepository.findById(memberId).orElseThrow();
 
