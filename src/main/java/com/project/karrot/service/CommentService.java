@@ -3,19 +3,18 @@ package com.project.karrot.service;
 import com.project.karrot.domain.Comment;
 import com.project.karrot.domain.Member;
 import com.project.karrot.domain.Product;
-import com.project.karrot.dto.CommentRequestDto;
-import com.project.karrot.dto.MemberRequestDto;
-import com.project.karrot.dto.MemberResponseDto;
-import com.project.karrot.dto.ProductRequestDto;
+import com.project.karrot.dto.*;
 import com.project.karrot.repository.CommentRepository;
 import com.project.karrot.repository.MemberRepository;
 import com.project.karrot.repository.ProductRepository;
 
 import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Transactional
 public class CommentService {
@@ -30,19 +29,25 @@ public class CommentService {
         this.productRepository = productRepository;
     }
 
-    public Optional<Comment> find(Long commentId) {
-        return commentRepository.findById(commentId);
+    public CommentResponseDto find(Long commentId) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow();
+
+        return new CommentResponseDto(comment);
     }
 
-    public Optional<List<Comment>> findByProductId(Long productId) {
-        return commentRepository.findByProductId(productId);
+    public List<CommentResponseDto> findByProductId(Long productId) {
+        List<Comment> list = commentRepository.findByProductId(productId).orElseGet(ArrayList::new);
+
+        return list.stream()
+                .map(CommentResponseDto::new)
+                .collect(Collectors.toList());
     }
 
     public Optional<Comment> exist(Long memberId, Long productId) {
         return commentRepository.findByMemberIdAndProductId(memberId, productId);
     }
 
-    public Comment register(CommentRequestDto commentRequestDto, MemberResponseDto memberResponseDto) {
+    public CommentResponseDto register(CommentRequestDto commentRequestDto, MemberResponseDto memberResponseDto) {
 
         exist(memberResponseDto.getId(), commentRequestDto.getProductId()).ifPresent(comment -> {
             comment.setContents(commentRequestDto.getContents());
@@ -53,9 +58,9 @@ public class CommentService {
         Product product = productRepository.findById(commentRequestDto.getProductId()).orElseThrow(); //////////////
 
         commentRequestDto.setCommentRequestDto(loginMember, product, fomatDate());
-        Comment uploadComment = commentRequestDto.toEntity();
+        Comment uploadComment = commentRepository.save(commentRequestDto.toEntity());;
 
-        return commentRepository.save(uploadComment);
+        return new CommentResponseDto(uploadComment);
     }
 
     public void remove(CommentRequestDto commentRequestDto) {
