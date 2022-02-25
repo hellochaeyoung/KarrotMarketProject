@@ -11,6 +11,7 @@ import lombok.*;
 @Builder
 public class MemberRequestDto {
 
+    private Long memberId;
     private String name;
     private String email;
     private String password;
