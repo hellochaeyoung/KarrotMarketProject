@@ -5,7 +5,9 @@ import com.project.karrot.domain.*;
 import com.project.karrot.dto.LocationResponseDto;
 import com.project.karrot.dto.MemberRequestDto;
 import com.project.karrot.dto.MemberResponseDto;
+import com.project.karrot.dto.ProductResponseDto;
 import com.project.karrot.service.*;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,7 @@ public class MemberController {
 
     private final MemberService memberService;
     private final LocationService locationService;
+    private final ProductService productService;
 
     @GetMapping("/new/{address}")
     public List<LocationResponseDto> getAll(@ApiParam(value = "거주 지역 검색", required = false) @PathVariable String address) {
@@ -67,6 +70,28 @@ public class MemberController {
         session.setAttribute(SessionConstants.LOGIN_MEMBER_LOCATION, loginMember.getLocation());
 
         return "redirect:/";
+    }
+
+    @ApiOperation(value = "유저 등록 상품 목록 조회", notes = "상품 등록자의 모든 등록된 상품을 조회한다.")
+    @PostMapping("/{memberId}/products/{status}")
+    public List<ProductResponseDto> allByStatus(@PathVariable Long memberId, @PathVariable String status) {
+
+        List<ProductResponseDto> list = new ArrayList<>();
+
+        if(status.equals("ALL")) {
+            list = productService.findByMember(memberId);
+        }else if(status.equals("SALE")) {
+            list = productService.findByMemberAndStatus(memberId, ProductStatus.SALE);
+        }else {
+            /* 수정 필요
+            for(Deal deal : memberResponseDto.getDeals()) {
+                list.add(deal.getProduct());
+            }
+
+             */
+        }
+
+        return list;
     }
 
     @GetMapping("/logout")
