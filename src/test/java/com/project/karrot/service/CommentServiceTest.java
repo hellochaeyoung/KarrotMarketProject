@@ -1,8 +1,11 @@
 package com.project.karrot.service;
 
-import com.project.karrot.domain.Comment;
-import com.project.karrot.domain.Member;
-import com.project.karrot.domain.Product;
+import com.project.karrot.src.comment.Comment;
+import com.project.karrot.src.comment.CommentService;
+import com.project.karrot.src.member.Member;
+import com.project.karrot.src.member.MemberService;
+import com.project.karrot.src.product.Product;
+import com.project.karrot.src.product.ProductService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,9 +20,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Transactional
 public class CommentServiceTest {
 
-    @Autowired MemberService memberService;
-    @Autowired ProductService productService;
-    @Autowired CommentService commentService;
+    @Autowired
+    MemberService memberService;
+    @Autowired
+    ProductService productService;
+    @Autowired
+    CommentService commentService;
 
     @Test
     public void 댓글_등록() {

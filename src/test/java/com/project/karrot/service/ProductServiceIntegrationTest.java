@@ -1,8 +1,10 @@
 package com.project.karrot.service;
 
-import com.project.karrot.domain.*;
-import com.project.karrot.repository.MemberRepository;
-import com.project.karrot.repository.ProductRepository;
+import com.project.karrot.src.interest.InterestedService;
+import com.project.karrot.src.member.MemberRepository;
+import com.project.karrot.src.member.MemberService;
+import com.project.karrot.src.product.ProductRepository;
+import com.project.karrot.src.product.ProductService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,13 +21,16 @@ import java.util.List;
 @Transactional
 class ProductServiceIntegrationTest {
 
-    @Autowired MemberService memberService;
+    @Autowired
+    MemberService memberService;
     @Autowired MemberRepository memberRepository;
 
-    @Autowired ProductService productService;
+    @Autowired
+    ProductService productService;
     @Autowired ProductRepository productRepository;
 
-    @Autowired InterestedService interestedService;
+    @Autowired
+    InterestedService interestedService;
 
     @Test
     public void 상품등록() {

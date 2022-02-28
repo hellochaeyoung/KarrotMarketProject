@@ -1,15 +1,23 @@
 package com.project.karrot.common.config;
 
-import com.project.karrot.domain.ImageFiles;
-import com.project.karrot.domain.Member;
-import com.project.karrot.repository.*;
-import com.project.karrot.service.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringBootConfiguration;
+import com.project.karrot.src.category.CategoryRepository;
+import com.project.karrot.src.category.CategoryService;
+import com.project.karrot.src.comment.CommentRepository;
+import com.project.karrot.src.comment.CommentService;
+import com.project.karrot.src.deal.DealRepository;
+import com.project.karrot.src.deal.DealService;
+import com.project.karrot.src.image.ImageFileRepository;
+import com.project.karrot.src.image.ImageFileService;
+import com.project.karrot.src.interest.InterestedRepository;
+import com.project.karrot.src.interest.InterestedService;
+import com.project.karrot.src.location.LocationRepository;
+import com.project.karrot.src.location.LocationService;
+import com.project.karrot.src.member.MemberRepository;
+import com.project.karrot.src.member.MemberService;
+import com.project.karrot.src.product.ProductRepository;
+import com.project.karrot.src.product.ProductService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import javax.persistence.EntityManager;
 
 @Configuration
 public class SpringConfig {

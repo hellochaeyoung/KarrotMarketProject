@@ -1,6 +1,7 @@
 package com.project.karrot.service;
 
-import com.project.karrot.domain.Location;
+import com.project.karrot.src.location.Location;
+import com.project.karrot.src.location.LocationService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,7 +14,8 @@ import java.util.List;
 @Transactional
 public class LocationServiceTest {
 
-    @Autowired LocationService locationService;
+    @Autowired
+    LocationService locationService;
 
     @Test
     public void 지역_검색() {

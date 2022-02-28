@@ -1,7 +1,8 @@
 package com.project.karrot.service;
 
-import com.project.karrot.domain.Member;
-import com.project.karrot.repository.MemberRepository;
+import com.project.karrot.src.member.Member;
+import com.project.karrot.src.member.MemberRepository;
+import com.project.karrot.src.member.MemberService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,7 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Transactional
 class MemberServiceIntegrationTest {
 
-    @Autowired MemberService memberService;
+    @Autowired
+    MemberService memberService;
     @Autowired MemberRepository memberRepository;
 
     @Test

@@ -1,7 +1,8 @@
 package com.project.karrot.service;
 
-import com.project.karrot.domain.Category;
-import com.project.karrot.repository.CategoryRepository;
+import com.project.karrot.src.category.Category;
+import com.project.karrot.src.category.CategoryRepository;
+import com.project.karrot.src.category.CategoryService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,7 +18,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Transactional
 public class CategoryServiceTest {
 
-    @Autowired CategoryService categoryService;
+    @Autowired
+    CategoryService categoryService;
     @Autowired CategoryRepository categoryRepository;
 
     @Test

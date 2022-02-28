@@ -1,12 +1,14 @@
 package com.project.karrot.service;
 
-import com.project.karrot.domain.InterestedProduct;
-import com.project.karrot.domain.Member;
-import com.project.karrot.domain.Product;
-import com.project.karrot.repository.InterestedRepository;
-import com.project.karrot.repository.MemberRepository;
-import com.project.karrot.repository.ProductRepository;
-import org.junit.jupiter.api.Assertions;
+import com.project.karrot.src.interest.InterestedProduct;
+import com.project.karrot.src.interest.InterestedService;
+import com.project.karrot.src.member.Member;
+import com.project.karrot.src.member.MemberService;
+import com.project.karrot.src.product.Product;
+import com.project.karrot.src.interest.InterestedRepository;
+import com.project.karrot.src.member.MemberRepository;
+import com.project.karrot.src.product.ProductRepository;
+import com.project.karrot.src.product.ProductService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,13 +25,16 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Transactional
 class InterestedServiceTest {
 
-    @Autowired MemberService memberService;
+    @Autowired
+    MemberService memberService;
     @Autowired MemberRepository memberRepository;
 
-    @Autowired ProductService productService;
+    @Autowired
+    ProductService productService;
     @Autowired ProductRepository productRepository;
 
-    @Autowired InterestedService interestedService;
+    @Autowired
+    InterestedService interestedService;
     @Autowired InterestedRepository interestedRepository;
 
     @Test
