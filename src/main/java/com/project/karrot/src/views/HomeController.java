@@ -19,7 +19,6 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/")
 public class HomeController {
 
     private final MemberService memberService;
@@ -28,7 +27,7 @@ public class HomeController {
     private final LocationService locationService;
 
     @ApiOperation(value = "로그인 및 회원가입 페이지", notes = "페이지 접속 시 처음 보여지는 화면 입니다.")
-    @GetMapping()
+    @GetMapping("/")
     public String home(MemberRequestDto loginMember, Model model) {
 
         if(loginMember == null) {

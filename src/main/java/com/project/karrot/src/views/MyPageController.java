@@ -12,8 +12,10 @@ import com.project.karrot.src.ProductStatus;
 import com.project.karrot.src.category.Category;
 import com.project.karrot.src.deal.Deal;
 import com.project.karrot.src.interest.InterestedProduct;
+import com.project.karrot.src.product.dto.ProductAndCategoryRes;
 import com.project.karrot.src.product.dto.ProductRequestDto;
 import com.project.karrot.src.product.dto.ProductResponseDto;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ui.Model;
@@ -42,11 +44,13 @@ public class MyPageController {
 
     }
 
+    @ApiOperation(value = "마이페이지 - 프로필 수정", notes = "프로필을 수정한다.")
     @PutMapping("/profile")
     public MemberResponseDto change(@PathVariable Long memberId, @RequestBody String nickName) {
         return memberService.update(memberId, nickName);
     }
 
+    @ApiOperation(value = "마이페이지 - 등록 상품 목록 조회", notes = "내가 등록한 상품들의 상품 상태별 목록을 조회한다.")
     @GetMapping("/myProducts/{status}")
     public List<ProductResponseDto> getProductList(@PathVariable Long memberId, @PathVariable String status) {
 
@@ -67,6 +71,7 @@ public class MyPageController {
         return list;
     }
 
+    @ApiOperation(value = "마이페이지 - 등록 상품 상태 수정", notes = "내가 등록한 상품의 상품 상태를 변경한다.")
     @PostMapping("/myProducts")
     public List<ProductResponseDto> updateStatus(@PathVariable Long memberId, @RequestBody String status) {
 
@@ -90,6 +95,7 @@ public class MyPageController {
 
     }
 
+    @ApiOperation(value = "마이페이지 - 관심 상품 목록 조회", notes = "관심 등록한 상품 목록을 상품 상태별로 조회한다.")
     @GetMapping("/myInterests/{status}")
     public List<InterestedProduct> getInterestedList(@PathVariable Long memberId, @PathVariable String status) {
 
@@ -114,42 +120,23 @@ public class MyPageController {
 
     }
 
-    @GetMapping("/products/{productId}")
-    public String findUpdateProduct(@PathVariable Long productId) {
-
-        //model.addAttribute("allCategory", categoryService.findAll());
-        //model.addAttribute("product", productService.findById(productId));
+    @ApiOperation(value = "마이페이지 - 상품 정보 조회", notes = "등록 상품의 정보를 조회한다.")
+    @GetMapping("/myProducts/{productId}")
+    public ProductAndCategoryRes findUpdateProduct(@PathVariable Long productId) {
 
         List<CategoryResponseDto> categories = categoryService.findAll();
         ProductResponseDto product = productService.findById(productId);
 
-
-        return "products/update";
+        return new ProductAndCategoryRes(categories, product);
     }
 
-    @PostMapping("/products/update")
-    public String update(@SessionAttribute(name = SessionConstants.LOGIN_MEMBER, required = false) MemberRequestDto loginMember, Model model, ProductRequestDto productRequestDto) {
-
-        ProductResponseDto product = productService.findById(productRequestDto.getProductId());
-        Category category = categoryService.findByName(productRequestDto.getCategoryName()).get();
-
-        /* update 로직 서비스단에서 처리할 것
-        product.setProductName(productForm.getProductName());
-        product.setCategory(category);
-        product.setPrice(productForm.getPrice());
-        product.setContents(productForm.getContents());
-         */
-
-        // 수정 필요
-        // setNewStatus(loginMember,product, productRequestDto.getStatus());
-
-        model.addAttribute("status", "SALE");
-
-        return "mine/myProductList";
+    @ApiOperation(value = "마이페이지 - 등록 상품 수정", notes = "등록한 상품의 정보를 수정한다.")
+    @PutMapping("/myProducts/{productId}")
+    public ProductResponseDto update(@PathVariable Long productId, @RequestBody ProductRequestDto productReq) {
+        return productService.update(productReq);
     }
 
-    public void setNewStatus(@SessionAttribute(name = SessionConstants.LOGIN_MEMBER, required = false) MemberRequestDto loginMember,
-                             ProductRequestDto product, String status) {
+    public void setNewStatus(MemberResponseDto member,ProductRequestDto product, String status) {
 
         if(status.equals("DELETE")) {
             dealService.findByProduct(product).ifPresent(deal -> {
@@ -171,11 +158,11 @@ public class MyPageController {
 
         if(status.equals("RESERVATION")) {
             product.setProductStatus(ProductStatus.RESERVATION);
-            productService.register(product, loginMember); // 업데이트
+            productService.register(product); // 업데이트
 
         }else if(status.equals("SALE")) {
             product.setProductStatus(ProductStatus.SALE);
-            productService.register(product, loginMember); // 업데이트
+            productService.register(product); // 업데이트
 
         }else {
             product.setProductStatus(ProductStatus.COMPLETE);

@@ -5,6 +5,7 @@ import com.project.karrot.src.category.dto.CategoryRequestDto;
 import com.project.karrot.src.category.dto.CategoryResponseDto;
 import com.project.karrot.src.location.dto.LocationRequestDto;
 import com.project.karrot.src.product.ProductService;
+import com.project.karrot.src.product.dto.ProductAndCategoryRes;
 import com.project.karrot.src.product.dto.ProductRequestDto;
 import com.project.karrot.src.product.dto.ProductResponseDto;
 import io.swagger.annotations.ApiOperation;
@@ -15,17 +16,20 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/mains")
+@RequestMapping("/main")
 public class MainController {
 
     private final ProductService productService;
     private final CategoryService categoryService;
 
-    @ApiOperation(value = "메인 화면 조회", notes = "유저 거주 지역과 카테고리에 해당하는 상품들을 조회한다.")
-    @PostMapping()
-    public List<ProductResponseDto> setCategory(@RequestBody LocationRequestDto memberLocation, @RequestBody CategoryRequestDto categoryRequest) {
+    @ApiOperation(value = "메인 화면 조회", notes = "거주 지역과 설정한 카테고리에 해당하는 상품들을 조회한다.")
+    @PostMapping("/")
+    public ProductAndCategoryRes setCategory(@RequestBody LocationRequestDto memberLocation, @RequestBody CategoryRequestDto categoryRequest) {
 
-        return productService.findByLocationAndCategory(memberLocation.getLocationId(), categoryRequest.getCategoryId());
+        List<CategoryResponseDto> categoryList = categoryService.findAll();
+        List<ProductResponseDto> productList = productService.findByLocationAndCategory(memberLocation.getLocationId(), categoryRequest.getCategoryId());
+
+        return new ProductAndCategoryRes(categoryList, productList);
     }
 
     @ApiOperation(value = "상품 등록 화면 조회", notes = "카테고리 목록을 세팅한다.")
@@ -36,7 +40,7 @@ public class MainController {
     }
 
 
-    @ApiOperation(value = "상품 등록", notes = "상품을 등록한다.")
+    @ApiOperation(value = "상품 등록", notes = "새 상품을 등록한다.")
     @PostMapping("/products/new")
     public ProductResponseDto register(@RequestBody ProductRequestDto productRequestDto) {
 

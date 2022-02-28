@@ -53,6 +53,21 @@ public class ProductService {
         return format.format(now);
     }
 
+    public ProductResponseDto update(ProductRequestDto productRequestDto) {
+
+        Product product = productRepository.findById(productRequestDto.getProductId()).orElseThrow();
+        Category category = categoryRepository.findByCategoryName(productRequestDto.getCategoryName()).orElseThrow();
+
+        product.setProductName(productRequestDto.getProductName());
+        product.setCategory(category);
+        product.setPrice(productRequestDto.getPrice());
+        product.setContents(productRequestDto.getContents());
+
+        // set만 해도 update 적용되는지 추후에 다시 확인
+
+        return new ProductResponseDto(product);
+    }
+
     public ProductResponseDto findById(Long productId) {
         Product product = productRepository.findById(productId).orElseThrow();
 
