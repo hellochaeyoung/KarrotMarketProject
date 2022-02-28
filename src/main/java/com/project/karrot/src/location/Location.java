@@ -1,14 +1,13 @@
 package com.project.karrot.src.location;
 
 import com.project.karrot.src.member.Member;
-import com.project.karrot.src.product.Product;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Location {
+public class Location<Product> {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long locationId;

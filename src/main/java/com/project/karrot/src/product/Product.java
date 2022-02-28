@@ -4,7 +4,6 @@ import com.project.karrot.src.ProductStatus;
 import com.project.karrot.src.category.Category;
 import com.project.karrot.src.comment.Comment;
 import com.project.karrot.src.deal.Deal;
-import com.project.karrot.src.image.ProductImageFile;
 import com.project.karrot.src.location.Location;
 import com.project.karrot.src.member.Member;
 import lombok.Builder;
@@ -15,7 +14,7 @@ import java.util.List;
 
 @Builder
 @Entity
-public class Product {
+public class Product<ProductImageFile> {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long productId;
