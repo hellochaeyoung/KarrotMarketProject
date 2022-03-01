@@ -10,8 +10,8 @@ public interface InterestedRepository extends JpaRepository<InterestedProduct, L
 
     // findAll(), findById(id), save(object), saveAll(List), delete(object), deleteAll(List), count(), exists(id), flush()
 
-    Optional<List<InterestedProduct>> findByMemberId(Long memberId);
+    Optional<List<InterestedProduct>> findByMember(Long memberId);
 
-    Optional<List<InterestedProduct>> findByProductId(Long productId);
+    Optional<List<InterestedProduct>> findByProduct(Long productId);
 
 }

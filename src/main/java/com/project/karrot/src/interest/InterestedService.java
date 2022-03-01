@@ -27,11 +27,11 @@ public class InterestedService {
     }
 
     public Optional<List<InterestedProduct>> findInterestedByMember(Member member) {
-        return interestedRepository.findByMemberId(member.getId());
+        return interestedRepository.findByMember(member.getId());
     }
 
     public Optional<List<InterestedProduct>> findInterestedByProduct(Product product) {
-        return interestedRepository.findByProductId(product.getProductId());
+        return interestedRepository.findByProduct(product.getProductId());
     }
 
     public void remove(InterestedProduct interestedProduct) {

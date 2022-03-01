@@ -9,9 +9,9 @@ import java.util.Optional;
 
 public interface ImageFileRepository extends JpaRepository<ImageFiles, Long> {
 
-    Optional<MemberImageFile> findOneByMemberId(Long memberId);
+    Optional<MemberImageFile> findOneByMember(Long memberId);
 
-    List<ProductImageFile> findAllByProductId(Long productId);
+    List<ProductImageFile> findAllByProduct(Long productId);
 
 
 }

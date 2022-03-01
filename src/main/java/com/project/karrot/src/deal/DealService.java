@@ -21,11 +21,11 @@ public class DealService {
 
     public Optional<Deal> findByProduct(ProductRequestDto product) {
 
-        return dealRepository.findByProductId(product.getProductId());
+        return dealRepository.findByProduct(product.getProductId());
     }
     public Optional<List<Deal>> findByMember(Long memberId) {
 
-        return dealRepository.findByMemberId(memberId);
+        return dealRepository.findByMember(memberId);
     }
 
     public Deal register(Deal deal) {

@@ -36,7 +36,7 @@ public class CommentService {
     }
 
     public List<CommentResponseDto> findByProductId(Long productId) {
-        List<Comment> list = commentRepository.findByProductId(productId).orElseGet(ArrayList::new);
+        List<Comment> list = commentRepository.findByProduct(productId).orElseGet(ArrayList::new);
 
         return list.stream()
                 .map(CommentResponseDto::new)
@@ -44,7 +44,7 @@ public class CommentService {
     }
 
     public Optional<Comment> exist(Long memberId, Long productId) {
-        return commentRepository.findByMemberIdAndProductId(memberId, productId);
+        return commentRepository.findByMemberAndProduct(memberId, productId);
     }
 
     public CommentResponseDto register(CommentRequestDto commentRequestDto, MemberResponseDto memberResponseDto) {

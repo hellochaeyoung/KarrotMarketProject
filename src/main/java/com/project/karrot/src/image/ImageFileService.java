@@ -30,11 +30,11 @@ public class ImageFileService {
     }
 
     public Optional<MemberImageFile> findByMember(Member member) {
-        return imageFileRepository.findOneByMemberId(member.getId());
+        return imageFileRepository.findOneByMember(member.getId());
     }
 
     public List<ProductImageFile> findAllByProduct(Product product) {
-        return imageFileRepository.findAllByProductId(product.getProductId());
+        return imageFileRepository.findAllByProduct(product.getProductId());
     }
 
     public void removeMemberImage(MemberImageFile file) {

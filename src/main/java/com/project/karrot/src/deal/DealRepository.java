@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface DealRepository extends JpaRepository<Deal, Long> {
 
-    Optional<List<Deal>> findByMemberId(Long memberId);
+    Optional<List<Deal>> findByMember(Long memberId);
 
-    Optional<Deal> findByProductId(Long productId);
+    Optional<Deal> findByProduct(Long productId);
 }
