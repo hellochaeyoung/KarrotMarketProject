@@ -5,6 +5,7 @@ import com.project.karrot.src.image.MemberImageFile;
 import com.project.karrot.src.interest.InterestedProduct;
 import com.project.karrot.src.location.Location;
 import com.project.karrot.src.product.Product;
+import com.project.karrot.src.auth.Salt;
 import lombok.Builder;
 
 import javax.persistence.*;
@@ -24,6 +25,10 @@ public class Member {
     private String name;
     private String phoneNumber;
     private String nickName;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "SALT_ID")
+    private Salt salt;
 
     @OneToMany(mappedBy = "member")
     List<Product> products = new ArrayList<>();
@@ -132,6 +137,14 @@ public class Member {
 
     public void setFile(MemberImageFile file) {
         this.file = file;
+    }
+
+    public Salt getSalt() {
+        return salt;
+    }
+
+    public void setSalt(Salt salt) {
+        this.salt = salt;
     }
 }
 
