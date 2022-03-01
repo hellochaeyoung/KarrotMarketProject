@@ -2,13 +2,17 @@ package com.project.karrot.src.comment;
 
 import com.project.karrot.src.member.Member;
 import com.project.karrot.src.product.Product;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Comment {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -7,7 +7,9 @@ import com.project.karrot.src.deal.Deal;
 import com.project.karrot.src.image.ProductImageFile;
 import com.project.karrot.src.location.Location;
 import com.project.karrot.src.member.Member;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -15,6 +17,8 @@ import java.util.List;
 
 @Builder
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class Product {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

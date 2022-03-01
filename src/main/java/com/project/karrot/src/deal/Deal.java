@@ -2,10 +2,14 @@ package com.project.karrot.src.deal;
 
 import com.project.karrot.src.member.Member;
 import com.project.karrot.src.product.Product;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class Deal {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

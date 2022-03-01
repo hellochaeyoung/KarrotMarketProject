@@ -1,7 +1,9 @@
 package com.project.karrot.src.category;
 
 import com.project.karrot.src.product.Product;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -9,6 +11,8 @@ import java.util.List;
 
 @Entity
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Category {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
