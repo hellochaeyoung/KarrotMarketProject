@@ -1,26 +1,40 @@
 package com.project.karrot.src.member;
 
+import com.project.karrot.src.auth.Salt;
+import com.project.karrot.src.auth.SaltUtil;
 import com.project.karrot.src.location.Location;
 import com.project.karrot.src.member.dto.MemberRequestDto;
 import com.project.karrot.src.member.dto.MemberResponseDto;
 import com.project.karrot.src.location.LocationRepository;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.transaction.Transactional;
 
+@Slf4j
 @Transactional
 public class MemberService {
 
     private final MemberRepository memberRepository;
     private final LocationRepository locationRepository;
+    private final SaltUtil saltUtil;
 
-    public MemberService(MemberRepository memberRepository, LocationRepository locationRepository) {
+    public MemberService(MemberRepository memberRepository, LocationRepository locationRepository, SaltUtil saltUtil) {
         this.memberRepository = memberRepository;
         this.locationRepository = locationRepository;
+        this.saltUtil = saltUtil;
     }
 
     public MemberResponseDto join(MemberRequestDto memberRequestDto) {
 
         validateDuplicateMember(memberRequestDto); // 닉네임 중복 회원 검증
+
+        String password = memberRequestDto.getPassword();
+        String salt = saltUtil.genSalt();
+        log.info(salt);
+
+        // 비밀번호 암호화
+        String encodedPassword = saltUtil.encodePassword(salt, password);
+        memberRequestDto.setMemberAuth(new Salt(salt), encodedPassword);
 
         // 지역 설정
         Location findLocation = locationRepository.findByAddress(memberRequestDto.getLocationName()).orElseThrow();
@@ -28,11 +42,21 @@ public class MemberService {
 
         Member member = memberRequestDto.toEntity();
 
-        memberRepository.save(member);
-
-        //memberRepository.flush();
-
         return new MemberResponseDto(member);
+    }
+
+    public MemberResponseDto login(MemberRequestDto memberRequestDto) throws Exception{
+        MemberResponseDto loginMember = findByEmail(memberRequestDto.getEmail());
+
+        String salt = loginMember.getSalt().getSalt();
+        String password = memberRequestDto.getPassword();
+        password = saltUtil.encodePassword(salt, password);
+
+        if(!loginMember.getPassword().equals(password)) {
+            throw new Exception("비밀번호가 틀립니다.");
+        }
+
+        return loginMember;
     }
 
     private void validateDuplicateMember(MemberRequestDto memberRequestDto) {
@@ -69,17 +93,10 @@ public class MemberService {
         return new MemberResponseDto(findMember);
     }
 
-    public MemberResponseDto login(MemberRequestDto memberRequestDto) {
-        Member findMember = memberRepository.findByEmail(memberRequestDto.getEmail())
-                .filter(member -> member.getPassword().equals(memberRequestDto.getPassword()))
-                .orElse(null); // 추후 수정 필요, 이렇게 null 리턴하면 옵셔널 쓰는 의미가 없음
+    public MemberResponseDto findByEmail(String email) {
+        Member findMember = memberRepository.findByEmail(email).orElseThrow();
 
-        if(findMember == null) {
-            return null;
-        }else {
-            return new MemberResponseDto(findMember);
-        }
-
+        return new MemberResponseDto(findMember);
     }
 
     public void remove(Long memberId) {
