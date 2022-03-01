@@ -16,16 +16,14 @@ public class MemberResponseDto {
     private final String email;
     private final String password;
     private final String nickName;
-    private final Location location;
-    private final Salt salt;
+    //private final String address;
 
     public MemberResponseDto(Member member) {
         this.id = member.getId();
         this.email = member.getEmail();
         this.password = member.getPassword();
         this.nickName = member.getNickName();
-        this.location = member.getLocation();
-        this.salt = member.getSalt();
+        //this.address = member.getLocation().getAddress();
     }
 
 }
