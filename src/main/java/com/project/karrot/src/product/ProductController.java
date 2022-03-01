@@ -3,6 +3,7 @@ package com.project.karrot.src.product;
 import com.project.karrot.src.comment.CommentService;
 import com.project.karrot.src.comment.dto.CommentRequestDto;
 import com.project.karrot.src.comment.dto.CommentResponseDto;
+import com.project.karrot.src.member.MemberService;
 import com.project.karrot.src.member.dto.MemberResponseDto;
 import com.project.karrot.src.product.dto.ProductResponseDto;
 import io.swagger.annotations.ApiOperation;
@@ -15,6 +16,7 @@ import java.util.*;
 @RequestMapping("/products")
 public class ProductController {
 
+    private final MemberService memberService;
     private final ProductService productService;
     private final CommentService commentService;
 
@@ -24,7 +26,7 @@ public class ProductController {
 
         ProductResponseDto productResponseDto = productService.findById(productId);
 
-        MemberResponseDto productOwner = new MemberResponseDto(productResponseDto.getMember());
+        MemberResponseDto productOwner = memberService.find(productResponseDto.getMemberId());
         List<ProductResponseDto> productAllList = productService.findByMember(productOwner.getId());
         productAllList.remove(productResponseDto);
 
@@ -47,7 +49,7 @@ public class ProductController {
 
         ProductResponseDto productResponseDto = productService.findById(productId);
 
-        MemberResponseDto memberResponseDto = new MemberResponseDto(productResponseDto.getMember());
+        MemberResponseDto memberResponseDto = memberService.find(productResponseDto.getMemberId());
 
         //수정 필요
         //comment.setContents(commentForm.getContents());
