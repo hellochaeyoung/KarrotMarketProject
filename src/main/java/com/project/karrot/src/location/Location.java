@@ -2,12 +2,16 @@ package com.project.karrot.src.location;
 
 import com.project.karrot.src.member.Member;
 import com.project.karrot.src.product.Product;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class Location {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
