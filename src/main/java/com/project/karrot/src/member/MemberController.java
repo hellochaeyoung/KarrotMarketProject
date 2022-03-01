@@ -9,7 +9,6 @@ import com.project.karrot.src.ProductStatus;
 import com.project.karrot.src.location.LocationService;
 import com.project.karrot.src.product.ProductService;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -28,21 +27,24 @@ public class MemberController {
     private final LocationService locationService;
     private final ProductService productService;
 
+    @ApiOperation(value = "지역 조회", notes = "회원 가입 시 거주 지역을 검색한다")
     @GetMapping("/new/{address}")
-    public List<LocationResponseDto> getAll(@ApiParam(value = "거주 지역 검색", required = false) @PathVariable String address) {
+    public List<LocationResponseDto> getAll(@PathVariable String address) {
 
         return locationService.findByAddressAll(address);
     }
 
+    @ApiOperation(value = "회원 가입", notes = "회원 가입을 한다.")
     @PostMapping("/new")
-    public MemberResponseDto create(@ApiParam(value = "회원가입 입력 정보", required = true) @RequestBody MemberRequestDto memberRequestDto) {
+    public MemberResponseDto create(@RequestBody MemberRequestDto memberRequestDto) {
 
         return memberService.join(memberRequestDto);
     }
 
+
     @PostMapping("/login")
     public String login(@RequestBody MemberRequestDto memberRequestDto,
-                        BindingResult bindingResult, HttpServletRequest request) {
+                        BindingResult bindingResult, HttpServletRequest request) throws Exception {
 
         if(bindingResult.hasErrors()) {
             return "members/loginForm";
