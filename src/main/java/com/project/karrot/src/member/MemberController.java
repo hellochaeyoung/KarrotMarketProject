@@ -36,9 +36,8 @@ public class MemberController {
 
     @ApiOperation(value = "회원 가입", notes = "회원 가입을 한다.")
     @PostMapping("/new")
-    public MemberResponseDto create(@RequestBody MemberRequestDto memberRequestDto) {
-
-        return memberService.join(memberRequestDto);
+    public void create(@RequestBody MemberRequestDto memberRequestDto) {
+        memberService.join(memberRequestDto);
     }
 
 
@@ -66,7 +65,7 @@ public class MemberController {
 
         HttpSession session = request.getSession(); // 세션 있으면 반환, 없으면 신규 세션 생성
         session.setAttribute(SessionConstants.LOGIN_MEMBER, loginMember); // 세션에 로그인 회원 정보 보관
-        session.setAttribute(SessionConstants.LOGIN_MEMBER_LOCATION, loginMember.getLocation());
+        //session.setAttribute(SessionConstants.LOGIN_MEMBER_LOCATION, loginMember.getLocation());
 
         return "redirect:/";
     }
