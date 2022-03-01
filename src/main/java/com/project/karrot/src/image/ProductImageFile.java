@@ -1,10 +1,14 @@
 package com.project.karrot.src.image;
 
 import com.project.karrot.src.product.Product;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @DiscriminatorValue("productImageFile")
 public class ProductImageFile extends ImageFiles {
 
