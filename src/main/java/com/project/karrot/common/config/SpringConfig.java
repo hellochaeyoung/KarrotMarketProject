@@ -1,5 +1,7 @@
 package com.project.karrot.common.config;
 
+import com.project.karrot.src.auth.SaltRepository;
+import com.project.karrot.src.auth.SaltUtil;
 import com.project.karrot.src.category.CategoryRepository;
 import com.project.karrot.src.category.CategoryService;
 import com.project.karrot.src.comment.CommentRepository;
@@ -31,7 +33,12 @@ public class SpringConfig {
     private final ImageFileRepository imageFileRepository;
     private final LocationRepository locationRepository;
 
-    public SpringConfig(MemberRepository memberRepository, ProductRepository productRepository, InterestedRepository interestedRepository, CategoryRepository categoryRepository, CommentRepository commentRepository, DealRepository dealRepository, ImageFileRepository imageFileRepository, LocationRepository locationRepository) {
+    private final SaltUtil saltUtil;
+    private final SaltRepository saltRepository;
+
+    public SpringConfig(MemberRepository memberRepository, ProductRepository productRepository, InterestedRepository interestedRepository, CategoryRepository categoryRepository,
+                        CommentRepository commentRepository, DealRepository dealRepository, ImageFileRepository imageFileRepository, LocationRepository locationRepository,
+                        SaltRepository saltRepository, SaltUtil saltUtil) {
         this.memberRepository = memberRepository;
         this.productRepository = productRepository;
         this.interestedRepository = interestedRepository;
@@ -40,11 +47,14 @@ public class SpringConfig {
         this.dealRepository = dealRepository;
         this.imageFileRepository = imageFileRepository;
         this.locationRepository = locationRepository;
+
+        this.saltRepository = saltRepository;
+        this.saltUtil = saltUtil;
     }
 
     @Bean
     public MemberService memberService() {
-        return new MemberService(memberRepository, locationRepository);
+        return new MemberService(memberRepository, locationRepository, saltUtil);
     }
 
     @Bean
@@ -67,6 +77,11 @@ public class SpringConfig {
 
     @Bean
     public ImageFileService imageFileService() { return new ImageFileService(imageFileRepository); }
+
+    @Bean
+    public SaltUtil saltUtil() {
+        return new SaltUtil();
+    }
 
 }
 
