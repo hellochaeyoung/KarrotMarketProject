@@ -75,7 +75,7 @@ public class ProductService {
     }
 
     public List<ProductResponseDto> findByLocation(Long locationId) {
-        List<Product> productList = productRepository.findByLocationId(locationId).orElseGet(ArrayList::new);
+        List<Product> productList = productRepository.findByLocation(locationId).orElseGet(ArrayList::new);
 
         return productList.stream()
                 .map(ProductResponseDto::new)
@@ -83,7 +83,7 @@ public class ProductService {
     }
 
     public List<ProductResponseDto> findByLocationAndCategory(Long locationId, Long categoryId) {
-        List<Product> productList = productRepository.findByLocationIdAndCategoryId(locationId, categoryId).orElseGet(ArrayList::new);
+        List<Product> productList = productRepository.findByLocationAndCategory(locationId, categoryId).orElseGet(ArrayList::new);
 
         return productList.stream()
                 .map(ProductResponseDto::new)
@@ -91,7 +91,7 @@ public class ProductService {
     }
 
     public List<ProductResponseDto> findByMember(Long memberId) {
-        List<Product> productList = productRepository.findByMemberId(memberId).orElseGet(ArrayList::new);
+        List<Product> productList = productRepository.findByMember(memberId).orElseGet(ArrayList::new);
 
         return productList.stream()
                 .map(ProductResponseDto::new)
@@ -99,7 +99,7 @@ public class ProductService {
     }
 
     public List<ProductResponseDto> findByMemberAndStatus(Long memberId, ProductStatus status) {
-        List<Product> productList = productRepository.findByMemberIdAndProductStatus(memberId, status.name()).orElseGet(ArrayList::new);
+        List<Product> productList = productRepository.findByMemberAndProductStatus(memberId, status.name()).orElseGet(ArrayList::new);
 
         return productList.stream()
                 .map(ProductResponseDto::new)
