@@ -1,5 +1,6 @@
 package com.project.karrot.src.member.dto;
 
+import com.project.karrot.src.auth.Salt;
 import com.project.karrot.src.location.Location;
 import com.project.karrot.src.member.Member;
 import lombok.*;
@@ -20,6 +21,7 @@ public class MemberRequestDto {
     private String locationName;
 
     private Location location;
+    private Salt salt;
 
     public Member toEntity() {
         return Member.builder()
@@ -34,6 +36,11 @@ public class MemberRequestDto {
 
     public void setMemberRequestDto(Location location) {
         this.location = location;
+    }
+
+    public void setMemberAuth(Salt salt, String encodePassword) {
+        this.salt = salt;
+        this.password = encodePassword;
     }
 
 }
