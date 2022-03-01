@@ -7,6 +7,8 @@ import com.project.karrot.src.member.dto.MemberRequestDto;
 import com.project.karrot.src.member.dto.MemberResponseDto;
 import com.project.karrot.src.location.LocationRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.transaction.Transactional;
 
@@ -16,25 +18,24 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final LocationRepository locationRepository;
-    private final SaltUtil saltUtil;
 
-    public MemberService(MemberRepository memberRepository, LocationRepository locationRepository, SaltUtil saltUtil) {
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    public MemberService(MemberRepository memberRepository, LocationRepository locationRepository) {
         this.memberRepository = memberRepository;
         this.locationRepository = locationRepository;
-        this.saltUtil = saltUtil;
     }
 
-    public MemberResponseDto join(MemberRequestDto memberRequestDto) {
+    public void join(MemberRequestDto memberRequestDto) {
 
         validateDuplicateMember(memberRequestDto); // 닉네임 중복 회원 검증
 
         String password = memberRequestDto.getPassword();
-        String salt = saltUtil.genSalt();
-        log.info(salt);
 
         // 비밀번호 암호화
-        String encodedPassword = saltUtil.encodePassword(salt, password);
-        memberRequestDto.setMemberAuth(new Salt(salt), encodedPassword);
+        String encodedPassword = passwordEncoder.encode(password);
+        memberRequestDto.setMemberAuth(encodedPassword);
 
         // 지역 설정
         Location findLocation = locationRepository.findByAddress(memberRequestDto.getLocationName()).orElseThrow();
@@ -42,17 +43,14 @@ public class MemberService {
 
         Member member = memberRequestDto.toEntity();
 
-        return new MemberResponseDto(member);
+        memberRepository.save(member);
+
     }
 
     public MemberResponseDto login(MemberRequestDto memberRequestDto) throws Exception{
         MemberResponseDto loginMember = findByEmail(memberRequestDto.getEmail());
 
-        String salt = loginMember.getSalt().getSalt();
-        String password = memberRequestDto.getPassword();
-        password = saltUtil.encodePassword(salt, password);
-
-        if(!loginMember.getPassword().equals(password)) {
+        if(!passwordEncoder.matches(memberRequestDto.getPassword(), loginMember.getPassword())) {
             throw new Exception("비밀번호가 틀립니다.");
         }
 
