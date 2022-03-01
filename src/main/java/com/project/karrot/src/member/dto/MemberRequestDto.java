@@ -21,7 +21,6 @@ public class MemberRequestDto {
     private String locationName;
 
     private Location location;
-    private Salt salt;
 
     public Member toEntity() {
         return Member.builder()
@@ -30,7 +29,7 @@ public class MemberRequestDto {
                 .password(password)
                 .phoneNumber(phoneNumber)
                 .nickName(nickName)
-                .location(location)
+                //.location(location)
                 .build();
     }
 
@@ -38,8 +37,7 @@ public class MemberRequestDto {
         this.location = location;
     }
 
-    public void setMemberAuth(Salt salt, String encodePassword) {
-        this.salt = salt;
+    public void setMemberAuth(String encodePassword) {
         this.password = encodePassword;
     }
 
