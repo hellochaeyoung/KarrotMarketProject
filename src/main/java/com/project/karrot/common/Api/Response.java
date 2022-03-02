@@ -11,30 +11,24 @@ import org.springframework.http.ResponseEntity;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Message<T> {
+public class Response<T> {
 
     private int httpStatus;
     private T data;
 
     @SuppressWarnings("unchecked")
-    public static <T> Message<T> OK() {
-        return (Message<T>) Message.builder()
-                .httpStatus(200)
-                .build();
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> Message<T> OK(T data, HttpStatus httpStatus) {
-        return (Message<T>) Message.builder()
+    public static <T> Response<T> success(T data, HttpStatus httpStatus) {
+        return (Response<T>) Response.builder()
                 .data(data)
                 .httpStatus(httpStatus.value())
                 .build();
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> Message<T> ERROR() {
-        return (Message<T>) Message.builder()
-                .httpStatus(400)
+    public static <T> Response<T> fail(HttpStatus httpStatus, String message) {
+        return (Response<T>) Response.builder()
+                .httpStatus(httpStatus.value())
+                .data(message)
                 .build();
     }
 
@@ -43,4 +37,5 @@ public class Message<T> {
                 .status(this.httpStatus)
                 .body(data);
     }
+
 }
