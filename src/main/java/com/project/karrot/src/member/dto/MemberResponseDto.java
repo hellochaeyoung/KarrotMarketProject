@@ -1,13 +1,7 @@
 package com.project.karrot.src.member.dto;
 
-import com.project.karrot.src.auth.Salt;
-import com.project.karrot.src.deal.Deal;
-import com.project.karrot.src.interest.InterestedProduct;
-import com.project.karrot.src.location.Location;
 import com.project.karrot.src.member.Member;
 import lombok.Getter;
-
-import java.util.List;
 
 @Getter
 public class MemberResponseDto {
