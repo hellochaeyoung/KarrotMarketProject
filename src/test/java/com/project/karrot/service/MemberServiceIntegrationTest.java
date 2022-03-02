@@ -37,8 +37,8 @@ class MemberServiceIntegrationTest {
         memberReq.setPassword("aaaa");
         memberReq.setPhoneNumber("010-1111-1111");
 
-        memberService.join(memberReq);
-        MemberResponseDto memberRes = memberService.findByEmail(email);
+
+        MemberResponseDto memberRes = memberService.join(memberReq);
 
         String encodedPassword = memberRes.getPassword();
         System.out.println(memberRes.getId());
@@ -49,45 +49,57 @@ class MemberServiceIntegrationTest {
 
     }
 
-/*
     @Test
-    public void 회원가입() throws Exception {
-        //Given
-        Member member = new Member();
-        member.setName("hellochaeyoung");
-        member.setNickName("hello");
+    public void 로그인() {
+        MemberRequestDto memberReq = new MemberRequestDto();
 
-        System.out.println(member.getName());
-        //When
-        Long saveId = memberService.join(member);
-        Member find = memberService.find(saveId).get();
-        System.out.println(find.getName());
-        member.setName("cyahn");
+        String email = "cyahn@gmail.com";
 
-        //Then
-        Member findMember = memberService.find(saveId).get();
-        System.out.println(findMember.getName());
-        assertEquals(member.getNickName(), findMember.getNickName());
+        memberReq.setName("chaeyoung");
+        memberReq.setNickName("cyyyyyy");
+        memberReq.setEmail(email);
+        memberReq.setLocationName("경기도 부천시 상동");
+        memberReq.setPassword("aaaa");
+        memberReq.setPhoneNumber("010-1111-1111");
+
+
+        MemberResponseDto memberRes = memberService.join(memberReq);
+
+        MemberRequestDto loginMember = new MemberRequestDto();
+        loginMember.setEmail(email);
+        loginMember.setPassword("bdfsdf");
+        try {
+            memberService.login(loginMember);
+        } catch (Exception e) {
+            assertThat(e.getMessage()).isEqualTo("비밀번호가 틀립니다.");
+        }
+
     }
 
     @Test
-    public void 중복_회원_예외() throws Exception {
+    public void 중복이메일_회원_예외() throws Exception {
         //Given
-        Member member = new Member();
-        member.setNickName("hello");
-
-        Member member2 = new Member();
-        member2.setNickName("hello");
+        MemberRequestDto member1 = new MemberRequestDto();
+        member1.setEmail("cyahn@naver.com");
 
         //When
-        memberService.join(member);
         IllegalStateException e = assertThrows(IllegalStateException.class,
-                () -> memberService.join(member2));
+                () -> memberService.join(member1));
 
         //Then
-        assertThat(e.getMessage()).isEqualTo("이미 존재하는 닉네임입니다.");
+        assertThat(e.getMessage()).isEqualTo("이미 존재하는 이메일입니다.");
     }
 
- */
+    @Test
+    public void 중복닉네임_회원_예외() {
+        MemberRequestDto member = new MemberRequestDto();
+        member.setNickName("부엉");
+
+        IllegalStateException exception = assertThrows(IllegalStateException.class,
+                () -> memberService.join(member));
+
+        assertThat(exception.getMessage()).isEqualTo("이미 존재하는 닉네임입니다.");
+    }
+
 
 }
