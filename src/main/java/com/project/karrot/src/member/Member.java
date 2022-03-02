@@ -5,7 +5,6 @@ import com.project.karrot.src.image.MemberImageFile;
 import com.project.karrot.src.interest.InterestedProduct;
 import com.project.karrot.src.location.Location;
 import com.project.karrot.src.product.Product;
-import com.project.karrot.src.auth.Salt;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -13,6 +12,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Builder
 @Entity
@@ -21,7 +21,7 @@ import java.util.List;
 public class Member {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "MEMBER_ID")
+    @Column(name = "member_id")
     private Long id;
 
     private String email;
@@ -29,6 +29,15 @@ public class Member {
     private String name;
     private String phoneNumber;
     private String nickName;
+
+    private boolean activated;
+
+    @ManyToMany
+    @JoinTable(
+            name = "member_authority",
+            joinColumns = {@JoinColumn(name = "member_id", referencedColumnName = "member_id")},
+            inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "authority_name")})
+    private Set<Authority> authorities;
 
     @OneToMany(mappedBy = "member")
     List<Product> products = new ArrayList<>();
@@ -74,7 +83,7 @@ public class Member {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -137,6 +146,22 @@ public class Member {
 
     public void setFile(MemberImageFile file) {
         this.file = file;
+    }
+
+    public boolean isActivated() {
+        return activated;
+    }
+
+    public void setActivated(boolean activated) {
+        this.activated = activated;
+    }
+
+    public Set<Authority> getAuthorities() {
+        return authorities;
+    }
+
+    public void setAuthorities(Set<Authority> authorities) {
+        this.authorities = authorities;
     }
 
 }
