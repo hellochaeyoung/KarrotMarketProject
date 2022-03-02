@@ -1,7 +1,5 @@
 package com.project.karrot.src.member;
 
-import com.project.karrot.src.auth.Salt;
-import com.project.karrot.src.auth.SaltUtil;
 import com.project.karrot.src.location.Location;
 import com.project.karrot.src.member.dto.MemberRequestDto;
 import com.project.karrot.src.member.dto.MemberResponseDto;
@@ -11,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Slf4j
 @Transactional
@@ -27,43 +26,47 @@ public class MemberService {
         this.locationRepository = locationRepository;
     }
 
-    public void join(MemberRequestDto memberRequestDto) {
+    public MemberResponseDto join(MemberRequestDto memberRequestDto) {
+
+        if(memberRepository.findOneWithAuthoritiesByEmail(memberRequestDto.getEmail()).orElse(null) != null) {
+            throw new RuntimeException("이미 가입되어 있는 회원입니다.");
+        }
 
         validateDuplicateMember(memberRequestDto); // 닉네임 중복 회원 검증
 
-        String password = memberRequestDto.getPassword();
+        Authority authority = Authority.builder()
+                .authorityName("ROLE_MEMBER")
+                .build();
 
         // 비밀번호 암호화
+        String password = memberRequestDto.getPassword();
         String encodedPassword = passwordEncoder.encode(password);
-        memberRequestDto.setMemberAuth(encodedPassword);
 
         // 지역 설정
-        Location findLocation = locationRepository.findByAddress(memberRequestDto.getLocationName()).orElseThrow();
-        memberRequestDto.setMemberRequestDto(findLocation);
+        //Location findLocation = locationRepository.findByAddress(memberRequestDto.getLocationName()).orElseThrow();
 
-        Member member = memberRequestDto.toEntity();
+        Member member = memberRequestDto.toEntity(encodedPassword, authority);
 
-        memberRepository.save(member);
+        return new MemberResponseDto(memberRepository.save(member));
 
     }
 
     public MemberResponseDto login(MemberRequestDto memberRequestDto) throws Exception{
-        MemberResponseDto loginMember = findByEmail(memberRequestDto.getEmail());
+        Member loginMember = memberRepository.findByEmail(memberRequestDto.getEmail()).orElseThrow();
 
         if(!passwordEncoder.matches(memberRequestDto.getPassword(), loginMember.getPassword())) {
             throw new Exception("비밀번호가 틀립니다.");
         }
 
-        return loginMember;
+        return new MemberResponseDto(loginMember);
     }
 
     private void validateDuplicateMember(MemberRequestDto memberRequestDto) {
-        // findByNickName은 Optional을 리턴하는데 Optional을 써주는건 좋지않다.
-        // 바로 메소드를 붙여 사용하는 게 더 좋은 방법이다.
         memberRepository.findByNickName(memberRequestDto.getNickName())
                 .ifPresent(m -> {
                     throw new IllegalStateException("이미 존재하는 닉네임입니다.");
                 });
+
     }
 
     public MemberResponseDto update(Long memberId, String nickName) {
