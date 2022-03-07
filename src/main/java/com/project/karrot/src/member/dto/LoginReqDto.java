@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 public class LoginReqDto {
 
     @NotNull
-    @Size(min = 10, max = 50)
+    @Size(min = 5, max = 50)
     private String email;
 
     @NotNull
