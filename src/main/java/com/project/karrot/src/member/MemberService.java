@@ -4,6 +4,7 @@ import com.project.karrot.src.location.Location;
 import com.project.karrot.src.member.dto.MemberRequestDto;
 import com.project.karrot.src.member.dto.MemberResponseDto;
 import com.project.karrot.src.location.LocationRepository;
+import com.project.karrot.src.member.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -51,14 +52,12 @@ public class MemberService {
 
     }
 
-    public MemberResponseDto login(MemberRequestDto memberRequestDto) throws Exception{
-        Member loginMember = memberRepository.findByEmail(memberRequestDto.getEmail()).orElseThrow();
+    public MemberResponseDto login() {
 
-        if(!passwordEncoder.matches(memberRequestDto.getPassword(), loginMember.getPassword())) {
-            throw new Exception("비밀번호가 틀립니다.");
-        }
+        Member loginMember = SecurityUtil.getCurrentMembername().flatMap(memberRepository::findOneWithAuthoritiesByEmail).orElseThrow();
 
         return new MemberResponseDto(loginMember);
+
     }
 
     private void validateDuplicateMember(MemberRequestDto memberRequestDto) {
