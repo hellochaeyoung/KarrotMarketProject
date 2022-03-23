@@ -52,11 +52,9 @@ public class MemberService {
 
     }
 
-    public MemberResponseDto login() {
+    public Optional<Member> login() {
 
-        Member loginMember = SecurityUtil.getCurrentMembername().flatMap(memberRepository::findOneWithAuthoritiesByEmail).orElseThrow();
-
-        return new MemberResponseDto(loginMember);
+        return SecurityUtil.getCurrentMembername().flatMap(memberRepository::findOneWithAuthoritiesByEmail);
 
     }
 
