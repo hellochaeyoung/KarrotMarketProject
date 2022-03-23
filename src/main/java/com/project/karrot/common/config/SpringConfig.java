@@ -1,7 +1,6 @@
 package com.project.karrot.common.config;
 
-import com.project.karrot.src.auth.SaltRepository;
-import com.project.karrot.src.auth.SaltUtil;
+import com.project.karrot.src.aop.LoginCheckAspect;
 import com.project.karrot.src.category.CategoryRepository;
 import com.project.karrot.src.category.CategoryService;
 import com.project.karrot.src.comment.CommentRepository;
@@ -14,6 +13,7 @@ import com.project.karrot.src.interest.InterestedRepository;
 import com.project.karrot.src.interest.InterestedService;
 import com.project.karrot.src.location.LocationRepository;
 import com.project.karrot.src.location.LocationService;
+import com.project.karrot.src.member.CustomUserDetailsService;
 import com.project.karrot.src.member.MemberRepository;
 import com.project.karrot.src.member.MemberService;
 import com.project.karrot.src.product.ProductRepository;
@@ -71,6 +71,9 @@ public class SpringConfig {
 
     @Bean
     public ImageFileService imageFileService() { return new ImageFileService(imageFileRepository); }
+
+    @Bean
+    public LoginCheckAspect loginCheckAspect() {return new LoginCheckAspect(memberService()); }
 
 
 }
