@@ -25,7 +25,8 @@ public class AuthController {
 
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
-    private final MemberService memberService;
+
+    private final MemberAuthService memberAuthService;
 
     @ApiOperation(value = "로그인 - 인증", notes = "이메일과 비밀번호가 일치하는지 확인한다.")
     @PostMapping("/auth")
@@ -48,6 +49,6 @@ public class AuthController {
     @ApiOperation(value = "로그인 - 완료", notes = "인증 되면 로그인을 성공하고 완료한다.")
     @GetMapping("/user")
     public ResponseEntity<?> finish() {
-        return ResponseEntity.ok(memberService.login());
+        return ResponseEntity.ok(memberAuthService.login());
     }
 }

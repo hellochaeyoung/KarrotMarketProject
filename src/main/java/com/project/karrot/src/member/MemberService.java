@@ -15,13 +15,18 @@ import java.util.Optional;
 
 @Slf4j
 @Transactional
-@AllArgsConstructor
 public class MemberService {
 
     private final MemberRepository memberRepository;
     private final LocationRepository locationRepository;
-    private final PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    public MemberService(MemberRepository memberRepository, LocationRepository locationRepository) {
+        this.memberRepository = memberRepository;
+        this.locationRepository = locationRepository;
+    }
 
     public MemberResponseDto join(MemberRequestDto memberRequestDto) {
 
@@ -48,13 +53,7 @@ public class MemberService {
 
     }
 
-    public Optional<Member> login() {
-
-        return SecurityUtil.getCurrentMembername().flatMap(memberRepository::findOneWithAuthoritiesByEmail);
-
-    }
-
-    private void validateDuplicateMember(MemberRequestDto memberRequestDto) {
+    public void validateDuplicateMember(MemberRequestDto memberRequestDto) {
         memberRepository.findByNickName(memberRequestDto.getNickName())
                 .ifPresent(m -> {
                     throw new IllegalStateException("이미 존재하는 닉네임입니다.");
