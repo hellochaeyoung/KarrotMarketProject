@@ -1,6 +1,7 @@
 package com.project.karrot.src.aop;
 
 import com.project.karrot.src.member.Member;
+import com.project.karrot.src.member.MemberRepository;
 import com.project.karrot.src.member.MemberService;
 import com.project.karrot.src.member.dto.MemberResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import java.util.Optional;
 
 @Aspect
-@Component
 @RequiredArgsConstructor
 public class LoginCheckAspect {
 
