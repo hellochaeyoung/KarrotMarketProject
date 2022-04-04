@@ -13,9 +13,7 @@ import com.project.karrot.src.interest.InterestedRepository;
 import com.project.karrot.src.interest.InterestedService;
 import com.project.karrot.src.location.LocationRepository;
 import com.project.karrot.src.location.LocationService;
-import com.project.karrot.src.member.CustomUserDetailsService;
-import com.project.karrot.src.member.MemberRepository;
-import com.project.karrot.src.member.MemberService;
+import com.project.karrot.src.member.*;
 import com.project.karrot.src.product.ProductRepository;
 import com.project.karrot.src.product.ProductService;
 import lombok.AllArgsConstructor;
@@ -23,6 +21,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Optional;
 
 @Configuration
 @AllArgsConstructor
@@ -37,15 +37,18 @@ public class SpringConfig {
     private final ImageFileRepository imageFileRepository;
     private final LocationRepository locationRepository;
 
-    private final PasswordEncoder passwordEncoder;
-
     @Bean
     public MemberService memberService() {
-        return new MemberService(memberRepository, locationRepository, passwordEncoder);
+        return new MemberService(memberRepository, locationRepository);
     }
 
     @Bean
-    public ProductService productService() {return new ProductService(productRepository, categoryRepository, memberRepository); }
+    public MemberAuthService memberAuthService() {
+        return new MemberAuthService(memberRepository);
+    }
+
+    @Bean
+    public ProductService productService() {return new ProductService(productRepository, categoryRepository, memberRepository, locationRepository); }
 
     @Bean
     public InterestedService interestedService() { return new InterestedService(interestedRepository); }
