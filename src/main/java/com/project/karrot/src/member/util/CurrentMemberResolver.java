@@ -1,6 +1,8 @@
 package com.project.karrot.src.member.util;
 
 import com.project.karrot.src.annotation.CurrentMemberId;
+import com.project.karrot.src.member.MemberAuthService;
+import com.project.karrot.src.member.MemberDetailsService;
 import com.project.karrot.src.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
@@ -14,7 +16,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @RequiredArgsConstructor
 public class CurrentMemberResolver implements HandlerMethodArgumentResolver {
 
-    private final MemberService memberService;
+    private final MemberAuthService memberAuthService;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -23,6 +25,6 @@ public class CurrentMemberResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        return memberService.login().get().getId();
+        return memberAuthService.login().get().getId();
     }
 }
