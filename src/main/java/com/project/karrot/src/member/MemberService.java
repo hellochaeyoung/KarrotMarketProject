@@ -5,6 +5,7 @@ import com.project.karrot.src.member.dto.MemberRequestDto;
 import com.project.karrot.src.member.dto.MemberResponseDto;
 import com.project.karrot.src.location.LocationRepository;
 import com.project.karrot.src.member.util.SecurityUtil;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,18 +15,13 @@ import java.util.Optional;
 
 @Slf4j
 @Transactional
+@AllArgsConstructor
 public class MemberService {
 
     private final MemberRepository memberRepository;
     private final LocationRepository locationRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    public MemberService(MemberRepository memberRepository, LocationRepository locationRepository) {
-        this.memberRepository = memberRepository;
-        this.locationRepository = locationRepository;
-    }
 
     public MemberResponseDto join(MemberRequestDto memberRequestDto) {
 
