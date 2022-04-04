@@ -1,5 +1,7 @@
 package com.project.karrot.src.product;
 
+import com.project.karrot.src.category.Category;
+import com.project.karrot.src.location.Location;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,7 +14,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Optional<List<Product>> findByLocation(Long locationId);
 
-    Optional<List<Product>> findByLocationAndCategory(Long locationId, Long categoryId); // 지역별 및 카테고리별 상품 조회
+    Optional<List<Product>> findByLocationAndCategory(Location location, Category category); // 지역별 및 카테고리별 상품 조회
 
     Optional<List<Product>> findByMember(Long memberId); // 회원 등록 상품 전체 조회
 
