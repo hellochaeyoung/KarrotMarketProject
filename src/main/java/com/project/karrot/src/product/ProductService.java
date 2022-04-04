@@ -1,5 +1,7 @@
 package com.project.karrot.src.product;
 
+import com.project.karrot.src.location.Location;
+import com.project.karrot.src.location.LocationRepository;
 import com.project.karrot.src.product.dto.ProductRequestDto;
 import com.project.karrot.src.product.dto.ProductResponseDto;
 import com.project.karrot.src.category.CategoryRepository;
@@ -7,6 +9,7 @@ import com.project.karrot.src.member.MemberRepository;
 import com.project.karrot.src.ProductStatus;
 import com.project.karrot.src.category.Category;
 import com.project.karrot.src.member.Member;
+import lombok.AllArgsConstructor;
 
 import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
@@ -16,17 +19,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Transactional
+@AllArgsConstructor
 public class ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final MemberRepository memberRepository;
-
-    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, MemberRepository memberRepository) {
-        this.productRepository = productRepository;
-        this.categoryRepository = categoryRepository;
-        this.memberRepository = memberRepository;
-    }
+    private final LocationRepository locationRepository;
 
     public ProductResponseDto register(ProductRequestDto productRequestDto) {
 
@@ -83,7 +82,10 @@ public class ProductService {
     }
 
     public List<ProductResponseDto> findByLocationAndCategory(Long locationId, Long categoryId) {
-        List<Product> productList = productRepository.findByLocationAndCategory(locationId, categoryId).orElseGet(ArrayList::new);
+        Location location = locationRepository.findById(locationId).orElseThrow();
+        Category category = categoryRepository.findById(categoryId).orElseThrow();
+
+        List<Product> productList = productRepository.findByLocationAndCategory(location, category).orElseGet(ArrayList::new);
 
         return productList.stream()
                 .map(ProductResponseDto::new)
