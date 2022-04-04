@@ -1,8 +1,6 @@
 package com.project.karrot.src.aop;
 
-import com.project.karrot.src.member.Member;
-import com.project.karrot.src.member.MemberRepository;
-import com.project.karrot.src.member.MemberService;
+import com.project.karrot.src.member.*;
 import com.project.karrot.src.member.dto.MemberResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.annotation.Aspect;
@@ -17,7 +15,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class LoginCheckAspect {
 
-    private final MemberService memberService;
+    private final MemberAuthService memberAuthService;
 
     /*
         로그인 되어있는지 체크하는 메소드
@@ -26,7 +24,7 @@ public class LoginCheckAspect {
 
     @Before("@annotation(com.project.karrot.src.annotation.LoginCheck) && @annotation(target)")
     public void loginCheck() throws HttpClientErrorException{
-        Optional<Member> member = memberService.login();
+        Optional<Member> member = memberAuthService.login();
         if(member.isEmpty()) {
             throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED);
         }
