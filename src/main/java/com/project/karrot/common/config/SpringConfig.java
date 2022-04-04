@@ -18,10 +18,14 @@ import com.project.karrot.src.member.MemberRepository;
 import com.project.karrot.src.member.MemberService;
 import com.project.karrot.src.product.ProductRepository;
 import com.project.karrot.src.product.ProductService;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
+@AllArgsConstructor
 public class SpringConfig {
 
     private final MemberRepository memberRepository;
@@ -33,22 +37,11 @@ public class SpringConfig {
     private final ImageFileRepository imageFileRepository;
     private final LocationRepository locationRepository;
 
-    public SpringConfig(MemberRepository memberRepository, ProductRepository productRepository, InterestedRepository interestedRepository, CategoryRepository categoryRepository,
-                        CommentRepository commentRepository, DealRepository dealRepository, ImageFileRepository imageFileRepository, LocationRepository locationRepository) {
-        this.memberRepository = memberRepository;
-        this.productRepository = productRepository;
-        this.interestedRepository = interestedRepository;
-        this.categoryRepository = categoryRepository;
-        this.commentRepository = commentRepository;
-        this.dealRepository = dealRepository;
-        this.imageFileRepository = imageFileRepository;
-        this.locationRepository = locationRepository;
-
-    }
+    private final PasswordEncoder passwordEncoder;
 
     @Bean
     public MemberService memberService() {
-        return new MemberService(memberRepository, locationRepository);
+        return new MemberService(memberRepository, locationRepository, passwordEncoder);
     }
 
     @Bean
@@ -71,10 +64,6 @@ public class SpringConfig {
 
     @Bean
     public ImageFileService imageFileService() { return new ImageFileService(imageFileRepository); }
-
-    @Bean
-    public LoginCheckAspect loginCheckAspect() {return new LoginCheckAspect(memberService()); }
-
 
 }
 
