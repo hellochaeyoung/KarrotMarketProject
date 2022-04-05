@@ -38,7 +38,7 @@ public class MemberRequestDto {
 
     private String locationName;
 
-    public Member toEntity(String password, Authority authority) {
+    public Member toEntity(String password, Authority authority, Location location) {
         return Member.builder()
                 .name(name)
                 .email(email)
@@ -47,7 +47,7 @@ public class MemberRequestDto {
                 .nickName(nickName)
                 .authorities(Collections.singleton(authority))
                 .activated(true)
-                //.location(location)
+                .location(location)
                 .build();
     }
 /*
