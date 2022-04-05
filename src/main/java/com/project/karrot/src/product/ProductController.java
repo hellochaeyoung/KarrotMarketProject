@@ -27,7 +27,7 @@ public class ProductController {
         ProductResponseDto productResponseDto = productService.findById(productId);
 
         MemberResponseDto productOwner = memberService.find(productResponseDto.getMemberId());
-        List<ProductResponseDto> productAllList = productService.findByMember(productOwner.getId());
+        List<ProductResponseDto> productAllList = productService.findByMemberId(productOwner.getId());
         productAllList.remove(productResponseDto);
 
         return productAllList;
