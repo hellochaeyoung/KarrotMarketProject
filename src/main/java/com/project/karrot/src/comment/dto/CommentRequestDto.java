@@ -17,24 +17,24 @@ public class CommentRequestDto {
     private String contents;
 
     private String time;
-    private Member member;
-    private Product product;
+    //private Member member;
+    //private Product product;
 
     private Long memberId;
 
     public Comment toEntity() {
         return Comment.builder()
-                .commentId(commentId)
+                .id(commentId)
                 .contents(contents)
                 .time(time)
-                .member(member)
-                .product(product)
+                //.member(member)
+                //.product(product)
                 .build();
     }
 
     public void setCommentRequestDto(Member member, Product product, String time) {
-        this.member = member;
-        this.product = product;
+        //this.member = member;
+        //this.product = product;
         this.time = time;
     }
 

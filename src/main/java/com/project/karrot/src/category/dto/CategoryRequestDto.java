@@ -15,7 +15,7 @@ public class CategoryRequestDto {
 
     public Category toEntity() {
         return Category.builder()
-                .categoryId(categoryId)
+                .id(categoryId)
                 .categoryName(categoryName)
                 .build();
     }

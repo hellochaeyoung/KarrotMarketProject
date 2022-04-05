@@ -10,7 +10,7 @@ public class LocationResponseDto {
     private final String address;
 
     public LocationResponseDto(Location location) {
-        this.locationId = location.getLocationId();
+        this.locationId = location.getId();
         this.address = location.getAddress();
     }
 }

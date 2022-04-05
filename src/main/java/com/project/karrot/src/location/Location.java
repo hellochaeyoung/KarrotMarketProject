@@ -15,7 +15,8 @@ import java.util.List;
 public class Location {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long locationId;
+    @Column(name = "location_id")
+    private Long id;
 
     private String address;
 
@@ -41,12 +42,12 @@ public class Location {
         this.members = members;
     }
 
-    public long getLocationId() {
-        return locationId;
+    public Long getId() {
+        return id;
     }
 
-    public void setLocationId(long locationId) {
-        this.locationId = locationId;
+    public void setId(long locationId) {
+        this.id = id;
     }
 
     public String getAddress() {

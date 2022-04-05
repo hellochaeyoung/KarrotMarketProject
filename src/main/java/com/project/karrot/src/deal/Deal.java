@@ -13,7 +13,8 @@ import javax.persistence.*;
 public class Deal {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long dealId;
+    @Column(name = "deal_id")
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "MEMBER_ID")
@@ -23,12 +24,12 @@ public class Deal {
     @JoinColumn(name = "PRODUCT_ID")
     private Product product;
 
-    public long getDealId() {
-        return dealId;
+    public Long getId() {
+        return id;
     }
 
-    public void setDealId(long dealId) {
-        this.dealId = dealId;
+    public void setDealId(Long id) {
+        this.id = id;
     }
 
     public Member getMember() {

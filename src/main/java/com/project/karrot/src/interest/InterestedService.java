@@ -31,7 +31,7 @@ public class InterestedService {
     }
 
     public Optional<List<InterestedProduct>> findInterestedByProduct(Product product) {
-        return interestedRepository.findByProduct(product.getProductId());
+        return interestedRepository.findByProduct(product.getId());
     }
 
     public void remove(InterestedProduct interestedProduct) {

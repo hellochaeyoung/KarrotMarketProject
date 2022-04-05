@@ -32,6 +32,7 @@ public class ProductRequestDto {
 
     public Product toEntity() {
         return Product.builder()
+                .id(productId)
                 .productName(productName)
                 .price(price)
                 .contents(contents)

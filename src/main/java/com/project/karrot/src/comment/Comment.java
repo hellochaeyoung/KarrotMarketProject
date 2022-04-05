@@ -16,7 +16,8 @@ import java.util.List;
 public class Comment {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long commentId;
+    @Column(name = "comment_id")
+    private Long id;
 
     private String contents;
     private String time;
@@ -29,12 +30,12 @@ public class Comment {
     @JoinColumn(name = "PRODUCT_ID")
     private Product product;
 
-    public long getCommentId() {
-        return commentId;
+    public Long getId() {
+        return id;
     }
 
-    public void setCommentId(long commentId) {
-        this.commentId = commentId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getContents() {

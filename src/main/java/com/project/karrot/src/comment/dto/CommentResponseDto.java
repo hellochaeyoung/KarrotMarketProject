@@ -19,7 +19,7 @@ public class CommentResponseDto {
 
     public CommentResponseDto(Comment comment) {
         this.nickName = comment.getMember().getNickName();
-        this.commentId = comment.getCommentId();
+        this.commentId = comment.getId();
         this.contents = comment.getContents();
         this.time = comment.getTime();
     }

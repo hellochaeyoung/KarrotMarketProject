@@ -15,7 +15,7 @@ public class ProductResponseDto {
     private final Long memberId;
 
     public ProductResponseDto(Product product) {
-        this.productId = product.getProductId();
+        this.productId = product.getId();
         this.productName = product.getProductName();
         this.price = product.getPrice();
         this.likeCount = product.getLikeCount();

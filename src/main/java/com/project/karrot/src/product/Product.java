@@ -10,6 +10,7 @@ import com.project.karrot.src.member.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -22,7 +23,8 @@ import java.util.List;
 public class Product {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long productId;
+    @Column(name = "product_id")
+    private Long id;
 
     private String productName;
     private int price;
@@ -92,12 +94,12 @@ public class Product {
         this.deal = deal;
     }
 
-    public long getProductId() {
-        return productId;
+    public Long getId() {
+        return id;
     }
 
-    public void setProductId(long productId) {
-        this.productId = productId;
+    public void setProductId(Long id) {
+        this.id = id;
     }
 
     public String getProductName() {
