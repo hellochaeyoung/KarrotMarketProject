@@ -82,18 +82,15 @@ public class ProductService {
     }
 
     public List<ProductResponseDto> findByLocationAndCategory(Long locationId, Long categoryId) {
-        Location location = locationRepository.findById(locationId).orElseThrow();
-        Category category = categoryRepository.findById(categoryId).orElseThrow();
-
-        List<Product> productList = productRepository.findByLocationAndCategory(location, category).orElseGet(ArrayList::new);
+        List<Product> productList = productRepository.findByLocationIdAndCategoryId(locationId, categoryId).orElseGet(ArrayList::new);
 
         return productList.stream()
                 .map(ProductResponseDto::new)
                 .collect(Collectors.toList());
     }
 
-    public List<ProductResponseDto> findByMember(Long memberId) {
-        List<Product> productList = productRepository.findByMember(memberId).orElseGet(ArrayList::new);
+    public List<ProductResponseDto> findByMemberId(Long memberId) {
+        List<Product> productList = productRepository.findByMemberId(memberId).orElseGet(ArrayList::new);
 
         return productList.stream()
                 .map(ProductResponseDto::new)
