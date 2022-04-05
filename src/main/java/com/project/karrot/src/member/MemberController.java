@@ -37,7 +37,7 @@ public class MemberController {
         List<ProductResponseDto> list = new ArrayList<>();
 
         if(status.equals("ALL")) {
-            list = productService.findByMember(memberId);
+            list = productService.findByMemberId(memberId);
         }else if(status.equals("SALE")) {
             list = productService.findByMemberAndStatus(memberId, ProductStatus.SALE);
         }else {
