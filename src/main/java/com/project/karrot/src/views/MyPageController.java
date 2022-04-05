@@ -1,6 +1,8 @@
 package com.project.karrot.src.views;
 
 import com.project.karrot.constants.SessionConstants;
+import com.project.karrot.src.annotation.CurrentMemberId;
+import com.project.karrot.src.annotation.LoginCheck;
 import com.project.karrot.src.category.CategoryService;
 import com.project.karrot.src.category.dto.CategoryResponseDto;
 import com.project.karrot.src.deal.DealService;
@@ -26,7 +28,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/{memberId}/mypage")
+@RequestMapping("/mypage")
 public class MyPageController {
 
     private final MemberService memberService;
@@ -36,7 +38,8 @@ public class MyPageController {
 
     @ApiOperation(value = "마이페이지 - 프로필 조회", notes = "프로필을 조회한다.")
     @GetMapping("/profile")
-    public String profile(@PathVariable Long memberId) {
+    @LoginCheck
+    public String profile(@CurrentMemberId Long memberId) {
 
         MemberResponseDto memberResponseDto = memberService.find(memberId);
 
@@ -46,13 +49,15 @@ public class MyPageController {
 
     @ApiOperation(value = "마이페이지 - 프로필 수정", notes = "프로필을 수정한다.")
     @PutMapping("/profile")
-    public MemberResponseDto change(@PathVariable Long memberId, @RequestBody String nickName) {
+    @LoginCheck
+    public MemberResponseDto change(@CurrentMemberId Long memberId, @RequestBody String nickName) {
         return memberService.update(memberId, nickName);
     }
 
     @ApiOperation(value = "마이페이지 - 등록 상품 목록 조회", notes = "내가 등록한 상품들의 상품 상태별 목록을 조회한다.")
     @GetMapping("/myProducts/{status}")
-    public List<ProductResponseDto> getProductList(@PathVariable Long memberId, @PathVariable String status) {
+    @LoginCheck
+    public List<ProductResponseDto> getProductList(@CurrentMemberId Long memberId, @PathVariable String status) {
 
         List<ProductResponseDto> list = new ArrayList<>();
 
@@ -61,11 +66,12 @@ public class MyPageController {
         if(status.equals("SALE")) { // 판매중
             list = productService.findByMemberAndStatus(memberId, ProductStatus.SALE);
         }else if(status.equals("COMPLETE")){ // 거래완료
+            /*
             for(Deal deal : member.getDeals()) {
                 ProductResponseDto productResponseDto = new ProductResponseDto(deal.getProduct());
                 list.add(productResponseDto);
                 System.out.println(productResponseDto.getProductName());
-            }
+            }*/
         }
 
         return list;
@@ -73,7 +79,8 @@ public class MyPageController {
 
     @ApiOperation(value = "마이페이지 - 등록 상품 상태 수정", notes = "내가 등록한 상품의 상품 상태를 변경한다.")
     @PostMapping("/myProducts")
-    public List<ProductResponseDto> updateStatus(@PathVariable Long memberId, @RequestBody String status) {
+    @LoginCheck
+    public List<ProductResponseDto> updateStatus(@CurrentMemberId Long memberId, @RequestBody String status) {
 
         List<ProductResponseDto> list = new ArrayList<>();
 
@@ -85,10 +92,11 @@ public class MyPageController {
         if(status.equals("RESERVATION")) {
             list = productService.findByMemberAndStatus(member.getId(), ProductStatus.SALE);
         }else {
+            /*
             for(Deal d : member.getDeals()) {
                 ProductResponseDto productResponseDto = new ProductResponseDto(d.getProduct());
                 list.add(productResponseDto);
-            }
+            }*/
         }
 
         return list;
@@ -97,23 +105,28 @@ public class MyPageController {
 
     @ApiOperation(value = "마이페이지 - 관심 상품 목록 조회", notes = "관심 등록한 상품 목록을 상품 상태별로 조회한다.")
     @GetMapping("/myInterests/{status}")
-    public List<InterestedProduct> getInterestedList(@PathVariable Long memberId, @PathVariable String status) {
+    @LoginCheck
+    public List<InterestedProduct> getInterestedList(@CurrentMemberId Long memberId, @PathVariable String status) {
 
         MemberResponseDto member = memberService.find(memberId);
 
         ArrayList<InterestedProduct> list = new ArrayList<>();
         if(status.equals("SALE")) {
+            /*
             for(InterestedProduct p : member.getInterestedProducts()) {
                 if(p.getProduct().getProductStatus().equals(ProductStatus.SALE)) { //////////////
                     list.add(p);
                 }
-            }
+            }*/
         }else {
+            /*
             for(InterestedProduct p : member.getInterestedProducts()) {
                 if(p.getProduct().getProductStatus().equals(ProductStatus.COMPLETE)) { ///////////
                     list.add(p);
                 }
             }
+
+             */
         }
 
         return list;
@@ -122,6 +135,7 @@ public class MyPageController {
 
     @ApiOperation(value = "마이페이지 - 상품 정보 조회", notes = "등록 상품의 정보를 조회한다.")
     @GetMapping("/myProducts/{productId}")
+    @LoginCheck
     public ProductAndCategoryRes findUpdateProduct(@PathVariable Long productId) {
 
         List<CategoryResponseDto> categories = categoryService.findAll();
@@ -132,6 +146,7 @@ public class MyPageController {
 
     @ApiOperation(value = "마이페이지 - 등록 상품 수정", notes = "등록한 상품의 정보를 수정한다.")
     @PutMapping("/myProducts/{productId}")
+    @LoginCheck
     public ProductResponseDto update(@PathVariable Long productId, @RequestBody ProductRequestDto productReq) {
         return productService.update(productReq);
     }
