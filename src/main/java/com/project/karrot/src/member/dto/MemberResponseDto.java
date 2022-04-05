@@ -17,7 +17,7 @@ public class MemberResponseDto {
         this.email = member.getEmail();
         this.password = member.getPassword();
         this.nickName = member.getNickName();
-        this.locationId = member.getLocation().getLocationId();
+        this.locationId = member.getLocation().getId();
     }
 
 }
