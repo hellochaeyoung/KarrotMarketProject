@@ -45,9 +45,9 @@ public class MemberService {
         String encodedPassword = passwordEncoder.encode(password);
 
         // 지역 설정
-        //Location findLocation = locationRepository.findByAddress(memberRequestDto.getLocationName()).orElseThrow();
+        Location findLocation = locationRepository.findByAddress(memberRequestDto.getLocationName()).orElseThrow();
 
-        Member member = memberRequestDto.toEntity(encodedPassword, authority);
+        Member member = memberRequestDto.toEntity(encodedPassword, authority, findLocation);
 
         return new MemberResponseDto(memberRepository.save(member));
 
