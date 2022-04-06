@@ -16,6 +16,8 @@ import com.project.karrot.src.product.dto.ProductResponseDto;
 import io.jsonwebtoken.lang.Collections;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -32,33 +34,33 @@ public class MainController {
     @ApiOperation(value = "메인 화면 조회", notes = "거주 지역과 설정한 카테고리에 해당하는 상품들을 조회한다.")
     @PostMapping("/")
     @LoginCheck
-    public ProductAndCategoryRes setCategory(@CurrentMemberId Long memberId, @RequestBody CategoryRequestDto categoryRequest) {
+    public ResponseEntity<?> setCategory(@CurrentMemberId Long memberId, @RequestBody CategoryRequestDto categoryRequest) {
 
         MemberResponseDto loginMember = memberService.find(memberId);
         List<CategoryResponseDto> categoryList = categoryService.findAll();
         List<ProductResponseDto> productList = productService.findByLocationAndCategory(loginMember.getLocationId(), categoryRequest.getCategoryId());
 
-        return new ProductAndCategoryRes(categoryList, productList);
+        return new ResponseEntity<>(new ProductAndCategoryRes(categoryList, productList), HttpStatus.OK);
     }
 
 
     @ApiOperation(value = "상품 등록 화면 조회", notes = "카테고리 목록 데이터를 가져와 보여준다.")
     @GetMapping("/products/new")
     @LoginCheck
-    public List<CategoryResponseDto> productRegisterForm() {
+    public ResponseEntity<?> productRegisterForm() {
 
-        return categoryService.findAll();
+        return new ResponseEntity<>(categoryService.findAll(), HttpStatus.OK);
     }
 
 
     @ApiOperation(value = "상품 등록", notes = "새 상품을 등록한다.")
     @PostMapping("/products/new")
     @LoginCheck
-    public ProductResponseDto register(@CurrentMemberId Long memberId, @RequestBody ProductRequestDto productRequestDto) {
+    public ResponseEntity<?> register(@CurrentMemberId Long memberId, @RequestBody ProductRequestDto productRequestDto) {
 
         productRequestDto.setMemberId(memberId); // 추후에 수정할 것
 
-        return productService.register(productRequestDto);
+        return new ResponseEntity<>(productService.register(productRequestDto), HttpStatus.OK);
     }
 
 }
