@@ -37,17 +37,15 @@ public class HomeController {
 
     @ApiOperation(value = "회원 가입 - 지역 조회", notes = "회원 가입 시 거주 지역을 검색한다")
     @GetMapping("/signUp/{address}")
-    public List<LocationResponseDto> getAll(@PathVariable String address) {
+    public ResponseEntity<?> getAll(@PathVariable String address) {
 
-        return locationService.findByAddressAll(address);
+        return new ResponseEntity<>(locationService.findByAddressAll(address), HttpStatus.OK);
     }
 
     @ApiOperation(value = "회원 가입", notes = "회원 가입을 한다.")
     @PostMapping("/signUp")
     public ResponseEntity<?> create(@RequestBody MemberRequestDto memberRequestDto) {
-        ;
         // 회원가입 예외처리 추가 필요
-
         return new ResponseEntity<>(memberService.join(memberRequestDto), HttpStatus.OK);
     }
 
