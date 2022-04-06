@@ -1,5 +1,6 @@
 package com.project.karrot.src.product;
 
+import com.project.karrot.src.ProductStatus;
 import com.project.karrot.src.category.Category;
 import com.project.karrot.src.location.Location;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,7 +19,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Optional<List<Product>> findByMemberId(Long memberId); // 회원 등록 상품 전체 조회
 
-    Optional<List<Product>> findByMemberAndProductStatus(Long memberId, String productStatus); // 회원별 진행단계별 조회
+    Optional<List<Product>> findByMemberIdAndProductStatus(Long memberId, ProductStatus status); // 회원별 진행단계별 조회
 
 }
 
