@@ -1,6 +1,7 @@
 package com.project.karrot.src.deal;
 
 import com.project.karrot.src.deal.Deal;
+import com.project.karrot.src.deal.dto.DealResponseDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.Optional;
 
 public interface DealRepository extends JpaRepository<Deal, Long> {
 
-    Optional<List<Deal>> findByMember(Long memberId);
+    Optional<List<Deal>> findByMemberId(Long memberId);
 
-    Optional<Deal> findByProduct(Long productId);
+    Optional<Deal> findByProductId(Long productId);
 }

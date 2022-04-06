@@ -1,38 +1,60 @@
 package com.project.karrot.src.deal;
 
+import com.project.karrot.src.deal.dto.DealRequestDto;
+import com.project.karrot.src.deal.dto.DealResponseDto;
+import com.project.karrot.src.member.Member;
+import com.project.karrot.src.member.MemberRepository;
+import com.project.karrot.src.product.Product;
+import com.project.karrot.src.product.ProductRepository;
 import com.project.karrot.src.product.dto.ProductRequestDto;
+import lombok.AllArgsConstructor;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Transactional
+@AllArgsConstructor
 public class DealService {
 
     private final DealRepository dealRepository;
+    private final MemberRepository memberRepository;
+    private final ProductRepository productRepository;
 
-    public DealService(DealRepository dealRepository) {
-        this.dealRepository = dealRepository;
+    public DealResponseDto find(Long dealId) {
+
+        Deal deal = dealRepository.findById(dealId).orElseThrow();
+
+        return new DealResponseDto(deal);
     }
 
-    public Optional<Deal> find(Long dealId) {
-        return dealRepository.findById(dealId);
+    public DealResponseDto findByProduct(Long productId) {
+
+        Deal deal = dealRepository.findByProductId(productId).orElseThrow();
+
+        return new DealResponseDto(deal);
+    }
+    public List<DealResponseDto> findByMember(Long memberId) {
+
+        List<Deal> list = dealRepository.findByMemberId(memberId).orElseGet(ArrayList::new);
+
+        return list.stream()
+                .map(DealResponseDto::new)
+                .collect(Collectors.toList());
     }
 
-    public Optional<Deal> findByProduct(ProductRequestDto product) {
+    public DealResponseDto register(DealRequestDto deal) {
 
-        return dealRepository.findByProduct(product.getProductId());
-    }
-    public Optional<List<Deal>> findByMember(Long memberId) {
+        Member member = memberRepository.findById(deal.getMemberId()).orElseThrow();
+        Product product = productRepository.findById(deal.getProductId()).orElseThrow();
+        Deal registerDeal = deal.toEntity(member, product);
 
-        return dealRepository.findByMember(memberId);
-    }
-
-    public Deal register(Deal deal) {
-        return dealRepository.save(deal);
+        return new DealResponseDto(dealRepository.save(registerDeal));
     }
 
-    public void remove(Deal deal) {
-        dealRepository.delete(deal);
+    public void remove(Long dealId) {
+        dealRepository.deleteById(dealId);
     }
 }
