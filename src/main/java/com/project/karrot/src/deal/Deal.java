@@ -3,6 +3,7 @@ package com.project.karrot.src.deal;
 import com.project.karrot.src.member.Member;
 import com.project.karrot.src.product.Product;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -10,17 +11,18 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Deal {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "deal_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PRODUCT_ID")
     private Product product;
 

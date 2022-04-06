@@ -52,7 +52,7 @@ public class Member {
     @JoinColumn(name = "LOCATION_ID")
     private Location location;
 
-    @OneToOne(mappedBy = "member")
+    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
     private MemberImageFile file;
 
     public List<Product> getProducts() {
