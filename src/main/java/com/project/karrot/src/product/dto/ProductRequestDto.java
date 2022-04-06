@@ -51,4 +51,8 @@ public class ProductRequestDto {
         this.location = member.getLocation();
         this.productStatus = ProductStatus.SALE;
     }
+
+    public void update(ProductStatus status) {
+        this.productStatus = status;
+    }
 }
