@@ -98,15 +98,15 @@ public class ProductService {
     }
 
     public List<ProductResponseDto> findByMemberAndStatus(Long memberId, ProductStatus status) {
-        List<Product> productList = productRepository.findByMemberAndProductStatus(memberId, status.name()).orElseGet(ArrayList::new);
+        List<Product> productList = productRepository.findByMemberIdAndProductStatus(memberId, status).orElseGet(ArrayList::new);
 
         return productList.stream()
                 .map(ProductResponseDto::new)
                 .collect(Collectors.toList());
     }
 
-    public void remove(ProductRequestDto productRequestDto) {
-        productRepository.deleteById(productRequestDto.getProductId());
+    public void remove(Long productId) {
+        productRepository.deleteById(productId);
     }
 
 }
