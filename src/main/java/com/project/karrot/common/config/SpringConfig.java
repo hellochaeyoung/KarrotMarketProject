@@ -60,7 +60,7 @@ public class SpringConfig {
     public CommentService commentService() { return new CommentService(commentRepository, memberRepository, productRepository); }
 
     @Bean
-    public DealService dealService() { return new DealService(dealRepository); }
+    public DealService dealService() { return new DealService(dealRepository, memberRepository, productRepository); }
 
     @Bean
     public LocationService locationService() { return new LocationService(locationRepository); }
