@@ -6,6 +6,8 @@ import com.project.karrot.src.annotation.LoginCheck;
 import com.project.karrot.src.category.CategoryService;
 import com.project.karrot.src.category.dto.CategoryResponseDto;
 import com.project.karrot.src.deal.DealService;
+import com.project.karrot.src.deal.dto.DealRequestDto;
+import com.project.karrot.src.deal.dto.DealResponseDto;
 import com.project.karrot.src.member.MemberService;
 import com.project.karrot.src.member.dto.MemberRequestDto;
 import com.project.karrot.src.member.dto.MemberResponseDto;
@@ -20,6 +22,8 @@ import com.project.karrot.src.product.dto.ProductResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,42 +43,35 @@ public class MyPageController {
     @ApiOperation(value = "마이페이지 - 프로필 조회", notes = "프로필을 조회한다.")
     @GetMapping("/profile")
     @LoginCheck
-    public String profile(@CurrentMemberId Long memberId) {
+    public ResponseEntity<?> profile(@CurrentMemberId Long memberId) {
 
         MemberResponseDto memberResponseDto = memberService.find(memberId);
 
-        return memberResponseDto.getNickName();
+        return new ResponseEntity<>(memberResponseDto.getNickName(), HttpStatus.OK);
 
     }
 
     @ApiOperation(value = "마이페이지 - 프로필 수정", notes = "프로필을 수정한다.")
     @PutMapping("/profile")
     @LoginCheck
-    public MemberResponseDto change(@CurrentMemberId Long memberId, @RequestBody String nickName) {
-        return memberService.update(memberId, nickName);
+    public ResponseEntity<?> change(@CurrentMemberId Long memberId, @RequestBody String nickName) {
+        return new ResponseEntity<>(memberService.update(memberId, nickName), HttpStatus.OK);
     }
 
     @ApiOperation(value = "마이페이지 - 등록 상품 목록 조회", notes = "내가 등록한 상품들의 상품 상태별 목록을 조회한다.")
-    @GetMapping("/myProducts/{status}")
+    @GetMapping("/myProducts/status/{status}")
     @LoginCheck
-    public List<ProductResponseDto> getProductList(@CurrentMemberId Long memberId, @PathVariable String status) {
+    public ResponseEntity<?> getProductList(@CurrentMemberId Long memberId, @PathVariable String status) {
 
         List<ProductResponseDto> list = new ArrayList<>();
-
-        MemberResponseDto member = memberService.find(memberId);
 
         if(status.equals("SALE")) { // 판매중
             list = productService.findByMemberAndStatus(memberId, ProductStatus.SALE);
         }else if(status.equals("COMPLETE")){ // 거래완료
-            /*
-            for(Deal deal : member.getDeals()) {
-                ProductResponseDto productResponseDto = new ProductResponseDto(deal.getProduct());
-                list.add(productResponseDto);
-                System.out.println(productResponseDto.getProductName());
-            }*/
+            list = productService.findByMemberAndStatus(memberId, ProductStatus.COMPLETE);
         }
 
-        return list;
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @ApiOperation(value = "마이페이지 - 등록 상품 상태 수정", notes = "내가 등록한 상품의 상품 상태를 변경한다.")
@@ -151,47 +148,34 @@ public class MyPageController {
         return productService.update(productReq);
     }
 
-    public void setNewStatus(MemberResponseDto member,ProductRequestDto product, String status) {
+    public void setNewStatus(Long memberId,ProductRequestDto product, String status) {
+
+        DealResponseDto deal = dealService.findByProduct(product.getProductId());
 
         if(status.equals("DELETE")) {
-            dealService.findByProduct(product).ifPresent(deal -> {
-                deal.setProduct(null);
-                dealService.remove(deal);
-            });
-            productService.remove(product);
+            dealService.remove(deal.getDealId());
+            productService.remove(product.getProductId());
             return;
         }
 
         // 거래완료 -> 예약중, 판매중으로 변경 시 거래 내역 삭제
         if(product.getProductStatus().equals(ProductStatus.COMPLETE)) {
-            dealService.findByProduct(product).ifPresent(deal -> {
-                deal.setProduct(null);
-                dealService.remove(deal);
-            });
-
+            dealService.remove(deal.getDealId());
         }
 
         if(status.equals("RESERVATION")) {
-            product.setProductStatus(ProductStatus.RESERVATION);
+            product.update(ProductStatus.RESERVATION);
             productService.register(product); // 업데이트
 
         }else if(status.equals("SALE")) {
-            product.setProductStatus(ProductStatus.SALE);
+            product.update(ProductStatus.SALE);
             productService.register(product); // 업데이트
 
-        }else {
-            product.setProductStatus(ProductStatus.COMPLETE);
-            //Product result = productService.register(product, loginMember);
+        }else { // 거래완료로 변경 시
+            product.update(ProductStatus.COMPLETE);
+            productService.register(product);
 
-            /* -- 수정 필요!
-
-            Deal deal = new Deal();
-            deal.setMember(loginMember);
-            deal.setProduct(result);
-             */
-
-            //dealService.register(deal);
-
+            dealService.register(new DealRequestDto(memberId, product.getProductId()));
         }
     }
 }
