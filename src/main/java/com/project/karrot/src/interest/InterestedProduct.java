@@ -3,6 +3,7 @@ package com.project.karrot.src.interest;
 import com.project.karrot.src.member.Member;
 import com.project.karrot.src.product.Product;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class InterestedProduct {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
