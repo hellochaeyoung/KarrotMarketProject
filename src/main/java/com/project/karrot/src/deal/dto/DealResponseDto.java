@@ -1,6 +1,8 @@
 package com.project.karrot.src.deal.dto;
 
 import com.project.karrot.src.deal.Deal;
+import com.project.karrot.src.product.Product;
+import com.project.karrot.src.product.dto.ProductResponseDto;
 import lombok.*;
 
 @Getter
@@ -10,10 +12,11 @@ import lombok.*;
 public class DealResponseDto {
 
     private Long dealId;
-    private Long productId;
+    private ProductResponseDto productResponseDto;
 
     public DealResponseDto(Deal deal) {
         this.dealId = deal.getId();
-        this.productId = deal.getProduct().getId();
+        productResponseDto = new ProductResponseDto(deal.getProduct());
     }
+
 }
