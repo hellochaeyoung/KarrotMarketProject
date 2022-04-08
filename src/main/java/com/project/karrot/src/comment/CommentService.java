@@ -44,18 +44,18 @@ public class CommentService {
     }
 
     public Optional<Comment> exist(Long memberId, Long productId) {
-        return commentRepository.findByMemberAndProduct(memberId, productId);
+        return commentRepository.findByMemberIdAndProductId(memberId, productId);
     }
 
-    public CommentResponseDto register(CommentRequestDto commentRequestDto, MemberResponseDto memberResponseDto) {
+    public CommentResponseDto register(CommentRequestDto commentRequestDto, Long memberId, Long productId) {
 
-        exist(memberResponseDto.getId(), commentRequestDto.getProductId()).ifPresent(comment -> {
+        exist(memberId, productId).ifPresent(comment -> {
             comment.setContents(commentRequestDto.getContents());
             comment.setTime(commentRequestDto.getTime());
         });
 
-        Member loginMember = memberRepository.findById(memberResponseDto.getId()).orElseThrow(); ////////////// 이렇게 DTO -> Entity로 변환하여 하는게 맞는지 모르겠음.
-        Product product = productRepository.findById(commentRequestDto.getProductId()).orElseThrow(); //////////////
+        Member loginMember = memberRepository.findById(memberId).orElseThrow();
+        Product product = productRepository.findById(productId).orElseThrow();
 
         commentRequestDto.setCommentRequestDto(loginMember, product, fomatDate());
         Comment uploadComment = commentRepository.save(commentRequestDto.toEntity());;
