@@ -51,7 +51,7 @@ public class SpringConfig {
     public ProductService productService() {return new ProductService(productRepository, categoryRepository, memberRepository, locationRepository); }
 
     @Bean
-    public InterestedService interestedService() { return new InterestedService(interestedRepository); }
+    public InterestedService interestedService() { return new InterestedService(interestedRepository, memberRepository, productRepository); }
 
     @Bean
     public CategoryService categoryService() { return new CategoryService(categoryRepository); }
