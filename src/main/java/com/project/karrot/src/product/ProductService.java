@@ -67,6 +67,11 @@ public class ProductService {
         return new ProductResponseDto(product);
     }
 
+    public void updateStatus(ProductRequestDto productRequestDto, ProductStatus status) {
+        Product product = productRepository.findById(productRequestDto.getProductId()).orElseThrow();
+        product.setProductStatus(status);
+    }
+
     public ProductResponseDto findById(Long productId) {
         Product product = productRepository.findById(productId).orElseThrow();
 
