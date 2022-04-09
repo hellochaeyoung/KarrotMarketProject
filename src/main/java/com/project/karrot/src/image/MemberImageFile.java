@@ -12,7 +12,7 @@ import javax.persistence.*;
 @DiscriminatorValue("memberImageFile")
 public class MemberImageFile extends ImageFiles {
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
