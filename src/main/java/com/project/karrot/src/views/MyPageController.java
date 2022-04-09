@@ -128,6 +128,19 @@ public class MyPageController {
         return new ResponseEntity<>(productService.update(productReq), HttpStatus.OK);
     }
 
+    @ApiOperation(value = "구매 내역 목록 조회", notes = "회원의 구매 내역 목록을 조회한다.")
+    @GetMapping("/orders")
+    @LoginCheck
+    public ResponseEntity<?> viewOrders(@CurrentMemberId Long memberId) {
+        return new ResponseEntity<>(dealService.findByMember(memberId), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "구매 상품 상세 조회", notes = "구매 상품을 상세 조회한다.")
+    @GetMapping("/orders/{productId}")
+    @LoginCheck
+    public ResponseEntity<?> viewOrdersDetail(@CurrentMemberId Long memberId, @PathVariable Long productId) {
+        return new ResponseEntity<>(productService.findById(productId), HttpStatus.OK);
+    }
 
     public void updateNewStatus(Long memberId, ProductAndStatusRequestDto productAndStatusRequestDto, String status) {
 
