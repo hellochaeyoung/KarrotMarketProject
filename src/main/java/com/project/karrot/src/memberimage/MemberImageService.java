@@ -14,18 +14,29 @@ public class MemberImageService {
     private final MemberImageRepository memberImageRepository;
     private final MemberRepository memberRepository;
 
-    public void save(MemberImageRequestDto memberImageRequestDto) {
+    public String save(MemberImageRequestDto memberImageRequestDto) {
         Member member = memberRepository.findById(memberImageRequestDto.getMemberId()).orElseThrow();
 
-        MemberImage image = memberImageRequestDto.toEntity(member);
-        memberImageRepository.save(image);
+        memberImageRepository.findByMemberId(memberImageRequestDto.getMemberId()).ifPresentOrElse(
+                memberImage -> memberImage.setFileURL(memberImageRequestDto.getFileURL()),
+        () -> memberImageRepository.save(memberImageRequestDto.toEntity(member)));
+
+        return memberImageRequestDto.getFileURL();
     }
 
-    public void findByMember(Long memberId) {
-        memberImageRepository.findByMemberId(memberId);
+    public String findByMember(Long memberId) {
+        MemberImage memberImage = memberImageRepository.findByMemberId(memberId).orElseThrow();
+        return memberImage.getFileURL();
     }
 
-    public void findByFileURL(String url) {
-        memberImageRepository.findByFileURL(url);
+    public String update(MemberImageRequestDto memberImageRequestDto) {
+        MemberImage memberImage = memberImageRepository.findByMemberId(memberImageRequestDto.getMemberId()).orElseThrow();
+        memberImage.setFileURL(memberImageRequestDto.getFileURL());
+
+        return memberImage.getFileURL();
+    }
+
+    public void delete(MemberImageRequestDto memberImageRequestDto) {
+        memberImageRepository.deleteById(memberImageRequestDto.getImageId());
     }
 }
