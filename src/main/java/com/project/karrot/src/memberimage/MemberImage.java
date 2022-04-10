@@ -17,8 +17,6 @@ public class MemberImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String fileName;
-    private String fileOriName;
     private String fileURL;
 
     @OneToOne(fetch = FetchType.LAZY)
