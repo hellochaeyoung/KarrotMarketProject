@@ -1,14 +1,19 @@
 package com.project.karrot.src.image;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.project.karrot.src.memberimage.MemberImageService;
+import com.project.karrot.src.memberimage.dto.MemberImageRequestDto;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
+@Transactional
 public class FileUploadService {
 
     private final UploadService s3Service;
@@ -25,8 +30,6 @@ public class FileUploadService {
         } catch (IOException e) {
             throw new IllegalArgumentException(String.format("파일 변환 중 에러가 발생하였습니다. (%s)", file.getOriginalFilename()));
         }
-
-
 
         return s3Service.getFileUrl(fileName);
     }
