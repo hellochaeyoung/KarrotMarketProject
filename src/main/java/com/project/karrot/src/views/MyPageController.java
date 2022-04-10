@@ -12,8 +12,11 @@ import com.project.karrot.src.image.FileUploadService;
 import com.project.karrot.src.interest.InterestedService;
 import com.project.karrot.src.interest.dto.InterestedResponseDto;
 import com.project.karrot.src.member.MemberService;
+import com.project.karrot.src.member.dto.MemberAndImageResponseDto;
 import com.project.karrot.src.member.dto.MemberRequestDto;
 import com.project.karrot.src.member.dto.MemberResponseDto;
+import com.project.karrot.src.memberimage.MemberImageService;
+import com.project.karrot.src.memberimage.dto.MemberImageRequestDto;
 import com.project.karrot.src.product.ProductService;
 import com.project.karrot.src.ProductStatus;
 import com.project.karrot.src.category.Category;
@@ -46,15 +49,16 @@ public class MyPageController {
     private final CategoryService categoryService;
     private final InterestedService interestedService;
     private final FileUploadService fileUploadService;
+    private final MemberImageService memberImageService;
 
     @ApiOperation(value = "마이페이지 - 프로필 조회", notes = "프로필을 조회한다.")
     @GetMapping("/profile")
     @LoginCheck
     public ResponseEntity<?> profile(@CurrentMemberId Long memberId) {
+        //MemberResponseDto memberResponseDto = memberService.find(memberId);
+        MemberAndImageResponseDto memberAndImageResponseDto = memberService.findWithImage(memberId);
 
-        MemberResponseDto memberResponseDto = memberService.find(memberId);
-
-        return new ResponseEntity<>(memberResponseDto.getNickName(), HttpStatus.OK);
+        return new ResponseEntity<>(memberAndImageResponseDto, HttpStatus.OK);
 
     }
 
@@ -62,7 +66,12 @@ public class MyPageController {
     @PostMapping("/profile/image")
     @LoginCheck
     public ResponseEntity<?> profileImage(@CurrentMemberId Long memberId, @RequestPart MultipartFile file) {
-        return new ResponseEntity<>(fileUploadService.uploadImage(file), HttpStatus.OK);
+        String url = fileUploadService.uploadImage(file);
+
+        MemberImageRequestDto memberImageRequestDto = new MemberImageRequestDto();
+        memberImageRequestDto.toReady(memberId, url);
+
+        return new ResponseEntity<>(memberImageService.save(memberImageRequestDto), HttpStatus.OK);
     }
 
     @ApiOperation(value = "마이페이지 - 프로필 수정", notes = "프로필을 수정한다.")
