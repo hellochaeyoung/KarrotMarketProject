@@ -1,10 +1,13 @@
 package com.project.karrot.src.member;
 
 import com.project.karrot.src.location.Location;
+import com.project.karrot.src.member.dto.MemberAndImageResponseDto;
 import com.project.karrot.src.member.dto.MemberRequestDto;
 import com.project.karrot.src.member.dto.MemberResponseDto;
 import com.project.karrot.src.location.LocationRepository;
 import com.project.karrot.src.member.util.SecurityUtil;
+import com.project.karrot.src.memberimage.MemberImage;
+import com.project.karrot.src.memberimage.MemberImageRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +22,15 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final LocationRepository locationRepository;
+    private final MemberImageRepository memberImageRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public MemberService(MemberRepository memberRepository, LocationRepository locationRepository) {
+    public MemberService(MemberRepository memberRepository, LocationRepository locationRepository, MemberImageRepository memberImageRepository) {
         this.memberRepository = memberRepository;
         this.locationRepository = locationRepository;
+        this.memberImageRepository = memberImageRepository;
     }
 
     public MemberResponseDto join(MemberRequestDto memberRequestDto) {
@@ -72,6 +77,13 @@ public class MemberService {
         Member findMember = memberRepository.findById(memberId).orElseThrow();
 
         return new MemberResponseDto(findMember);
+    }
+
+    public MemberAndImageResponseDto findWithImage(Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow();
+        MemberImage image = memberImageRepository.findByMemberId(memberId).orElse(new MemberImage());
+
+        return new MemberAndImageResponseDto(member.getNickName(), image.getFileURL());
     }
 
     public MemberResponseDto findByName(String name) {
