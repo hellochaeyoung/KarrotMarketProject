@@ -16,6 +16,8 @@ import com.project.karrot.src.interest.InterestedService;
 import com.project.karrot.src.location.LocationRepository;
 import com.project.karrot.src.location.LocationService;
 import com.project.karrot.src.member.*;
+import com.project.karrot.src.memberimage.MemberImageRepository;
+import com.project.karrot.src.memberimage.MemberImageService;
 import com.project.karrot.src.product.ProductRepository;
 import com.project.karrot.src.product.ProductService;
 import lombok.AllArgsConstructor;
@@ -38,11 +40,14 @@ public class SpringConfig {
     private final DealRepository dealRepository;
     private final ImageFileRepository imageFileRepository;
     private final LocationRepository locationRepository;
+    private final MemberImageRepository memberImageRepository;
+
     private final UploadService uploadService;
+
 
     @Bean
     public MemberService memberService() {
-        return new MemberService(memberRepository, locationRepository);
+        return new MemberService(memberRepository, locationRepository, memberImageRepository);
     }
 
     @Bean
@@ -73,6 +78,9 @@ public class SpringConfig {
 
     @Bean
     public FileUploadService fileUploadService() { return new FileUploadService(uploadService); }
+
+    @Bean
+    public MemberImageService memberImageService() { return new MemberImageService(memberImageRepository, memberRepository); };
 
 }
 
