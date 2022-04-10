@@ -4,6 +4,7 @@ import com.project.karrot.src.deal.Deal;
 import com.project.karrot.src.image.MemberImageFile;
 import com.project.karrot.src.interest.InterestedProduct;
 import com.project.karrot.src.location.Location;
+import com.project.karrot.src.memberimage.MemberImage;
 import com.project.karrot.src.product.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,7 +54,7 @@ public class Member {
     private Location location;
 
     @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
-    private MemberImageFile file;
+    private MemberImage memberImage;
 
     public List<Product> getProducts() {
         return products;
@@ -138,14 +139,6 @@ public class Member {
         }
         this.location = location;
         location.getMembers().add(this);
-    }
-
-    public MemberImageFile getFile() {
-        return file;
-    }
-
-    public void setFile(MemberImageFile file) {
-        this.file = file;
     }
 
     public boolean isActivated() {
