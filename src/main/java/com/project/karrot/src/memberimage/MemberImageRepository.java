@@ -8,6 +8,4 @@ public interface MemberImageRepository extends JpaRepository<MemberImage, Long> 
 
     Optional<MemberImage> findByMemberId(Long memberId);
 
-    Optional<MemberImage> findByFileURL(String url);
-
 }
