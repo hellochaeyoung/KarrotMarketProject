@@ -7,8 +7,10 @@ import com.project.karrot.src.comment.CommentRepository;
 import com.project.karrot.src.comment.CommentService;
 import com.project.karrot.src.deal.DealRepository;
 import com.project.karrot.src.deal.DealService;
+import com.project.karrot.src.image.FileUploadService;
 import com.project.karrot.src.image.ImageFileRepository;
 import com.project.karrot.src.image.ImageFileService;
+import com.project.karrot.src.image.UploadService;
 import com.project.karrot.src.interest.InterestedRepository;
 import com.project.karrot.src.interest.InterestedService;
 import com.project.karrot.src.location.LocationRepository;
@@ -36,6 +38,7 @@ public class SpringConfig {
     private final DealRepository dealRepository;
     private final ImageFileRepository imageFileRepository;
     private final LocationRepository locationRepository;
+    private final UploadService uploadService;
 
     @Bean
     public MemberService memberService() {
@@ -67,6 +70,9 @@ public class SpringConfig {
 
     @Bean
     public ImageFileService imageFileService() { return new ImageFileService(imageFileRepository); }
+
+    @Bean
+    public FileUploadService fileUploadService() { return new FileUploadService(uploadService); }
 
 }
 
