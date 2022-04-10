@@ -8,6 +8,7 @@ import com.project.karrot.src.category.dto.CategoryResponseDto;
 import com.project.karrot.src.deal.DealService;
 import com.project.karrot.src.deal.dto.DealRequestDto;
 import com.project.karrot.src.deal.dto.DealResponseDto;
+import com.project.karrot.src.image.FileUploadService;
 import com.project.karrot.src.interest.InterestedService;
 import com.project.karrot.src.interest.dto.InterestedResponseDto;
 import com.project.karrot.src.member.MemberService;
@@ -29,6 +30,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +45,7 @@ public class MyPageController {
     private final DealService dealService;
     private final CategoryService categoryService;
     private final InterestedService interestedService;
+    private final FileUploadService fileUploadService;
 
     @ApiOperation(value = "마이페이지 - 프로필 조회", notes = "프로필을 조회한다.")
     @GetMapping("/profile")
@@ -53,6 +56,13 @@ public class MyPageController {
 
         return new ResponseEntity<>(memberResponseDto.getNickName(), HttpStatus.OK);
 
+    }
+
+    @ApiOperation(value = "프로필 이미지 변경", notes = "프로필 이미지를 변경한다.")
+    @PostMapping("/profile/image")
+    @LoginCheck
+    public ResponseEntity<?> profileImage(@CurrentMemberId Long memberId, @RequestPart MultipartFile file) {
+        return new ResponseEntity<>(fileUploadService.uploadImage(file), HttpStatus.OK);
     }
 
     @ApiOperation(value = "마이페이지 - 프로필 수정", notes = "프로필을 수정한다.")
