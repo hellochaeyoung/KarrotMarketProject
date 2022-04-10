@@ -13,17 +13,17 @@ public class MemberImageRequestDto {
 
     private Long imageId;
     private Long memberId;
-
-    private String fileName;
-    private String fileOriName;
     private String fileURL;
 
     public MemberImage toEntity(Member member) {
         return MemberImage.builder()
-                .fileName(fileName)
-                .fileOriName(fileOriName)
                 .fileURL(fileURL)
                 .member(member)
                 .build();
+    }
+
+    public void toReady(Long memberId, String url) {
+        this.memberId = memberId;
+        this.fileURL = url;
     }
 }
