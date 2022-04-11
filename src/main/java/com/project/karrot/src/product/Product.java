@@ -7,6 +7,7 @@ import com.project.karrot.src.deal.Deal;
 import com.project.karrot.src.image.ProductImageFile;
 import com.project.karrot.src.location.Location;
 import com.project.karrot.src.member.Member;
+import com.project.karrot.src.productimage.ProductImage;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -46,7 +47,7 @@ public class Product {
     List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "product")
-    List<ProductImageFile> productImages = new ArrayList<>();
+    List<ProductImage> productImages = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "LOCATION_ID")
@@ -80,11 +81,11 @@ public class Product {
         this.comments = comments;
     }
 
-    public List<ProductImageFile> getProductImages() {
+    public List<ProductImage> getProductImages() {
         return productImages;
     }
 
-    public void setProductImages(List<ProductImageFile> productImages) {
+    public void setProductImages(List<ProductImage> productImages) {
         this.productImages = productImages;
     }
 
