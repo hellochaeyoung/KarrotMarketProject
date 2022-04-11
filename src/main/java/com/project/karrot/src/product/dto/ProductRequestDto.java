@@ -7,6 +7,8 @@ import com.project.karrot.src.member.Member;
 import com.project.karrot.src.product.Product;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,13 +26,17 @@ public class ProductRequestDto {
     private String contents;
     private String status;
 
+    private List<String> fileUrlList;
+/*
     private Member member;
     private Category category;
     private String time;
     private Location location;
+
+ */
     private ProductStatus productStatus;
 
-    public Product toEntity() {
+    public Product toEntity(Member member, Category category, String time) {
         return Product.builder()
                 .id(productId)
                 .productName(productName)
@@ -39,11 +45,12 @@ public class ProductRequestDto {
                 .member(member)
                 .category(category)
                 .time(time)
-                .location(location)
-                .productStatus(productStatus)
+                .location(member.getLocation())
+                .productStatus(ProductStatus.SALE)
                 .build();
     }
 
+    /*
     public void setProductRequestDto(Member member, Category category, String time) {
         this.member = member;
         this.category = category;
@@ -52,7 +59,14 @@ public class ProductRequestDto {
         this.productStatus = ProductStatus.SALE;
     }
 
+     */
+
     public void update(ProductStatus status) {
         this.productStatus = status;
+    }
+
+    public void toReady(Long memberId, List<String> fileUrlList) {
+        this.memberId = memberId;
+        this.fileUrlList = fileUrlList;
     }
 }
