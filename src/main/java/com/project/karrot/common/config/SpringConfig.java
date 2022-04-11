@@ -20,6 +20,8 @@ import com.project.karrot.src.memberimage.MemberImageRepository;
 import com.project.karrot.src.memberimage.MemberImageService;
 import com.project.karrot.src.product.ProductRepository;
 import com.project.karrot.src.product.ProductService;
+import com.project.karrot.src.productimage.ProductImageRepository;
+import com.project.karrot.src.productimage.ProductImageService;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -41,6 +43,7 @@ public class SpringConfig {
     private final ImageFileRepository imageFileRepository;
     private final LocationRepository locationRepository;
     private final MemberImageRepository memberImageRepository;
+    private final ProductImageRepository productImageRepository;
 
     private final UploadService uploadService;
 
@@ -56,7 +59,7 @@ public class SpringConfig {
     }
 
     @Bean
-    public ProductService productService() {return new ProductService(productRepository, categoryRepository, memberRepository, locationRepository); }
+    public ProductService productService() {return new ProductService(productRepository, categoryRepository, memberRepository, locationRepository, productImageRepository); }
 
     @Bean
     public InterestedService interestedService() { return new InterestedService(interestedRepository, memberRepository, productRepository); }
@@ -80,7 +83,10 @@ public class SpringConfig {
     public FileUploadService fileUploadService() { return new FileUploadService(uploadService); }
 
     @Bean
-    public MemberImageService memberImageService() { return new MemberImageService(memberImageRepository, memberRepository); };
+    public MemberImageService memberImageService() { return new MemberImageService(memberImageRepository, memberRepository); }
+
+    @Bean
+    public ProductImageService productImageService() { return new ProductImageService(productImageRepository); }
 
 }
 
