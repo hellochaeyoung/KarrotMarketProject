@@ -26,6 +26,7 @@ public class ProductRequestDto {
     private String contents;
     private String status;
 
+    private List<String> removeImageList;
     private List<String> fileUrlList;
 /*
     private Member member;
