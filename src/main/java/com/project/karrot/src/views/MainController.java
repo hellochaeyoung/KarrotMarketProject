@@ -70,7 +70,9 @@ public class MainController {
     @ApiOperation(value = "상품 등록", notes = "새 상품을 등록한다.")
     @PostMapping("/products/new")
     @LoginCheck
-    public ResponseEntity<?> register(@CurrentMemberId Long memberId, @RequestPart ProductRequestDto productRequestDto, @RequestPart(required = false) List<MultipartFile> fileList) {
+    public ResponseEntity<?> register(@CurrentMemberId Long memberId,
+                                      @RequestPart ProductRequestDto productRequestDto,
+                                      @RequestPart(required = false) List<MultipartFile> fileList) {
 
         List<String> fileUrlList = new ArrayList<>();
         fileList.listIterator().forEachRemaining(file -> {
