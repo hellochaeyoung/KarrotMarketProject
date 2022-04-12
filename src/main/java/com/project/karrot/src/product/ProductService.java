@@ -10,8 +10,10 @@ import com.project.karrot.src.member.MemberRepository;
 import com.project.karrot.src.ProductStatus;
 import com.project.karrot.src.category.Category;
 import com.project.karrot.src.member.Member;
+import com.project.karrot.src.product.dto.ProductUpdateRequestDto;
 import com.project.karrot.src.productimage.ProductImage;
 import com.project.karrot.src.productimage.ProductImageRepository;
+import com.project.karrot.src.productimage.dto.ProductImageDto;
 import lombok.AllArgsConstructor;
 
 import javax.transaction.Transactional;
@@ -37,21 +39,13 @@ public class ProductService {
         Category findCategory = categoryRepository.findByCategoryName(productRequestDto.getCategoryName()).orElseThrow();
         String time = fomatDate();
 
-        //productRequestDto.setProductRequestDto(member, findCategory, time);
         Product newProduct = productRequestDto.toEntity(member, findCategory, time);
-
         Product result = productRepository.save(newProduct);
 
-        List<String> fileUrlList = new ArrayList<>();
-        productRequestDto.getFileUrlList().listIterator().forEachRemaining(fileURL -> {
-            ProductImage productImage = new ProductImage(result, fileURL);
-            productImageRepository.save(productImage);
-            fileUrlList.add(fileURL);
-        });
-
+        // DB 테이블에 이미지 url 저장
+        List<ProductImageDto> savedImageList = saveImageToDB(result, productRequestDto.getFileUrlList());
         ProductResponseDto productResponseDto = new ProductResponseDto(result);
-
-        ProductAndImageResponseDto productAndImageResponseDto = new ProductAndImageResponseDto(productResponseDto, fileUrlList);
+        ProductAndImageResponseDto productAndImageResponseDto = new ProductAndImageResponseDto(productResponseDto, savedImageList);
 
         productRepository.flush();
 
@@ -65,19 +59,34 @@ public class ProductService {
         return format.format(now);
     }
 
-    public ProductResponseDto update(ProductRequestDto productRequestDto) {
+    public ProductAndImageResponseDto update(ProductUpdateRequestDto productUpdateRequestDto) {
 
-        Product product = productRepository.findById(productRequestDto.getProductId()).orElseThrow();
-        Category category = categoryRepository.findByCategoryName(productRequestDto.getCategoryName()).orElseThrow();
+        Product product = productRepository.findById(productUpdateRequestDto.getProductId()).orElseThrow();
+        Category category = categoryRepository.findByCategoryName(productUpdateRequestDto.getCategoryName()).orElseThrow();
 
-        product.setProductName(productRequestDto.getProductName());
+        // set만 해도 update 적용되는지 추후에 다시 확인 or 따로 메소드 만들지
+        product.setProductName(productUpdateRequestDto.getProductName());
         product.setCategory(category);
-        product.setPrice(productRequestDto.getPrice());
-        product.setContents(productRequestDto.getContents());
+        product.setPrice(productUpdateRequestDto.getPrice());
+        product.setContents(productUpdateRequestDto.getContents());
 
-        // set만 해도 update 적용되는지 추후에 다시 확인
+        List<ProductImageDto> savedImageList = saveImageToDB(product, productUpdateRequestDto.getFileUrlList());
 
-        return new ProductResponseDto(product);
+        ProductResponseDto productResponseDto = new ProductResponseDto(product);
+
+        return new ProductAndImageResponseDto(productResponseDto, savedImageList);
+    }
+
+    private List<ProductImageDto> saveImageToDB(Product product, List<String> urlList) {
+        List<ProductImageDto> productImageList = new ArrayList<>();
+
+        urlList.listIterator().forEachRemaining(fileURL -> {
+            ProductImage productImage = new ProductImage(product, fileURL);
+            ProductImage saveImage = productImageRepository.save(productImage);
+            productImageList.add(new ProductImageDto(saveImage.getId(), fileURL));
+        });
+
+        return productImageList;
     }
 
     public void updateStatus(ProductRequestDto productRequestDto, ProductStatus status) {
