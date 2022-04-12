@@ -9,6 +9,7 @@ import com.project.karrot.src.deal.DealService;
 import com.project.karrot.src.deal.dto.DealRequestDto;
 import com.project.karrot.src.deal.dto.DealResponseDto;
 import com.project.karrot.src.image.FileUploadService;
+import com.project.karrot.src.image.dto.ImageUpdateRequestDto;
 import com.project.karrot.src.interest.InterestedService;
 import com.project.karrot.src.interest.dto.InterestedResponseDto;
 import com.project.karrot.src.member.MemberService;
@@ -22,10 +23,10 @@ import com.project.karrot.src.ProductStatus;
 import com.project.karrot.src.category.Category;
 import com.project.karrot.src.deal.Deal;
 import com.project.karrot.src.interest.InterestedProduct;
-import com.project.karrot.src.product.dto.ProductAndCategoryRes;
-import com.project.karrot.src.product.dto.ProductAndStatusRequestDto;
-import com.project.karrot.src.product.dto.ProductRequestDto;
-import com.project.karrot.src.product.dto.ProductResponseDto;
+import com.project.karrot.src.product.dto.*;
+import com.project.karrot.src.productimage.ProductImageService;
+import com.project.karrot.src.productimage.dto.ProductImageDto;
+import com.project.karrot.src.productimage.dto.ProductImageRequestDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +51,7 @@ public class MyPageController {
     private final InterestedService interestedService;
     private final FileUploadService fileUploadService;
     private final MemberImageService memberImageService;
+    private final ProductImageService productImageService;
 
     @ApiOperation(value = "마이페이지 - 프로필 조회", notes = "프로필을 조회한다.")
     @GetMapping("/profile")
@@ -129,7 +131,7 @@ public class MyPageController {
 
     }
 
-    @ApiOperation(value = "마이페이지 - 상품 정보 조회", notes = "등록 상품의 정보를 조회한다.")
+    @ApiOperation(value = "마이페이지 - 등록 상품 조회", notes = "등록한 상품의 정보를 조회한다.")
     @GetMapping("/myProducts/{productId}")
     @LoginCheck
     public ResponseEntity<?> findUpdateProduct(@PathVariable Long productId) {
@@ -141,10 +143,27 @@ public class MyPageController {
     }
 
     @ApiOperation(value = "마이페이지 - 등록 상품 수정", notes = "등록한 상품의 정보를 수정한다.")
-    @PutMapping("/myProducts/{productId}")
+    @PutMapping("/myProducts")
     @LoginCheck
-    public ResponseEntity<?> update(@PathVariable Long productId, @RequestBody ProductRequestDto productReq) {
-        return new ResponseEntity<>(productService.update(productReq), HttpStatus.OK);
+    public ResponseEntity<?> update(@RequestPart ProductUpdateRequestDto productUpdateRequestDto,
+                                    @RequestPart(required = false) List<MultipartFile> fileList) {
+
+        List<ProductImageDto> removeList = productUpdateRequestDto.getRemoveImageList();
+
+        //AWS S3 이미지 업데이트 처리 -> 삭제 후 추가
+        removeImage(removeList);
+        List<String> urlList = saveImageToAwsS3(fileList);
+
+        // DB 상품이미지 테이블 업데이트 처리 -> 삭제 후 추가
+        // 1. 여러 개 이미지 다 변경 2. 일부만 변경 3. 아예 변경 안함
+        // 이렇게 세 가지 경우로 나뉘기 때문에 삭제할 이미지들을 [id, fileURL]의 dto로 받아 id 값으로 삭제하고
+        // 새로 추가된 fileList를 s3에 넣어 URL 받아온 후 DB에 저장한다. <- productService의 update 메소드에서 수행
+        removeList.listIterator().forEachRemaining(productImageDto -> {
+            productImageService.delete(productImageDto.getId());
+        });
+
+        productUpdateRequestDto.toReady(urlList);
+        return new ResponseEntity<>(productService.update(productUpdateRequestDto), HttpStatus.OK);
     }
 
     @ApiOperation(value = "구매 내역 목록 조회", notes = "회원의 구매 내역 목록을 조회한다.")
@@ -186,5 +205,31 @@ public class MyPageController {
             productService.updateStatus(product, ProductStatus.COMPLETE);
             dealService.register(new DealRequestDto(memberId, product.getProductId()));
         }
+    }
+
+    /**
+     * 상품 이미지 변경으로 인한 AWS S3에서 기존 이미지 삭제 메소드
+     * @param removeList 삭제할 이미지 url
+     */
+    public void removeImage(List<ProductImageDto> removeList) {
+        removeList.listIterator().forEachRemaining(productImageDto -> {
+            System.out.println("remove url from AWS S3 : " + productImageDto.getFileURL());
+            fileUploadService.delete(productImageDto.getFileURL());
+        });
+    }
+
+    /**
+     * AWS S3에 상품 이미지 저장 메소드
+     * @param fileList 새로 저장할 이미지 파일 리스트
+     * @return url 리스트
+     */
+    public List<String> saveImageToAwsS3(List<MultipartFile> fileList) {
+        List<String> urlList = new ArrayList<>();
+        fileList.listIterator().forEachRemaining(file -> {
+            String fileURL = fileUploadService.uploadImage(file);
+            urlList.add(fileURL);
+        });
+
+        return urlList;
     }
 }
