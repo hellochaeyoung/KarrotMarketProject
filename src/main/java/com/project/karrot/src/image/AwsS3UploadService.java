@@ -26,4 +26,14 @@ public class AwsS3UploadService implements UploadService {
         return amazonS3.getUrl(s3Component.getBucket(), fileName).toString();
     }
 
+    @Override
+    public void delete(String fileName) {
+        int index = fileName.lastIndexOf("/") + 1;
+        fileName = fileName.substring(index);
+
+        System.out.println(fileName);
+
+        amazonS3.deleteObject(s3Component.getBucket(), fileName);
+    }
+
 }
