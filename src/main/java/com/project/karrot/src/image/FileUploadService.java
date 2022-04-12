@@ -34,6 +34,10 @@ public class FileUploadService {
         return s3Service.getFileUrl(fileName);
     }
 
+    public void delete(String fileURL) {
+        s3Service.delete(fileURL);
+    }
+
     private String createFileName(String originalFileName) {
         return UUID.randomUUID().toString().concat(getFileExtension(originalFileName));
     }
