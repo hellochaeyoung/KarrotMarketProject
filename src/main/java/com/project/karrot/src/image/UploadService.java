@@ -10,4 +10,6 @@ public interface UploadService {
 
     String getFileUrl(String fileName);
 
+    void delete(String fileName);
+
 }
