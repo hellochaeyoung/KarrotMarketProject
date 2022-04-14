@@ -1,20 +1,20 @@
 package com.project.karrot.src.member;
 
+import com.project.karrot.common.exception.ErrorCode;
+import com.project.karrot.common.exception.exceptions.EmailDuplicatedException;
+import com.project.karrot.common.exception.exceptions.NickNameDuplicatedException;
 import com.project.karrot.src.location.Location;
+import com.project.karrot.src.location.LocationRepository;
 import com.project.karrot.src.member.dto.MemberAndImageResponseDto;
 import com.project.karrot.src.member.dto.MemberRequestDto;
 import com.project.karrot.src.member.dto.MemberResponseDto;
-import com.project.karrot.src.location.LocationRepository;
-import com.project.karrot.src.member.util.SecurityUtil;
 import com.project.karrot.src.memberimage.MemberImage;
 import com.project.karrot.src.memberimage.MemberImageRepository;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.transaction.Transactional;
-import java.util.Optional;
 
 @Slf4j
 @Transactional
@@ -36,7 +36,7 @@ public class MemberService {
     public MemberResponseDto join(MemberRequestDto memberRequestDto) {
 
         if(memberRepository.findOneWithAuthoritiesByEmail(memberRequestDto.getEmail()).orElse(null) != null) {
-            throw new RuntimeException("이미 가입되어 있는 회원입니다.");
+            throw new EmailDuplicatedException("email duplicated", ErrorCode.EMAIL_DUPLICATION);
         }
 
         validateDuplicateMember(memberRequestDto); // 닉네임 중복 회원 검증
@@ -61,7 +61,7 @@ public class MemberService {
     public void validateDuplicateMember(MemberRequestDto memberRequestDto) {
         memberRepository.findByNickName(memberRequestDto.getNickName())
                 .ifPresent(m -> {
-                    throw new IllegalStateException("이미 존재하는 닉네임입니다.");
+                    throw new NickNameDuplicatedException("nickname duplicated", ErrorCode.NICKNAME_DUPLICATION);
                 });
 
     }
