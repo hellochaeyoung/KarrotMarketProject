@@ -5,7 +5,6 @@ import com.project.karrot.src.jwt.JwtAuthenticationEntryPoint;
 import com.project.karrot.src.jwt.JwtSecurityConfig;
 import com.project.karrot.src.jwt.TokenProvider;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -58,6 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/home").permitAll()
                 .antMatchers("/home/signUp").permitAll()
+                .antMatchers("/home/signUp/{address}").permitAll()
                 .antMatchers("/login/auth").permitAll()
                 .antMatchers("/login/user").permitAll()
                 .anyRequest().authenticated()
