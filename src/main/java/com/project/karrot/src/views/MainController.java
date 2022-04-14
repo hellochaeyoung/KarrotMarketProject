@@ -4,19 +4,16 @@ import com.project.karrot.src.annotation.CurrentMemberId;
 import com.project.karrot.src.annotation.LoginCheck;
 import com.project.karrot.src.category.CategoryService;
 import com.project.karrot.src.category.dto.CategoryAndLocationRequestDto;
-import com.project.karrot.src.category.dto.CategoryRequestDto;
 import com.project.karrot.src.category.dto.CategoryResponseDto;
 import com.project.karrot.src.image.FileUploadService;
 import com.project.karrot.src.location.LocationService;
-import com.project.karrot.src.location.dto.LocationRequestDto;
-import com.project.karrot.src.member.Member;
 import com.project.karrot.src.member.MemberService;
-import com.project.karrot.src.member.dto.MemberResponseDto;
 import com.project.karrot.src.product.ProductService;
-import com.project.karrot.src.product.dto.*;
+import com.project.karrot.src.product.dto.ProductAndCategoryRes;
+import com.project.karrot.src.product.dto.ProductAndImageResponseDto;
+import com.project.karrot.src.product.dto.ProductRequestDto;
+import com.project.karrot.src.product.dto.ProductResponseDto;
 import com.project.karrot.src.productimage.ProductImageService;
-import com.project.karrot.src.productimage.dto.ProductImageRequestDto;
-import io.jsonwebtoken.lang.Collections;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -43,7 +40,7 @@ public class MainController {
     @ApiOperation(value = "메인 화면 조회", notes = "지역과 설정한 카테고리에 해당하는 상품들을 조회한다.")
     @PostMapping("/")
     @LoginCheck
-    public ResponseEntity<?> viewProduct(@CurrentMemberId Long memberId, @RequestBody CategoryAndLocationRequestDto categoryAndLocationRequestDto) {
+    public ResponseEntity<?> viewProduct(@RequestBody CategoryAndLocationRequestDto categoryAndLocationRequestDto) {
 
         List<CategoryResponseDto> categoryList = categoryService.findAll();
         List<ProductResponseDto> productList = productService.findByLocationAndCategory(categoryAndLocationRequestDto.getLocationId(), categoryAndLocationRequestDto.getCategoryId());
