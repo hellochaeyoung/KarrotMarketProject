@@ -4,7 +4,6 @@ import com.project.karrot.src.category.Category;
 import lombok.*;
 
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

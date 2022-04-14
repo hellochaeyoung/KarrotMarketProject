@@ -1,14 +1,13 @@
 package com.project.karrot.src.product.dto;
 
 import com.project.karrot.src.category.dto.CategoryResponseDto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Getter
+@NoArgsConstructor
 public class ProductAndCategoryRes {
 
     private List<CategoryResponseDto> categoryList;

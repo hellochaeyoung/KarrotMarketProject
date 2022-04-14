@@ -2,15 +2,17 @@ package com.project.karrot.src.member.dto;
 
 import com.project.karrot.src.member.Member;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class MemberResponseDto {
 
-    private final Long id;
-    private final String email;
-    private final String password;
-    private final String nickName;
-    private final Long locationId;
+    private Long id;
+    private String email;
+    private String password;
+    private String nickName;
+    private Long locationId;
 
     public MemberResponseDto(Member member) {
         this.id = member.getId();

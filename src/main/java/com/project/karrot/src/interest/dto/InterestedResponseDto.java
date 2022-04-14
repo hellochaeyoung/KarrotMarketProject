@@ -1,13 +1,14 @@
 package com.project.karrot.src.interest.dto;
 
 import com.project.karrot.src.interest.InterestedProduct;
-import com.project.karrot.src.product.Product;
 import com.project.karrot.src.product.dto.ProductResponseDto;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Builder
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class InterestedResponseDto {

@@ -1,18 +1,21 @@
 package com.project.karrot.src.product.dto;
 
-import com.project.karrot.src.member.Member;
 import com.project.karrot.src.product.Product;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProductResponseDto {
 
-    private final Long productId;
-    private final String productName;
-    private final int price;
-    private final int likeCount;
-    private final String contents;
-    private final Long memberId;
+    private Long productId;
+    private String productName;
+    private int price;
+    private int likeCount;
+    private String contents;
+    private Long memberId;
 
     public ProductResponseDto(Product product) {
         this.productId = product.getId();
