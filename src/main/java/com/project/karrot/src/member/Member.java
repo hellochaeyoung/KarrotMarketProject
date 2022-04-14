@@ -1,7 +1,6 @@
 package com.project.karrot.src.member;
 
 import com.project.karrot.src.deal.Deal;
-import com.project.karrot.src.image.MemberImageFile;
 import com.project.karrot.src.interest.InterestedProduct;
 import com.project.karrot.src.location.Location;
 import com.project.karrot.src.memberimage.MemberImage;
@@ -55,6 +54,11 @@ public class Member {
 
     @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
     private MemberImage memberImage;
+
+    public Member(String test, String username) {
+        this.name = test;
+        this.email = username;
+    }
 
     public List<Product> getProducts() {
         return products;
