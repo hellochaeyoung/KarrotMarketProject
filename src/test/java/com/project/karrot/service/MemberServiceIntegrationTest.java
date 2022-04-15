@@ -1,104 +1,93 @@
 package com.project.karrot.service;
 
-import com.project.karrot.src.member.Member;
-import com.project.karrot.src.member.MemberRepository;
+import com.project.karrot.common.exception.exceptions.EmailDuplicatedException;
+import com.project.karrot.common.exception.exceptions.NickNameDuplicatedException;
 import com.project.karrot.src.member.MemberService;
 import com.project.karrot.src.member.dto.MemberRequestDto;
 import com.project.karrot.src.member.dto.MemberResponseDto;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.transaction.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@Slf4j
 @SpringBootTest
 @Transactional
 class MemberServiceIntegrationTest {
 
     @Autowired
     MemberService memberService;
-    @Autowired
-    PasswordEncoder passwordEncoder;
+
+    private String email = "chaeyoung@gmail.com";
+    private MemberRequestDto memberRequestDto;
+    private MemberResponseDto memberResponseDto;
+
+    @BeforeEach
+    void init() {
+
+        memberRequestDto = MemberRequestDto.builder()
+                .name("chaeyoung")
+                .nickName("cyyyyyy")
+                .email(email)
+                .locationName("서울특별시")
+                .password("aaaa")
+                .password("010-1111-2222")
+                .build();
+
+        memberResponseDto = memberService.join(memberRequestDto);
+    }
 
     @Test
     public void 회원가입() {
-        MemberRequestDto memberReq = new MemberRequestDto();
 
-        String email = "cyahn@gmail.com";
+        log.info("{} 님의 회원가입 완료, 닉네임 - {}", memberRequestDto.getEmail(), memberRequestDto.getNickName());
 
-        memberReq.setName("chaeyoung");
-        memberReq.setNickName("cyyyyyy");
-        memberReq.setEmail(email);
-        memberReq.setLocationName("경기도 부천시 상동");
-        memberReq.setPassword("aaaa");
-        memberReq.setPhoneNumber("010-1111-1111");
-
-
-        MemberResponseDto memberRes = memberService.join(memberReq);
-
-        String encodedPassword = memberRes.getPassword();
-        System.out.println(memberRes.getId());
-        //System.out.println(memberRes.getAddress());
-        System.out.println(memberRes.getNickName());
-
-        assertTrue(passwordEncoder.matches("aaaa", encodedPassword));
+        assertEquals(memberResponseDto.getNickName(), memberRequestDto.getNickName());
 
     }
 
     @Test
-    public void 로그인() {
-        MemberRequestDto memberReq = new MemberRequestDto();
-
-        String email = "cyahn@gmail.com";
-
-        memberReq.setName("chaeyoung");
-        memberReq.setNickName("cyyyyyy");
-        memberReq.setEmail(email);
-        memberReq.setLocationName("경기도 부천시 상동");
-        memberReq.setPassword("aaaa");
-        memberReq.setPhoneNumber("010-1111-1111");
-
-
-        MemberResponseDto memberRes = memberService.join(memberReq);
-
-        MemberRequestDto loginMember = new MemberRequestDto();
-        loginMember.setEmail(email);
-        loginMember.setPassword("bdfsdf");
-        try {
-            memberService.login(loginMember);
-        } catch (Exception e) {
-            assertThat(e.getMessage()).isEqualTo("비밀번호가 틀립니다.");
-        }
-
-    }
-
-    @Test
-    public void 중복이메일_회원_예외() throws Exception {
+    public void 회원가입_실패_중복이메일() throws Exception {
         //Given
-        MemberRequestDto member1 = new MemberRequestDto();
-        member1.setEmail("cyahn@naver.com");
+        MemberRequestDto memberRequestDto = MemberRequestDto.builder()
+                .name("cccc")
+                .nickName("cdcd")
+                .email(email)
+                .locationName("서울특별시")
+                .password("abcs")
+                .password("010-1111-2222")
+                .build();
 
         //When
-        IllegalStateException e = assertThrows(IllegalStateException.class,
-                () -> memberService.join(member1));
+        EmailDuplicatedException e = assertThrows(EmailDuplicatedException.class,
+                () -> memberService.join(memberRequestDto));
 
         //Then
-        assertThat(e.getMessage()).isEqualTo("이미 존재하는 이메일입니다.");
+        assertThat(e.getMessage()).isEqualTo("email duplicated");
     }
 
     @Test
-    public void 중복닉네임_회원_예외() {
-        MemberRequestDto member = new MemberRequestDto();
-        member.setNickName("부엉");
+    public void 회원가입_실패_중복닉네임() {
+        MemberRequestDto memberRequestDto = MemberRequestDto.builder()
+                .name("chaeyoung")
+                .nickName("cyyyyyy")
+                .email("hi@gmail.com")
+                .locationName("서울특별시")
+                .password("aaaa")
+                .password("010-1111-2222")
+                .build();
 
-        IllegalStateException exception = assertThrows(IllegalStateException.class,
-                () -> memberService.join(member));
+        NickNameDuplicatedException exception = assertThrows(NickNameDuplicatedException.class,
+                () -> memberService.join(memberRequestDto));
 
-        assertThat(exception.getMessage()).isEqualTo("이미 존재하는 닉네임입니다.");
+        assertThat(exception.getMessage()).isEqualTo("nickname duplicated");
     }
 
 
