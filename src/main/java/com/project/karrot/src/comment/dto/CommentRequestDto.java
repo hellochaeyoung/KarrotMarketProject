@@ -16,10 +16,7 @@ public class CommentRequestDto {
     private String contents;
     private String time;
 
-    private Member member;
-    private Product product;
-
-    public Comment toEntity() {
+    public Comment toEntity(Member member, Product product) {
         return Comment.builder()
                 .contents(contents)
                 .time(time)
@@ -28,9 +25,7 @@ public class CommentRequestDto {
                 .build();
     }
 
-    public void setCommentRequestDto(Member member, Product product, String time) {
-        this.member = member;
-        this.product = product;
+    public void setCommentRequestDto(String time) {
         this.time = time;
     }
 
