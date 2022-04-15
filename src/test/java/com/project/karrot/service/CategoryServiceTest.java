@@ -1,8 +1,8 @@
 package com.project.karrot.service;
 
-import com.project.karrot.src.category.Category;
-import com.project.karrot.src.category.CategoryRepository;
 import com.project.karrot.src.category.CategoryService;
+import com.project.karrot.src.category.dto.CategoryRequestDto;
+import com.project.karrot.src.category.dto.CategoryResponseDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,7 +12,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
@@ -20,24 +19,21 @@ public class CategoryServiceTest {
 
     @Autowired
     CategoryService categoryService;
-    @Autowired CategoryRepository categoryRepository;
 
     @Test
     public void 카테고리_목록_조회() {
 
-        List<Category> results = categoryService.findAll();
+        List<CategoryResponseDto> results = categoryService.findAll();
 
-        for(Category c : results) {
-            System.out.println(c.getCategoryName());
-        }
+        assertThat(results.size()).isGreaterThan(0);
     }
 
     @Test
     public void 카테고리_추가() {
-        Category category = new Category();
-        category.setCategoryName("등산용품");
+        CategoryRequestDto categoryRequestDto =
+                CategoryRequestDto.builder().categoryName("등산용품").build();
 
-        Category save = categoryService.register(category);
+        CategoryResponseDto save = categoryService.register(categoryRequestDto);
 
         assertEquals(save.getCategoryName(), "등산용품");
     }
@@ -45,13 +41,15 @@ public class CategoryServiceTest {
     @Test
     public void 카테고리_삭제() {
 
-        Category category = categoryService.findByName("중고차").get();
+        CategoryResponseDto categoryResponseDto = categoryService.findByName("중고차");
 
-        Long removeId = categoryService.remove(category);
+        Long removeId = categoryService.remove(categoryResponseDto.getCategoryId());
 
-        assertEquals(category.getCategoryId(), removeId);
+        assertEquals(categoryResponseDto.getCategoryId(), removeId);
 
     }
+
+
 
 
 }
