@@ -37,9 +37,9 @@ public class CategoryService {
                 .collect(Collectors.toList());
     }
 
-    public Long remove(CategoryRequestDto category) {
-        categoryRepository.deleteById(category.getCategoryId());
+    public Long remove(Long categoryId) {
+        categoryRepository.deleteById(categoryId);
 
-        return category.getCategoryId();
+        return categoryId;
     }
 }
