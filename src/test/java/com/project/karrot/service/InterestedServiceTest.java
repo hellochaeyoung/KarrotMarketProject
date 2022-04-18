@@ -1,67 +1,89 @@
 package com.project.karrot.service;
 
-import com.project.karrot.src.interest.InterestedProduct;
 import com.project.karrot.src.interest.InterestedService;
-import com.project.karrot.src.member.Member;
+import com.project.karrot.src.interest.dto.InterestedRequestDto;
+import com.project.karrot.src.interest.dto.InterestedResponseDto;
 import com.project.karrot.src.member.MemberService;
-import com.project.karrot.src.product.Product;
-import com.project.karrot.src.interest.InterestedRepository;
-import com.project.karrot.src.member.MemberRepository;
-import com.project.karrot.src.product.ProductRepository;
 import com.project.karrot.src.product.ProductService;
+import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@Slf4j
 @SpringBootTest
 @Transactional
 class InterestedServiceTest {
 
     @Autowired
     MemberService memberService;
-    @Autowired MemberRepository memberRepository;
 
     @Autowired
     ProductService productService;
-    @Autowired ProductRepository productRepository;
 
     @Autowired
     InterestedService interestedService;
-    @Autowired InterestedRepository interestedRepository;
 
-    @Test
-    public void 관심상품등록() {
-        Member member = new Member();
-        member.setNickName("hi");
-        Long saveId = memberService.join(member);
+    private Long memberId = 9L;
+    private Long productId = 3L;
+    private InterestedRequestDto interestedRequestDto;
 
-        Product product = new Product();
-        product.setProductName("p1");
-        product.setMember(member);
+    @BeforeEach
+    void init() {
+        interestedRequestDto = InterestedRequestDto.builder()
+                .memberId(memberId)
+                .productId(productId)
+                .build();
 
-        Product p = productService.register(product);
-
-        Member member1 = memberService.find(saveId).get();
-
-        InterestedProduct interestedProduct = new InterestedProduct();
-        interestedProduct.setMember(member1);
-        interestedProduct.setProduct(p);
-        InterestedProduct ip = interestedService.add(interestedProduct);
-
-        List<InterestedProduct> result = interestedService.findInterestedByMember(member1).orElseGet(ArrayList::new);
-        List<InterestedProduct> results = interestedService.findInterestedByProduct(p).orElseGet(ArrayList::new);
-        assertThat(result.get(0).getMember().getId()).isEqualTo(saveId);
-        assertThat(results.get(0).getMember().getProducts().get(0).getProductId()).isEqualTo(p.getProductId());
+        interestedRequestDto.setLike(true);
+        interestedService.add(interestedRequestDto);
 
     }
 
+    @Test
+    public void 관심상품_등록() {
 
+        //given
+        int like = productService.findById(productId).getLikeCount();
+        interestedRequestDto.setLike(true);
+
+        //when
+        InterestedResponseDto interestedResponseDto = interestedService.add(interestedRequestDto);
+
+        //then
+        log.info("before like : {}, after like : {}", like, interestedResponseDto.getProductResponseDto().getLikeCount());
+        assertEquals(interestedResponseDto.getProductResponseDto().getLikeCount(), like+1);
+    }
+
+    @Test
+    void 관심상품_해제() {
+
+        //given
+        int like = productService.findById(productId).getLikeCount();
+        interestedRequestDto.setLike(false);
+
+        //when
+        InterestedResponseDto interestedResponseDto = interestedService.add(interestedRequestDto);
+
+        //then
+        log.info("before like : {}, after like : {}", like, interestedResponseDto.getProductResponseDto().getLikeCount());
+        assertEquals(interestedResponseDto.getProductResponseDto().getLikeCount(), like-1);
+    }
+
+    @Test
+    void 관심상품_조회() {
+
+        List<InterestedResponseDto> resultList =
+                interestedService.findInterestedByMemberIdAndProductStatus(memberId);
+
+        Assertions.assertThat(resultList.size()).isGreaterThan(0);
+
+    }
 }
