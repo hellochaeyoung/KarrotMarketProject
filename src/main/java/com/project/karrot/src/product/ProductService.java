@@ -1,15 +1,14 @@
 package com.project.karrot.src.product;
 
-import com.project.karrot.src.location.Location;
+import com.project.karrot.src.ProductStatus;
+import com.project.karrot.src.category.Category;
+import com.project.karrot.src.category.CategoryRepository;
 import com.project.karrot.src.location.LocationRepository;
+import com.project.karrot.src.member.Member;
+import com.project.karrot.src.member.MemberRepository;
 import com.project.karrot.src.product.dto.ProductAndImageResponseDto;
 import com.project.karrot.src.product.dto.ProductRequestDto;
 import com.project.karrot.src.product.dto.ProductResponseDto;
-import com.project.karrot.src.category.CategoryRepository;
-import com.project.karrot.src.member.MemberRepository;
-import com.project.karrot.src.ProductStatus;
-import com.project.karrot.src.category.Category;
-import com.project.karrot.src.member.Member;
 import com.project.karrot.src.product.dto.ProductUpdateRequestDto;
 import com.project.karrot.src.productimage.ProductImage;
 import com.project.karrot.src.productimage.ProductImageRepository;
@@ -43,7 +42,12 @@ public class ProductService {
         Product result = productRepository.save(newProduct);
 
         // DB 테이블에 이미지 url 저장
-        List<ProductImageDto> savedImageList = saveImageToDB(result, productRequestDto.getFileUrlList());
+        List<ProductImageDto> savedImageList = new ArrayList<>();
+        List<String> fileUrlList = productRequestDto.getFileUrlList();
+        if(fileUrlList != null) {
+            savedImageList = saveImageToDB(result, fileUrlList);
+        } // 예외 처리 넣을 것
+
         ProductResponseDto productResponseDto = new ProductResponseDto(result);
         ProductAndImageResponseDto productAndImageResponseDto = new ProductAndImageResponseDto(productResponseDto, savedImageList);
 
@@ -51,12 +55,6 @@ public class ProductService {
 
         return productAndImageResponseDto;
 
-    }
-
-    private String fomatDate() {
-        Date now = new Date();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd, HH:mm");
-        return format.format(now);
     }
 
     public ProductAndImageResponseDto update(ProductUpdateRequestDto productUpdateRequestDto) {
@@ -77,18 +75,6 @@ public class ProductService {
         return new ProductAndImageResponseDto(productResponseDto, savedImageList);
     }
 
-    private List<ProductImageDto> saveImageToDB(Product product, List<String> urlList) {
-        List<ProductImageDto> productImageList = new ArrayList<>();
-
-        urlList.listIterator().forEachRemaining(fileURL -> {
-            ProductImage productImage = new ProductImage(product, fileURL);
-            ProductImage saveImage = productImageRepository.save(productImage);
-            productImageList.add(new ProductImageDto(saveImage.getId(), fileURL));
-        });
-
-        return productImageList;
-    }
-
     public void updateStatus(ProductRequestDto productRequestDto, ProductStatus status) {
         Product product = productRepository.findById(productRequestDto.getProductId()).orElseThrow();
         product.setProductStatus(status);
@@ -101,7 +87,7 @@ public class ProductService {
     }
 
     public List<ProductResponseDto> findByLocation(Long locationId) {
-        List<Product> productList = productRepository.findByLocation(locationId).orElseGet(ArrayList::new);
+        List<Product> productList = productRepository.findByLocationId(locationId).orElseGet(ArrayList::new);
 
         return productList.stream()
                 .map(ProductResponseDto::new)
@@ -134,6 +120,24 @@ public class ProductService {
 
     public void remove(Long productId) {
         productRepository.deleteById(productId);
+    }
+
+    private List<ProductImageDto> saveImageToDB(Product product, List<String> urlList) {
+        List<ProductImageDto> productImageList = new ArrayList<>();
+
+        urlList.listIterator().forEachRemaining(fileURL -> {
+            ProductImage productImage = new ProductImage(product, fileURL);
+            ProductImage saveImage = productImageRepository.save(productImage);
+            productImageList.add(new ProductImageDto(saveImage.getId(), fileURL));
+        });
+
+        return productImageList;
+    }
+
+    private String fomatDate() {
+        Date now = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd, HH:mm");
+        return format.format(now);
     }
 
 }

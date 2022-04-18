@@ -1,6 +1,6 @@
 package com.project.karrot.src.views;
 
-import com.project.karrot.constants.SessionConstants;
+import com.project.karrot.src.ProductStatus;
 import com.project.karrot.src.annotation.CurrentMemberId;
 import com.project.karrot.src.annotation.LoginCheck;
 import com.project.karrot.src.category.CategoryService;
@@ -9,30 +9,19 @@ import com.project.karrot.src.deal.DealService;
 import com.project.karrot.src.deal.dto.DealRequestDto;
 import com.project.karrot.src.deal.dto.DealResponseDto;
 import com.project.karrot.src.image.FileUploadService;
-import com.project.karrot.src.image.dto.ImageUpdateRequestDto;
 import com.project.karrot.src.interest.InterestedService;
-import com.project.karrot.src.interest.dto.InterestedResponseDto;
 import com.project.karrot.src.member.MemberService;
 import com.project.karrot.src.member.dto.MemberAndImageResponseDto;
-import com.project.karrot.src.member.dto.MemberRequestDto;
-import com.project.karrot.src.member.dto.MemberResponseDto;
 import com.project.karrot.src.memberimage.MemberImageService;
 import com.project.karrot.src.memberimage.dto.MemberImageRequestDto;
 import com.project.karrot.src.product.ProductService;
-import com.project.karrot.src.ProductStatus;
-import com.project.karrot.src.category.Category;
-import com.project.karrot.src.deal.Deal;
-import com.project.karrot.src.interest.InterestedProduct;
 import com.project.karrot.src.product.dto.*;
 import com.project.karrot.src.productimage.ProductImageService;
 import com.project.karrot.src.productimage.dto.ProductImageDto;
-import com.project.karrot.src.productimage.dto.ProductImageRequestDto;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -151,18 +140,23 @@ public class MyPageController {
         List<ProductImageDto> removeList = productUpdateRequestDto.getRemoveImageList();
 
         //AWS S3 이미지 업데이트 처리 -> 삭제 후 추가
-        removeImage(removeList);
-        List<String> urlList = saveImageToAwsS3(fileList);
+        if(removeList != null) {
+            removeImage(removeList);
 
-        // DB 상품이미지 테이블 업데이트 처리 -> 삭제 후 추가
-        // 1. 여러 개 이미지 다 변경 2. 일부만 변경 3. 아예 변경 안함
-        // 이렇게 세 가지 경우로 나뉘기 때문에 삭제할 이미지들을 [id, fileURL]의 dto로 받아 id 값으로 삭제하고
-        // 새로 추가된 fileList를 s3에 넣어 URL 받아온 후 DB에 저장한다. <- productService의 update 메소드에서 수행
-        removeList.listIterator().forEachRemaining(productImageDto -> {
-            productImageService.delete(productImageDto.getId());
-        });
+            // DB 상품이미지 테이블 업데이트 처리 -> 삭제 후 추가
+            // 1. 여러 개 이미지 다 변경 2. 일부만 변경 3. 아예 변경 안함
+            // 이렇게 세 가지 경우로 나뉘기 때문에 삭제할 이미지들을 [id, fileURL]의 dto로 받아 id 값으로 삭제하고
+            // 새로 추가된 fileList를 s3에 넣어 URL 받아온 후 DB에 저장한다. <- productService의 update 메소드에서 수행
+            removeList.listIterator().forEachRemaining(productImageDto -> {
+                productImageService.delete(productImageDto.getId());
+            });
+        }
 
-        productUpdateRequestDto.toReady(urlList);
+        if(fileList != null) {
+            List<String> urlList = saveImageToAwsS3(fileList);
+            productUpdateRequestDto.toReady(urlList);
+        }
+
         return new ResponseEntity<>(productService.update(productUpdateRequestDto), HttpStatus.OK);
     }
 
