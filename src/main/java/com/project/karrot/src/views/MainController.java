@@ -72,10 +72,13 @@ public class MainController {
                                       @RequestPart(required = false) List<MultipartFile> fileList) {
 
         List<String> fileUrlList = new ArrayList<>();
-        fileList.listIterator().forEachRemaining(file -> {
-            String url = fileUploadService.uploadImage(file);
-            fileUrlList.add(url);
-        });
+
+        if(fileList != null) {
+            fileList.listIterator().forEachRemaining(file -> {
+                String url = fileUploadService.uploadImage(file);
+                fileUrlList.add(url);
+            });
+        }
 
         productRequestDto.toReady(memberId, fileUrlList);
         ProductAndImageResponseDto productAndImageResponseDto = productService.register(productRequestDto);
