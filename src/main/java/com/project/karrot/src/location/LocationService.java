@@ -21,7 +21,7 @@ public class LocationService {
     }
 
     public List<LocationResponseDto> findByAddressAll(String address) {
-        List<Location> list = locationRepository.findByAddressLike(address).orElseGet(ArrayList::new);
+        List<Location> list = locationRepository.findByAddressContains(address).orElseGet(ArrayList::new);
 
         return list.stream()
                 .map(LocationResponseDto::new)
