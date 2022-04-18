@@ -2,7 +2,6 @@ package com.project.karrot.src.product.dto;
 
 import com.project.karrot.src.ProductStatus;
 import com.project.karrot.src.category.Category;
-import com.project.karrot.src.location.Location;
 import com.project.karrot.src.member.Member;
 import com.project.karrot.src.product.Product;
 import lombok.*;
@@ -26,15 +25,7 @@ public class ProductRequestDto {
     private String contents;
     private String status;
 
-    private List<String> removeImageList;
     private List<String> fileUrlList;
-/*
-    private Member member;
-    private Category category;
-    private String time;
-    private Location location;
-
- */
     private ProductStatus productStatus;
 
     public Product toEntity(Member member, Category category, String time) {
@@ -50,17 +41,6 @@ public class ProductRequestDto {
                 .productStatus(ProductStatus.SALE)
                 .build();
     }
-
-    /*
-    public void setProductRequestDto(Member member, Category category, String time) {
-        this.member = member;
-        this.category = category;
-        this.time = time;
-        this.location = member.getLocation();
-        this.productStatus = ProductStatus.SALE;
-    }
-
-     */
 
     public void update(ProductStatus status) {
         this.productStatus = status;
