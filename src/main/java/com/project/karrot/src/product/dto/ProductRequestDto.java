@@ -21,7 +21,7 @@ public class ProductRequestDto {
     private Long productId;
     private String productName;
     private String categoryName;
-    private int price;
+    private Integer price;
     private String contents;
     private String status;
 
