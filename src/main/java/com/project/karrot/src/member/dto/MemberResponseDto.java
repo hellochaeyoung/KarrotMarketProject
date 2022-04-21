@@ -12,14 +12,14 @@ public class MemberResponseDto {
     private String email;
     private String password;
     private String nickName;
-    private Long locationId;
+    private String locationName;
 
     public MemberResponseDto(Member member) {
         this.id = member.getId();
         this.email = member.getEmail();
         this.password = member.getPassword();
         this.nickName = member.getNickName();
-        this.locationId = member.getLocation().getId();
+        this.locationName = member.getLocation().getAddress();
     }
 
 }
