@@ -7,6 +7,8 @@ import com.project.karrot.src.product.ProductService;
 import com.project.karrot.src.product.dto.ProductAndImageResponseDto;
 import com.project.karrot.src.product.dto.ProductRequestDto;
 import com.project.karrot.src.product.dto.ProductResponseDto;
+import com.project.karrot.src.product.dto.ProductStatusUpdateRequestDto;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@Slf4j
 @SpringBootTest
 @Transactional
 class ProductServiceIntegrationTest {
@@ -74,14 +77,55 @@ class ProductServiceIntegrationTest {
     }
 
     @Test
-    void 상품_등록상태_수정() {
+    void 상품_등록상태_수정_판매_판매완료() {
 
-        productRequestDto.setProductId(productId);
-        productService.updateStatus(productRequestDto, ProductStatus.COMPLETE);
+        //given
+        ProductStatusUpdateRequestDto productStatusUpdateRequestDto = new ProductStatusUpdateRequestDto(productId, "COMPLETE");
 
+        //when
+        productService.updateStatus(productStatusUpdateRequestDto);
+
+        //then
         List<ProductResponseDto> resultList = productService.findByMemberAndStatus(memberId, ProductStatus.COMPLETE);
-
+        log.info("판매완료된 상품명 : {}", resultList.get(0).getProductName());
         assertThat(resultList.size()).isGreaterThan(0);
+    }
+
+    @Test
+    void 상품_등록상태_수정_판매_예약중() {
+
+        //given
+        ProductStatusUpdateRequestDto productStatusUpdateRequestDto = new ProductStatusUpdateRequestDto(productId, "RESERVATION");
+
+        //when
+        productService.updateStatus(productStatusUpdateRequestDto);
+
+        //then
+        List<ProductResponseDto> resultList = productService.findByMemberAndStatus(memberId, ProductStatus.RESERVATION);
+        log.info("예약중 상태인 상품명 : {}", resultList.get(0).getProductName());
+        assertThat(resultList.size()).isGreaterThan(0);
+    }
+
+    @Test
+    void 상품_등록상태_수정_판매완료_판매중() {
+
+        //given
+        ProductStatusUpdateRequestDto productStatusUpdateRequestDto = new ProductStatusUpdateRequestDto(productId, "COMPLETE");
+        productService.updateStatus(productStatusUpdateRequestDto);
+        List<ProductResponseDto> resultList = productService.findByMemberAndStatus(memberId, ProductStatus.COMPLETE);
+        log.info("판매완료된 상품명 : {}", resultList.get(0).getProductName());
+
+        ProductStatusUpdateRequestDto productStatusUpdateRequestDto1 = new ProductStatusUpdateRequestDto(productId, "SALE");
+        productService.updateStatus(productStatusUpdateRequestDto1);
+
+        //when
+        List<ProductResponseDto> resultList1 = productService.findByMemberAndStatus(memberId, ProductStatus.SALE);
+
+        //then
+        log.info("판매완료 -> 판매중 변경된 상품명 : {}", resultList.get(0).getProductName());
+        assertThat(resultList1.size()).isGreaterThan(0);
+
+        //
     }
 
     @Test
