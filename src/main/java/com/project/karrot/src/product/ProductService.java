@@ -3,17 +3,15 @@ package com.project.karrot.src.product;
 import com.project.karrot.src.ProductStatus;
 import com.project.karrot.src.category.Category;
 import com.project.karrot.src.category.CategoryRepository;
-import com.project.karrot.src.location.LocationRepository;
+import com.project.karrot.src.deal.DealRepository;
 import com.project.karrot.src.member.Member;
 import com.project.karrot.src.member.MemberRepository;
-import com.project.karrot.src.product.dto.ProductAndImageResponseDto;
-import com.project.karrot.src.product.dto.ProductRequestDto;
-import com.project.karrot.src.product.dto.ProductResponseDto;
-import com.project.karrot.src.product.dto.ProductUpdateRequestDto;
+import com.project.karrot.src.product.dto.*;
 import com.project.karrot.src.productimage.ProductImage;
 import com.project.karrot.src.productimage.ProductImageRepository;
-import com.project.karrot.src.productimage.dto.ProductImageDto;
+import com.project.karrot.src.productimage.dto.ProductImageSaveResponseDto;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
@@ -22,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Transactional
 @AllArgsConstructor
 public class ProductService {
@@ -29,8 +28,8 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final MemberRepository memberRepository;
-    private final LocationRepository locationRepository;
     private final ProductImageRepository productImageRepository;
+    private final DealRepository dealRepository;
 
     public ProductAndImageResponseDto register(ProductRequestDto productRequestDto) {
 
@@ -41,8 +40,8 @@ public class ProductService {
         Product newProduct = productRequestDto.toEntity(member, findCategory, time);
         Product result = productRepository.save(newProduct);
 
-        // DB 테이블에 이미지 url 저장
-        List<ProductImageDto> savedImageList = new ArrayList<>();
+        // DB 이미지 테이블에 이미지 url 저장
+        List<ProductImageSaveResponseDto> savedImageList = new ArrayList<>();
         List<String> fileUrlList = productRequestDto.getFileUrlList();
         if(fileUrlList != null) {
             savedImageList = saveImageToDB(result, fileUrlList);
@@ -68,16 +67,48 @@ public class ProductService {
         product.setPrice(productUpdateRequestDto.getPrice());
         product.setContents(productUpdateRequestDto.getContents());
 
-        List<ProductImageDto> savedImageList = saveImageToDB(product, productUpdateRequestDto.getFileUrlList());
+        List<ProductImageSaveResponseDto> savedImageList = saveImageToDB(product, productUpdateRequestDto.getFileUrlList());
 
         ProductResponseDto productResponseDto = new ProductResponseDto(product);
 
         return new ProductAndImageResponseDto(productResponseDto, savedImageList);
     }
 
-    public void updateStatus(ProductRequestDto productRequestDto, ProductStatus status) {
-        Product product = productRepository.findById(productRequestDto.getProductId()).orElseThrow();
-        product.setProductStatus(status);
+    public void updateStatus(ProductStatusUpdateRequestDto productStatusUpdateRequestDto) {
+
+        Long productId = productStatusUpdateRequestDto.getProductId();
+        String status = productStatusUpdateRequestDto.getStatus();
+        Product product = productRepository.findById(productId).orElseThrow();
+
+        if(product.getProductStatus().toString().equals(status)) {
+            return;
+        }
+
+        if(product.getProductStatus().equals(ProductStatus.COMPLETE)) {
+            //거래완료 -> 예약중, 판매중으로 변경 시 거래내역 삭제
+            dealRepository.deleteByProductId(productId);
+            log.info("거래 내역 삭제 완료 = id : {}", productId);
+
+            /*
+
+            if(status.equals("DELETE")) {
+                productRepository.deleteById(productId);
+                return;
+            }
+
+             */
+        }
+
+        if(status.equals("RESERVATION")) {
+            product.setProductStatus(ProductStatus.RESERVATION);
+
+        }else if(status.equals("SALE")) {
+            product.setProductStatus(ProductStatus.SALE);
+
+        }else { // 거래완료로 변경 시
+            product.setProductStatus(ProductStatus.COMPLETE);
+        }
+
     }
 
     public ProductResponseDto findById(Long productId) {
@@ -122,13 +153,13 @@ public class ProductService {
         productRepository.deleteById(productId);
     }
 
-    private List<ProductImageDto> saveImageToDB(Product product, List<String> urlList) {
-        List<ProductImageDto> productImageList = new ArrayList<>();
+    private List<ProductImageSaveResponseDto> saveImageToDB(Product product, List<String> urlList) {
+        List<ProductImageSaveResponseDto> productImageList = new ArrayList<>();
 
         urlList.listIterator().forEachRemaining(fileURL -> {
             ProductImage productImage = new ProductImage(product, fileURL);
             ProductImage saveImage = productImageRepository.save(productImage);
-            productImageList.add(new ProductImageDto(saveImage.getId(), fileURL));
+            productImageList.add(new ProductImageSaveResponseDto(saveImage.getId(), fileURL));
         });
 
         return productImageList;
