@@ -1,10 +1,16 @@
 package com.project.karrot.src.product.dto;
 
-import com.project.karrot.src.image.dto.ImageUpdateRequestDto;
-import com.project.karrot.src.productimage.dto.ProductImageDto;
+import com.project.karrot.src.productimage.dto.ProductImageSaveResponseDto;
 import lombok.*;
+import org.hibernate.validator.constraints.Range;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.List;
+
+/**
+ * 등록된 상품 내용 수정 요청 DTO
+ */
 
 @Builder
 @Getter @Setter
@@ -12,15 +18,27 @@ import java.util.List;
 @AllArgsConstructor
 public class ProductUpdateRequestDto {
 
+    @NotBlank
     private Long memberId;
-    private Long productId;
-    private String productName;
-    private String categoryName;
-    private int price;
-    private String contents;
-    private String status;
 
-    private List<ProductImageDto> removeImageList;
+    @NotBlank
+    private Long productId;
+
+    @NotBlank
+    private String productName;
+
+    @NotBlank
+    private String categoryName;
+
+    @NotBlank
+    @Range(min = 100, max = 2000000)
+    private Integer price;
+
+    @NotBlank
+    @Size(min = 5)
+    private String contents;
+
+    private List<ProductImageSaveResponseDto> removeImageList;
     private List<String> fileUrlList;
 
     public void toReady(List<String> fileUrlList) {
