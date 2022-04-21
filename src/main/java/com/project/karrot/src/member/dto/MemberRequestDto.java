@@ -5,6 +5,8 @@ import com.project.karrot.src.member.Authority;
 import com.project.karrot.src.member.Member;
 import lombok.*;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Collections;
@@ -16,26 +18,27 @@ import java.util.Collections;
 @Builder
 public class MemberRequestDto {
 
-    private Long memberId;
-
-    @NotNull
+    @NotBlank
     @Size(min = 3, max = 50)
     private String name;
 
     @NotNull
     @Size(min = 10, max = 50)
+    @Email
     private String email;
 
-    @NotNull
+    @NotBlank
     @Size(min = 3, max = 50)
     private String password;
 
+    @NotBlank
     private String phoneNumber;
 
-    @NotNull
+    @NotBlank
     @Size(min = 1, max = 50)
     private String nickName;
 
+    @NotBlank
     private String locationName;
 
     public Member toEntity(String password, Authority authority, Location location) {
