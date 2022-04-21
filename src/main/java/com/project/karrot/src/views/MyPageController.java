@@ -7,7 +7,6 @@ import com.project.karrot.src.category.CategoryService;
 import com.project.karrot.src.category.dto.CategoryResponseDto;
 import com.project.karrot.src.deal.DealService;
 import com.project.karrot.src.deal.dto.DealRequestDto;
-import com.project.karrot.src.deal.dto.DealResponseDto;
 import com.project.karrot.src.image.FileUploadService;
 import com.project.karrot.src.interest.InterestedService;
 import com.project.karrot.src.member.MemberService;
@@ -15,9 +14,12 @@ import com.project.karrot.src.member.dto.MemberAndImageResponseDto;
 import com.project.karrot.src.memberimage.MemberImageService;
 import com.project.karrot.src.memberimage.dto.MemberImageRequestDto;
 import com.project.karrot.src.product.ProductService;
-import com.project.karrot.src.product.dto.*;
+import com.project.karrot.src.product.dto.ProductAndCategoryResponseDto;
+import com.project.karrot.src.product.dto.ProductStatusUpdateRequestDto;
+import com.project.karrot.src.product.dto.ProductResponseDto;
+import com.project.karrot.src.product.dto.ProductUpdateRequestDto;
 import com.project.karrot.src.productimage.ProductImageService;
-import com.project.karrot.src.productimage.dto.ProductImageDto;
+import com.project.karrot.src.productimage.dto.ProductImageSaveResponseDto;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -91,19 +93,20 @@ public class MyPageController {
     @ApiOperation(value = "마이페이지 - 등록 상품 상태 수정", notes = "내가 등록한 상품의 상품 상태를 변경한다.")
     @PostMapping("/myProducts/status")
     @LoginCheck
-    public ResponseEntity<?> updateStatus(@CurrentMemberId Long memberId, @RequestBody ProductAndStatusRequestDto product) {
+    public ResponseEntity<?> updateStatus(@CurrentMemberId Long memberId, @RequestBody ProductStatusUpdateRequestDto product) {
 
         List<ProductResponseDto> list;
 
+        // 상품 등록상태 수정
+        productService.updateStatus(product);
+
         String status = product.getStatus();
-
-        updateNewStatus(memberId, product, status);
-
         if(status.equals("RESERVATION")) {
             list = productService.findByMemberAndStatus(memberId, ProductStatus.RESERVATION);
         }else if(status.equals("SALE")){
             list = productService.findByMemberAndStatus(memberId, ProductStatus.SALE);
         }else {
+            dealService.register(new DealRequestDto(memberId, product.getProductId()));
             list = productService.findByMemberAndStatus(memberId, ProductStatus.COMPLETE);
         }
 
@@ -116,7 +119,7 @@ public class MyPageController {
     @LoginCheck
     public ResponseEntity<?> getInterestedList(@CurrentMemberId Long memberId) {
 
-        return new ResponseEntity<>(interestedService.findInterestedByMemberAndProductStatus(memberId), HttpStatus.OK);
+        return new ResponseEntity<>(interestedService.findInterestedByMemberIdAndProductStatus(memberId), HttpStatus.OK);
 
     }
 
@@ -128,7 +131,7 @@ public class MyPageController {
         List<CategoryResponseDto> categories = categoryService.findAll();
         ProductResponseDto product = productService.findById(productId);
 
-        return new ResponseEntity<>(new ProductAndCategoryRes(categories, product), HttpStatus.OK);
+        return new ResponseEntity<>(new ProductAndCategoryResponseDto(categories, product), HttpStatus.OK);
     }
 
     @ApiOperation(value = "마이페이지 - 등록 상품 수정", notes = "등록한 상품의 정보를 수정한다.")
@@ -137,7 +140,7 @@ public class MyPageController {
     public ResponseEntity<?> update(@RequestPart ProductUpdateRequestDto productUpdateRequestDto,
                                     @RequestPart(required = false) List<MultipartFile> fileList) {
 
-        List<ProductImageDto> removeList = productUpdateRequestDto.getRemoveImageList();
+        List<ProductImageSaveResponseDto> removeList = productUpdateRequestDto.getRemoveImageList();
 
         //AWS S3 이미지 업데이트 처리 -> 삭제 후 추가
         if(removeList != null) {
@@ -174,38 +177,11 @@ public class MyPageController {
         return new ResponseEntity<>(productService.findById(productId), HttpStatus.OK);
     }
 
-    public void updateNewStatus(Long memberId, ProductAndStatusRequestDto productAndStatusRequestDto, String status) {
-
-        ProductRequestDto product = productAndStatusRequestDto.getProductRequestDto();
-
-        if(product.getProductStatus().equals(ProductStatus.COMPLETE)) {
-            DealResponseDto deal = dealService.findByProduct(product.getProductId());
-
-            dealService.remove(deal.getDealId());
-
-            if(status.equals("DELETE")) {
-                productService.remove(product.getProductId());
-                return;
-            }
-        }
-
-        if(status.equals("RESERVATION")) {
-            productService.updateStatus(product, ProductStatus.RESERVATION);
-
-        }else if(status.equals("SALE")) {
-            productService.updateStatus(product, ProductStatus.SALE);
-
-        }else { // 거래완료로 변경 시
-            productService.updateStatus(product, ProductStatus.COMPLETE);
-            dealService.register(new DealRequestDto(memberId, product.getProductId()));
-        }
-    }
-
     /**
      * 상품 이미지 변경으로 인한 AWS S3에서 기존 이미지 삭제 메소드
      * @param removeList 삭제할 이미지 url
      */
-    public void removeImage(List<ProductImageDto> removeList) {
+    public void removeImage(List<ProductImageSaveResponseDto> removeList) {
         removeList.listIterator().forEachRemaining(productImageDto -> {
             System.out.println("remove url from AWS S3 : " + productImageDto.getFileURL());
             fileUploadService.delete(productImageDto.getFileURL());
