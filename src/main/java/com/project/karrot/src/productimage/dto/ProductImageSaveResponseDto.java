@@ -6,17 +6,13 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class ProductImageDto {
+@AllArgsConstructor
+public class ProductImageSaveResponseDto {
 
     private Long id;
     private String fileURL;
 
-    public ProductImageDto(Long id, String fileURL) {
-        this.id = id;
-        this.fileURL = fileURL;
-    }
-
-    public ProductImageDto(String fileURL) {
+    public ProductImageSaveResponseDto(String fileURL) {
         this.fileURL = fileURL;
     }
 
