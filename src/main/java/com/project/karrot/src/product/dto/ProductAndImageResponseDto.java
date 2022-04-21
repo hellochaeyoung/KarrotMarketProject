@@ -1,6 +1,6 @@
 package com.project.karrot.src.product.dto;
 
-import com.project.karrot.src.productimage.dto.ProductImageDto;
+import com.project.karrot.src.productimage.dto.ProductImageSaveResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +15,6 @@ import java.util.List;
 public class ProductAndImageResponseDto {
 
     private ProductResponseDto productResponseDto;
-    private List<ProductImageDto> imageFileList;
+    private List<ProductImageSaveResponseDto> imageFileList;
 
 }
