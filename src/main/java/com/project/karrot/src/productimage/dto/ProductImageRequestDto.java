@@ -4,6 +4,7 @@ import com.project.karrot.src.product.Product;
 import com.project.karrot.src.productimage.ProductImage;
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Builder
@@ -13,14 +14,10 @@ import java.util.List;
 @AllArgsConstructor
 public class ProductImageRequestDto {
 
-    private Long id;
+    @NotBlank
     private Long productId;
-    private List<String> fileUrlList;
 
-    public ProductImageRequestDto(Long productId, List<String> fileUrlList) {
-        this.productId = productId;
-        this.fileUrlList = fileUrlList;
-    }
+    private List<String> fileUrlList;
 
     public ProductImage toEntity(Product product, String fileURL) {
         return ProductImage.builder()
