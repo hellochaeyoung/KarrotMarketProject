@@ -5,8 +5,15 @@ import com.project.karrot.src.category.Category;
 import com.project.karrot.src.member.Member;
 import com.project.karrot.src.product.Product;
 import lombok.*;
+import org.hibernate.validator.constraints.Range;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.List;
+
+/**
+ * 상품 등록 요청 DTO
+ */
 
 @Getter
 @Setter
@@ -15,22 +22,27 @@ import java.util.List;
 @Builder
 public class ProductRequestDto {
 
-    // 이미지 변수 추가
-
     private Long memberId;
-    private Long productId;
+
+    @NotBlank
     private String productName;
+
+    @NotBlank
     private String categoryName;
+
+    @NotBlank
+    @Range(min = 100, max = 2000000)
     private Integer price;
+
+    @NotBlank
+    @Size(min = 5)
     private String contents;
-    private String status;
 
     private List<String> fileUrlList;
     private ProductStatus productStatus;
 
     public Product toEntity(Member member, Category category, String time) {
         return Product.builder()
-                .id(productId)
                 .productName(productName)
                 .price(price)
                 .contents(contents)
