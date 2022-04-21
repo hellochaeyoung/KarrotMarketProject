@@ -1,9 +1,8 @@
 package com.project.karrot.src.member;
 
-import com.project.karrot.common.Api.Response;
 import com.project.karrot.src.jwt.JwtFilter;
 import com.project.karrot.src.jwt.TokenProvider;
-import com.project.karrot.src.member.dto.LoginReqDto;
+import com.project.karrot.src.member.dto.MemberLoginRequestDto;
 import com.project.karrot.src.member.dto.TokenResDto;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +14,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,10 +27,10 @@ public class AuthController {
 
     @ApiOperation(value = "로그인 - 인증", notes = "이메일과 비밀번호가 일치하는지 확인한다.")
     @PostMapping("/auth")
-    public ResponseEntity<TokenResDto> authorize(@RequestBody LoginReqDto loginReqDto) {
+    public ResponseEntity<TokenResDto> authorize(@RequestBody MemberLoginRequestDto memberLoginRequestDto) {
 
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(loginReqDto.getEmail(), loginReqDto.getPassword());
+                new UsernamePasswordAuthenticationToken(memberLoginRequestDto.getEmail(), memberLoginRequestDto.getPassword());
 
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);

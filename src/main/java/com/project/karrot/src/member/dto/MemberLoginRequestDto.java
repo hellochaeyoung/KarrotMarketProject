@@ -2,6 +2,7 @@ package com.project.karrot.src.member.dto;
 
 import lombok.*;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -10,10 +11,11 @@ import javax.validation.constraints.Size;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginReqDto {
+public class MemberLoginRequestDto {
 
     @NotNull
     @Size(min = 5, max = 50)
+    @Email
     private String email;
 
     @NotNull
