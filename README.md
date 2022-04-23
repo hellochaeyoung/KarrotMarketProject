@@ -1,4 +1,4 @@
-# 🥕KarrotMarketProject
+# 🥕 초기 당근마켓 백엔드 구축 프로젝트
 
 
 ## 🤲 소개
@@ -55,4 +55,10 @@
    * 등록 상품의 상품 등록 상태를 변경할 수 있습니다.
    * 관심 목록을 조회할 수 있습니다.
    * 구매 내역을 조회할 수 있습니다.
+
+
+## 🧐 문제 해결 및 적용 기술
+
+[1. DTO 적용](https://evening-gooseberry-9aa.notion.site/DTO-Entity-cc78e3ccf90d44f2a6bfe768a7964410)
+[2. 로그인 기능 구현 - Session, JWT](https://evening-gooseberry-9aa.notion.site/9521ea6ceb0042a5b2182682ebc448f2)
      
