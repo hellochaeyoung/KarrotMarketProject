@@ -10,14 +10,18 @@ import com.project.karrot.src.member.dto.MemberRequestDto;
 import com.project.karrot.src.member.dto.MemberResponseDto;
 import com.project.karrot.src.memberimage.MemberImage;
 import com.project.karrot.src.memberimage.MemberImageRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
 @Slf4j
 @Transactional
+@RequiredArgsConstructor
+@Service
 public class MemberService {
 
     private final MemberRepository memberRepository;
@@ -26,12 +30,6 @@ public class MemberService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-    public MemberService(MemberRepository memberRepository, LocationRepository locationRepository, MemberImageRepository memberImageRepository) {
-        this.memberRepository = memberRepository;
-        this.locationRepository = locationRepository;
-        this.memberImageRepository = memberImageRepository;
-    }
 
     public MemberResponseDto join(MemberRequestDto memberRequestDto) {
 

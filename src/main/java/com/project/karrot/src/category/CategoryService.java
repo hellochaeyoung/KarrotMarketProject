@@ -2,19 +2,19 @@ package com.project.karrot.src.category;
 
 import com.project.karrot.src.category.dto.CategoryRequestDto;
 import com.project.karrot.src.category.dto.CategoryResponseDto;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Transactional
+@RequiredArgsConstructor
+@Service
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
-
-    public CategoryService(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
-    }
 
     public CategoryResponseDto register(CategoryRequestDto categoryRequest) {
 

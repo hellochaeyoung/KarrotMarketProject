@@ -3,12 +3,14 @@ package com.project.karrot.src.memberimage;
 import com.project.karrot.src.member.Member;
 import com.project.karrot.src.member.MemberRepository;
 import com.project.karrot.src.memberimage.dto.MemberImageRequestDto;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
 @Transactional
-@AllArgsConstructor
+@RequiredArgsConstructor
+@Service
 public class MemberImageService {
 
     private final MemberImageRepository memberImageRepository;

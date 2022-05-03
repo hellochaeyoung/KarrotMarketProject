@@ -1,32 +1,14 @@
 package com.project.karrot.common.config;
 
-import com.project.karrot.src.category.CategoryRepository;
-import com.project.karrot.src.category.CategoryService;
-import com.project.karrot.src.comment.CommentRepository;
-import com.project.karrot.src.comment.CommentService;
-import com.project.karrot.src.deal.DealRepository;
-import com.project.karrot.src.deal.DealService;
-import com.project.karrot.src.image.FileUploadService;
-import com.project.karrot.src.image.UploadService;
-import com.project.karrot.src.interest.InterestedRepository;
-import com.project.karrot.src.interest.InterestedService;
-import com.project.karrot.src.location.LocationRepository;
-import com.project.karrot.src.location.LocationService;
-import com.project.karrot.src.member.*;
-import com.project.karrot.src.memberimage.MemberImageRepository;
-import com.project.karrot.src.memberimage.MemberImageService;
-import com.project.karrot.src.product.ProductRepository;
-import com.project.karrot.src.product.ProductService;
-import com.project.karrot.src.productimage.ProductImageRepository;
-import com.project.karrot.src.productimage.ProductImageService;
 import lombok.AllArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 
 @Configuration
 @AllArgsConstructor
 public class SpringConfig {
 
+    /*
     private final MemberRepository memberRepository;
     private final ProductRepository productRepository;
     private final InterestedRepository interestedRepository;
@@ -76,6 +58,6 @@ public class SpringConfig {
 
     @Bean
     public ProductImageService productImageService() { return new ProductImageService(productImageRepository); }
-
+*/
 }
 

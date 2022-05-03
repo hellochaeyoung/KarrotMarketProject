@@ -10,8 +10,9 @@ import com.project.karrot.src.product.dto.*;
 import com.project.karrot.src.productimage.ProductImage;
 import com.project.karrot.src.productimage.ProductImageRepository;
 import com.project.karrot.src.productimage.dto.ProductImageSaveResponseDto;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
@@ -22,7 +23,8 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Transactional
-@AllArgsConstructor
+@RequiredArgsConstructor
+@Service
 public class ProductService {
 
     private final ProductRepository productRepository;

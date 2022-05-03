@@ -6,7 +6,8 @@ import com.project.karrot.src.member.Member;
 import com.project.karrot.src.member.MemberRepository;
 import com.project.karrot.src.product.Product;
 import com.project.karrot.src.product.ProductRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
@@ -17,7 +18,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Transactional
-@AllArgsConstructor
+@RequiredArgsConstructor
+@Service
 public class CommentService {
 
     private final CommentRepository commentRepository;

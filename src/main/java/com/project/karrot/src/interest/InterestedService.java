@@ -1,24 +1,22 @@
 package com.project.karrot.src.interest;
 
-import com.project.karrot.src.ProductStatus;
-import com.project.karrot.src.interest.InterestedProduct;
 import com.project.karrot.src.interest.dto.InterestedRequestDto;
 import com.project.karrot.src.interest.dto.InterestedResponseDto;
 import com.project.karrot.src.member.Member;
 import com.project.karrot.src.member.MemberRepository;
 import com.project.karrot.src.product.Product;
-import com.project.karrot.src.interest.InterestedRepository;
 import com.project.karrot.src.product.ProductRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Transactional
-@AllArgsConstructor
+@RequiredArgsConstructor
+@Service
 public class InterestedService {
 
     private final InterestedRepository interestedRepository;
@@ -48,7 +46,7 @@ public class InterestedService {
         return new InterestedResponseDto(interestedProduct);
     }
 
-    public List<InterestedResponseDto> findInterestedByMemberAndProductStatus(Long memberId) {
+    public List<InterestedResponseDto> findInterestedByMemberIdAndProductStatus(Long memberId) {
         List<InterestedProduct> list = interestedRepository.findByMemberId(memberId).orElseGet(ArrayList::new);
 
         return list.stream()

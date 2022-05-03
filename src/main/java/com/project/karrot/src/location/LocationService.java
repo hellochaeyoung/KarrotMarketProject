@@ -1,18 +1,18 @@
 package com.project.karrot.src.location;
 
 import com.project.karrot.src.location.dto.LocationResponseDto;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
+@Service
 public class LocationService {
 
     private final LocationRepository locationRepository;
-
-    public LocationService(LocationRepository locationRepository) {
-        this.locationRepository = locationRepository;
-    }
 
     public LocationResponseDto find(Long id) {
         Location location = locationRepository.findById(id).orElseThrow();

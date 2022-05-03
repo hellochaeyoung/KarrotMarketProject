@@ -5,12 +5,12 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
 
 @RequiredArgsConstructor
-@Component
+@Service
 public class AwsS3UploadService implements UploadService {
 
     private final AmazonS3 amazonS3;
