@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -18,10 +19,10 @@ import java.util.List;
 @AllArgsConstructor
 public class ProductUpdateRequestDto {
 
-    @NotBlank
+    @NotNull
     private Long memberId;
 
-    @NotBlank
+    @NotNull
     private Long productId;
 
     @NotBlank
@@ -30,7 +31,7 @@ public class ProductUpdateRequestDto {
     @NotBlank
     private String categoryName;
 
-    @NotBlank
+    @NotNull
     @Range(min = 100, max = 2000000)
     private Integer price;
 

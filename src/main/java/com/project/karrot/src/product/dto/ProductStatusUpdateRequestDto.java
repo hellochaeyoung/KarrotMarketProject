@@ -3,6 +3,7 @@ package com.project.karrot.src.product.dto;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * 상품의 등록 상태 수정 요청 DTO
@@ -15,7 +16,7 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class ProductStatusUpdateRequestDto {
 
-    @NotBlank
+    @NotNull
     private Long productId;
 
     @NotBlank
