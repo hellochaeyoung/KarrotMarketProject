@@ -20,6 +20,9 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.filter.CharacterEncodingFilter;
 
 import javax.transaction.Transactional;
 
@@ -48,7 +51,17 @@ public class HomeControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private WebApplicationContext context;
+
     @BeforeEach
+    void setUp() {
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
+                .addFilters(new CharacterEncodingFilter("UTF-8", true))
+                .build();
+    }
+
+    //@BeforeEach
      void init() throws Exception {
 
         //given
@@ -96,7 +109,7 @@ public class HomeControllerTest {
                     .password("ccc")
                     .name("candy")
                     .nickName("candy")
-                    .locationName("부천시 상동")
+                    .locationName("경기도 부천시")
                     .phoneNumber("010-2222-3333")
                     .build();
 
@@ -167,6 +180,15 @@ public class HomeControllerTest {
                                         .content(objectMapper.writeValueAsString(memberRequestDto))).andExpect(status().isBadRequest()).andReturn().getResponse().getStatus();
 
         //then
+        assertThat(result).isEqualTo(400);
+    }
+
+    @Test
+    void 지역_조회_실패() throws Exception {
+
+        int result = mockMvc.perform(MockMvcRequestBuilders.get("/home/signUp/" + "로스엔젤레스")).andExpect(status().isBadRequest()).andReturn().getResponse().getStatus();
+
+        log.error("지역명으로 이름 조회 실패 오류 발생 : {}", result);
         assertThat(result).isEqualTo(400);
     }
 }
