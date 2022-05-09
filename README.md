@@ -57,8 +57,10 @@
    * 구매 내역을 조회할 수 있습니다.
 
 
-## 🧐 문제 해결 및 적용 기술
+## 🧐 프로젝트에 대한 기록
 
-[1. DTO 적용](https://evening-gooseberry-9aa.notion.site/DTO-Entity-cc78e3ccf90d44f2a6bfe768a7964410)
-[2. 로그인 기능 구현 - Session, JWT](https://evening-gooseberry-9aa.notion.site/9521ea6ceb0042a5b2182682ebc448f2)
+* [DTO 적용](https://evening-gooseberry-9aa.notion.site/DTO-Entity-cc78e3ccf90d44f2a6bfe768a7964410)
+* [빈과 의존관계 설정](https://evening-gooseberry-9aa.notion.site/b560c90b0ec3451e90359f221adb80c1)
+* [로그인 기능 구현 - Session, JWT](https://evening-gooseberry-9aa.notion.site/9521ea6ceb0042a5b2182682ebc448f2)
+* [로그인 여부 체크 AOP](https://evening-gooseberry-9aa.notion.site/AOP-41ff25ee6a1e496aa4c928d250d1e3fd)
      
