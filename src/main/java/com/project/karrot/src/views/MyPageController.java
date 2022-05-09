@@ -2,7 +2,6 @@ package com.project.karrot.src.views;
 
 import com.project.karrot.src.ProductStatus;
 import com.project.karrot.src.annotation.CurrentMemberId;
-import com.project.karrot.src.annotation.LoginCheck;
 import com.project.karrot.src.category.CategoryService;
 import com.project.karrot.src.category.dto.CategoryResponseDto;
 import com.project.karrot.src.deal.DealService;
@@ -15,8 +14,8 @@ import com.project.karrot.src.memberimage.MemberImageService;
 import com.project.karrot.src.memberimage.dto.MemberImageRequestDto;
 import com.project.karrot.src.product.ProductService;
 import com.project.karrot.src.product.dto.ProductAndCategoryResponseDto;
-import com.project.karrot.src.product.dto.ProductStatusUpdateRequestDto;
 import com.project.karrot.src.product.dto.ProductResponseDto;
+import com.project.karrot.src.product.dto.ProductStatusUpdateRequestDto;
 import com.project.karrot.src.product.dto.ProductUpdateRequestDto;
 import com.project.karrot.src.productimage.ProductImageService;
 import com.project.karrot.src.productimage.dto.ProductImageSaveResponseDto;
@@ -46,7 +45,6 @@ public class MyPageController {
 
     @ApiOperation(value = "마이페이지 - 프로필 조회", notes = "프로필을 조회한다.")
     @GetMapping("/profile")
-    @LoginCheck
     public ResponseEntity<?> profile(@CurrentMemberId Long memberId) {
         //MemberResponseDto memberResponseDto = memberService.find(memberId);
         MemberAndImageResponseDto memberAndImageResponseDto = memberService.findWithImage(memberId);
@@ -57,7 +55,6 @@ public class MyPageController {
 
     @ApiOperation(value = "프로필 이미지 변경", notes = "프로필 이미지를 변경한다.")
     @PostMapping("/profile/image")
-    @LoginCheck
     public ResponseEntity<?> profileImage(@CurrentMemberId Long memberId, @RequestPart MultipartFile file) {
         String url = fileUploadService.uploadImage(file);
 
@@ -69,14 +66,12 @@ public class MyPageController {
 
     @ApiOperation(value = "마이페이지 - 프로필 수정", notes = "프로필을 수정한다.")
     @PutMapping("/profile")
-    @LoginCheck
     public ResponseEntity<?> change(@CurrentMemberId Long memberId, @RequestBody String nickName) {
         return new ResponseEntity<>(memberService.update(memberId, nickName), HttpStatus.OK);
     }
 
     @ApiOperation(value = "마이페이지 - 등록 상품 목록 조회", notes = "내가 등록한 상품들의 상품 상태별 목록을 조회한다.")
     @GetMapping("/myProducts/status/{status}")
-    @LoginCheck
     public ResponseEntity<?> getProductList(@CurrentMemberId Long memberId, @PathVariable String status) {
 
         List<ProductResponseDto> list = new ArrayList<>();
@@ -92,7 +87,6 @@ public class MyPageController {
 
     @ApiOperation(value = "마이페이지 - 등록 상품 상태 수정", notes = "내가 등록한 상품의 상품 상태를 변경한다.")
     @PostMapping("/myProducts/status")
-    @LoginCheck
     public ResponseEntity<?> updateStatus(@CurrentMemberId Long memberId, @RequestBody ProductStatusUpdateRequestDto product) {
 
         List<ProductResponseDto> list;
@@ -116,7 +110,6 @@ public class MyPageController {
 
     @ApiOperation(value = "마이페이지 - 관심 상품 목록 조회", notes = "관심 등록한 상품 목록을 조회한다.")
     @GetMapping("/myInterests")
-    @LoginCheck
     public ResponseEntity<?> getInterestedList(@CurrentMemberId Long memberId) {
 
         return new ResponseEntity<>(interestedService.findInterestedByMemberIdAndProductStatus(memberId), HttpStatus.OK);
@@ -125,7 +118,6 @@ public class MyPageController {
 
     @ApiOperation(value = "마이페이지 - 등록 상품 조회", notes = "등록한 상품의 정보를 조회한다.")
     @GetMapping("/myProducts/{productId}")
-    @LoginCheck
     public ResponseEntity<?> findUpdateProduct(@PathVariable Long productId) {
 
         List<CategoryResponseDto> categories = categoryService.findAll();
@@ -136,7 +128,6 @@ public class MyPageController {
 
     @ApiOperation(value = "마이페이지 - 등록 상품 수정", notes = "등록한 상품의 정보를 수정한다.")
     @PutMapping("/myProducts")
-    @LoginCheck
     public ResponseEntity<?> update(@RequestPart ProductUpdateRequestDto productUpdateRequestDto,
                                     @RequestPart(required = false) List<MultipartFile> fileList) {
 
@@ -165,14 +156,12 @@ public class MyPageController {
 
     @ApiOperation(value = "구매 내역 목록 조회", notes = "회원의 구매 내역 목록을 조회한다.")
     @GetMapping("/orders")
-    @LoginCheck
     public ResponseEntity<?> viewOrders(@CurrentMemberId Long memberId) {
         return new ResponseEntity<>(dealService.findByMember(memberId), HttpStatus.OK);
     }
 
     @ApiOperation(value = "구매 상품 상세 조회", notes = "구매 상품을 상세 조회한다.")
     @GetMapping("/orders/{productId}")
-    @LoginCheck
     public ResponseEntity<?> viewOrdersDetail(@CurrentMemberId Long memberId, @PathVariable Long productId) {
         return new ResponseEntity<>(productService.findById(productId), HttpStatus.OK);
     }
