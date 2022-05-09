@@ -1,7 +1,6 @@
 package com.project.karrot.src.jwt;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
@@ -14,9 +13,10 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+@Slf4j
 public class JwtFilter extends GenericFilterBean {
 
-    private static final Logger logger = LoggerFactory.getLogger(JwtFilter.class);
+    //private static final Logger logger = LoggerFactory.getLogger(JwtFilter.class);
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
 
@@ -29,19 +29,29 @@ public class JwtFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws IOException, ServletException {
 
+        log.info("JwtFilter Request");
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         String jwt = resolveToken(httpServletRequest);
         String requestURI = httpServletRequest.getRequestURI();
 
-        if(StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
-            Authentication authentication = tokenProvider.getAuthentication(jwt);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            logger.debug("Security Context에 '{}' 인증 정보를 저장했습니다, uri : {}", authentication.getName(), requestURI);
+        log.info("jwt token {}, requestURI {}", jwt, requestURI);
+
+        if(jwt == null) {
+            chain.doFilter(servletRequest, servletResponse);
         }else {
-            logger.debug("유효한 JWT 토큰이 없습니다, uri: {}", requestURI);
+            if(StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
+                Authentication authentication = tokenProvider.getAuthentication(jwt);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                log.info("Security Context에 '{}' 인증 정보를 저장했습니다, uri : {}", authentication.getName(), requestURI);
+
+                chain.doFilter(servletRequest, servletResponse);
+            }else {
+                log.info("유효한 JWT 토큰이 없습니다, uri: {}", requestURI);
+            }
         }
 
-        chain.doFilter(servletRequest, servletResponse);
+        log.info("JwtFilter Response");
+
     }
 
     private String resolveToken(HttpServletRequest request) {

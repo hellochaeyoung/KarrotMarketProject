@@ -1,18 +1,19 @@
 package com.project.karrot.src.aop;
 
-import com.project.karrot.src.member.*;
-import com.project.karrot.src.member.dto.MemberResponseDto;
+import com.project.karrot.src.member.Member;
+import com.project.karrot.src.member.MemberAuthService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Optional;
 
 @Aspect
 @RequiredArgsConstructor
+@Slf4j
 public class LoginCheckAspect {
 
     private final MemberAuthService memberAuthService;
@@ -24,9 +25,13 @@ public class LoginCheckAspect {
 
     @Before("@annotation(com.project.karrot.src.annotation.LoginCheck) && @annotation(target)")
     public void loginCheck() throws HttpClientErrorException{
+        log.info("AOP - @LoginCheck 실행");
         Optional<Member> member = memberAuthService.login();
         if(member.isEmpty()) {
+            log.info("로그인 확인 실패 - 에러 {} 전송", HttpStatus.UNAUTHORIZED);
             throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED);
         }
+
+        log.info("로그인 확인 성공 - 로그인한 유저의 접근 : {}", member.get().getEmail());
     }
 }

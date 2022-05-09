@@ -6,6 +6,7 @@ import com.project.karrot.src.member.dto.MemberLoginRequestDto;
 import com.project.karrot.src.member.dto.TokenResDto;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/login")
@@ -29,6 +31,7 @@ public class AuthController {
     @PostMapping("/auth")
     public ResponseEntity<TokenResDto> authorize(@RequestBody MemberLoginRequestDto memberLoginRequestDto) {
 
+        log.info("로그인 인증 시도 회원 {}", memberLoginRequestDto.getEmail());
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(memberLoginRequestDto.getEmail(), memberLoginRequestDto.getPassword());
 
