@@ -53,7 +53,7 @@ public class MyPageController {
 
     }
 
-    @ApiOperation(value = "프로필 이미지 변경", notes = "프로필 이미지를 변경한다.")
+    @ApiOperation(value = "마이 페이지 - 프로필 이미지 수정", notes = "프로필 이미지를 변경한다.")
     @PostMapping("/profile/image")
     public ResponseEntity<?> profileImage(@CurrentMemberId Long memberId, @RequestPart MultipartFile file) {
         String url = fileUploadService.uploadImage(file);
@@ -64,7 +64,7 @@ public class MyPageController {
         return new ResponseEntity<>(memberImageService.save(memberImageRequestDto), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "마이페이지 - 프로필 수정", notes = "프로필을 수정한다.")
+    @ApiOperation(value = "마이페이지 - 프로필 닉네임 수정", notes = "프로필 닉네임을 수정한다.")
     @PutMapping("/profile")
     public ResponseEntity<?> change(@CurrentMemberId Long memberId, @RequestBody String nickName) {
         return new ResponseEntity<>(memberService.update(memberId, nickName), HttpStatus.OK);
