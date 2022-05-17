@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.karrot.controller.auth.WithMockCustomMember;
 import com.project.karrot.src.category.dto.CategoryAndLocationRequestDto;
 import com.project.karrot.src.location.dto.LocationResponseDto;
-import com.project.karrot.src.product.dto.ProductAndCategoryRes;
+import com.project.karrot.src.product.dto.ProductAndCategoryResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -56,7 +56,7 @@ public class MainControllerTest {
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-        ProductAndCategoryRes response = objectMapper.readValue(result, new TypeReference<>() {});
+        ProductAndCategoryResponseDto response = objectMapper.readValue(result, new TypeReference<>() {});
 
         //then
         assertThat(response.getCategoryList().size()).isGreaterThan(0);
@@ -101,4 +101,5 @@ public class MainControllerTest {
         //then
         assertThat(resultList.size()).isEqualTo(0);
     }
+
 }
