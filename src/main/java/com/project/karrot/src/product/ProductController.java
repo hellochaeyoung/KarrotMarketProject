@@ -33,11 +33,20 @@ public class ProductController {
         return new ResponseEntity<>(new ProductListResponseDto(view, otherList), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "상품 좋아요 누르기", notes = "상품 좋아요 버튼을 눌러 관심 목록에 추가한다.")
+    @ApiOperation(value = "상품 좋아요", notes = "상품 좋아요 버튼을 눌러 관심 목록에 추가/삭제 한다.")
     @PutMapping("/{productId}")
     public ResponseEntity<?> like(@RequestBody InterestedRequestDto interestedRequestDto) {
-        InterestedResponseDto interestedResponseDto = interestedService.add(interestedRequestDto);
-        return new ResponseEntity<>(interestedResponseDto.getProductResponseDto().getLikeCount(), HttpStatus.OK);
+
+        int count = 0;
+        boolean like = interestedRequestDto.isLike();
+        if(like) {
+            InterestedResponseDto interestedResponseDto = interestedService.add(interestedRequestDto);
+            count = interestedResponseDto.getProductResponseDto().getLikeCount();
+        }else {
+            count = interestedService.remove(interestedRequestDto);
+        }
+
+        return new ResponseEntity<>(count, HttpStatus.OK);
     }
 
 
@@ -52,5 +61,21 @@ public class ProductController {
     public ResponseEntity<?> registerComment(@CurrentMemberId Long memberId, @RequestBody CommentRequestDto commentRequestDto,
                                   @PathVariable Long productId) {
         return new ResponseEntity<>(commentService.register(commentRequestDto, memberId, productId), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "상품 댓글 수정", notes = "상품 댓글을 수정한다.")
+    @PutMapping("/{productId}/comments")
+    public ResponseEntity<?> updateComment(@CurrentMemberId Long memberId, @RequestBody CommentRequestDto commentRequestDto,
+                                           @PathVariable Long productId) {
+        return new ResponseEntity<>(commentService.update(commentRequestDto, memberId, productId), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "상품 댓글 삭제", notes = "상품 댓글을 삭제한다.")
+    @DeleteMapping("/{productId}/comments")
+    public ResponseEntity<?> deleteComment(@RequestBody CommentRequestDto commentRequestDto) {
+
+        commentService.remove(commentRequestDto.getCommentId());
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
