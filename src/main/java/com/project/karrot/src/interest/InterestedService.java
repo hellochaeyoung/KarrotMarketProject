@@ -29,11 +29,7 @@ public class InterestedService {
         Product product = productRepository.findById(interestedRequestDto.getProductId()).orElseThrow();
 
         int count = product.getLikeCount();
-        if(interestedRequestDto.isLike()) {
-            product.setLikeCount(++count);
-        }else {
-            product.setLikeCount(--count);
-        }
+        product.setLikeCount(++count);
 
         InterestedProduct interestedProduct = interestedRequestDto.toEntity(member, product);
 
@@ -63,7 +59,15 @@ public class InterestedService {
                 .collect(Collectors.toList());
     }
 
-    public void remove(InterestedRequestDto interestedRequestDto) {
-        interestedRepository.deleteById(interestedRequestDto.getInterestedId());
+    public int remove(InterestedRequestDto interestedRequestDto) {
+
+        Product product = productRepository.findById(interestedRequestDto.getProductId()).orElseThrow();
+
+        int cnt = product.getLikeCount();
+        product.setLikeCount(--cnt);
+
+        interestedRepository.deleteByMemberId(interestedRequestDto.getMemberId());
+
+        return product.getLikeCount();
     }
 }

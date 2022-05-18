@@ -13,4 +13,6 @@ public interface InterestedRepository extends JpaRepository<InterestedProduct, L
 
     Optional<Long> deleteByProductId(Long productId);
 
+    Optional<Long> deleteByMemberId(Long memberId);
+
 }
